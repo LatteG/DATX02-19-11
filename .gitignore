@@ -19,6 +19,8 @@
 *.userprefs
 
 # Build results
+[Ll]ibrary/
+[Tt]emp/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
@@ -29,6 +31,8 @@ x86/
 [Aa][Rr][Mm]64/
 bld/
 [Bb]in/
+[Bb]uild/
+[Bb]uilds/
 [Oo]bj/
 [Ll]og/
 
@@ -384,9 +388,17 @@ ExportedObj/
 *.csproj
 *.unityproj
 *.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
 *.booproj
 *.svd
+*.pdb
 *.mdb
+*.opendb
+*.VC.db
 
 # Unity3D generated meta files
 *.pidb.meta
