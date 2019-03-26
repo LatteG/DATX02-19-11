@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class FogHideOtherObject : MonoBehaviour
 {
+    public Material hasBeenRevealedMaterial;
+
     private bool isRevealed = false;
     private bool hasBeenRevealed = false;
 
@@ -17,7 +19,11 @@ public class FogHideOtherObject : MonoBehaviour
         if (ColliderHasTag(other, "PlayerFigurineVision"))
         {
             isRevealed = true;
-            hasBeenRevealed = true;
+            if (!hasBeenRevealed)
+            {
+                hasBeenRevealed = true;
+                GetComponent<Renderer>().material = hasBeenRevealedMaterial;
+            }
             MakeInvisible(this.gameObject);
             RevealContents();
         }
