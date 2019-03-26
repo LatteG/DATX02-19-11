@@ -6,6 +6,7 @@ TagManager:
   tags:
   - PlayerFigurine
   - NPCFigurine
+  - PlayerFigurineVision
   layers:
   - Default
   - TransparentFX

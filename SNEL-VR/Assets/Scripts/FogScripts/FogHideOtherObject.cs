@@ -4,17 +4,83 @@ using UnityEngine;
 
 public class FogHideOtherObject : MonoBehaviour
 {
+    private bool isRevealed = false;
+    private bool hasBeenRevealed = false;
+
+    private List<Collider> npcColliders = new List<Collider>();
+
     private void OnTriggerEnter(Collider other)
     {
-        if (ColliderHasTag(other, "NPCFigurine"))
+        // If the player figurine has this cell in its range the cell should remember that it is currently being viewed and has been viewed.
+        // Also reveals anything it conceals.
+        if (ColliderHasTag(other, "PlayerFigurineVision"))
         {
-            other.gameObject.GetComponent<MeshRenderer>().enabled = false;
+            isRevealed = true;
+            hasBeenRevealed = true;
+            MakeInvisible(this.gameObject);
+            RevealContents();
+        }
+        // What to do when colliding with an NPC figurine.
+        else if (ColliderHasTag(other, "NPCFigurine"))
+        {
+            // Hide if the cell is not hidden.
+            if (!isRevealed)
+            {
+                MakeInvisible(other);
+            }
+
+            // Add NPC figurine to list of NPC figurines contained in the cell.
+            if (!npcColliders.Contains(other))
+            {
+                npcColliders.Add(other);
+            }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        other.gameObject.GetComponent<MeshRenderer>().enabled = true;
+        // If the player figurine no longer has this cell in its range the cell should switch back to not being revealed.
+        // The cell should also once again hide all NPC figurines.
+        if (ColliderHasTag(other, "PlayerFigurineVision"))
+        {
+            isRevealed = false;
+            MakeVisible(this.gameObject);
+            HideContents();
+        }
+        // Make objects leaving the cell visible.
+        else
+        {
+            MakeVisible(other);
+
+            // Remove NPC figurines that leave the cell from the list of contained NPC figurines.
+            if (ColliderHasTag(other, "NPCFigurine"))
+            {
+                if (npcColliders.Contains(other))
+                {
+                    npcColliders.Remove(other);
+                }
+            }
+        }
+    }
+
+    // Reveal any and all objects hidden by this fog cell.
+    private void RevealContents()
+    {
+        // Make all NPC figurines visible
+        for (int i = 0; i < npcColliders.Count; i++)
+        {
+            MakeVisible(npcColliders[i]);
+        }
+    }
+
+    // Hides all objects tagged with the NPCFigurines-tag that can be hidden by this fog cell.
+    private void HideContents()
+    {
+        // Make all NPC figurines visible
+        for (int i = 0; i < npcColliders.Count; i++)
+        {
+            MakeInvisible(npcColliders[i]);
+        }
     }
 
     // Checks if the other collider has the wanted tag.
@@ -33,12 +99,30 @@ public class FogHideOtherObject : MonoBehaviour
             {
                 return true;
             }
-            else if (!other.gameObject.CompareTag("Untagged"))
+            else if (other.gameObject.CompareTag("Untagged"))
             {
                 return other.gameObject.transform.parent.gameObject.CompareTag(tag);
             }
         }
 
         return false;
+    }
+
+    private void MakeInvisible(Collider c)
+    {
+        MakeInvisible(c.gameObject);
+    }
+    private void MakeInvisible(GameObject go)
+    {
+        go.GetComponent<MeshRenderer>().enabled = false;
+    }
+
+    private void MakeVisible(Collider c)
+    {
+        MakeVisible(c.gameObject);
+    }
+    private void MakeVisible(GameObject go)
+    {
+        go.GetComponent<MeshRenderer>().enabled = true;
     }
 }
