@@ -8,6 +8,7 @@ public class FogHideOtherObject : MonoBehaviour
     private bool hasBeenRevealed = false;
 
     private List<Collider> npcColliders = new List<Collider>();
+    private List<Collider> obstacleColliders = new List<Collider>();
 
     private void OnTriggerEnter(Collider other)
     {
@@ -33,6 +34,22 @@ public class FogHideOtherObject : MonoBehaviour
             if (!npcColliders.Contains(other))
             {
                 npcColliders.Add(other);
+            }
+        }
+        // What to do when colliding with an obstacle.
+        else if (ColliderHasTag(other, "Obstacle"))
+        {
+            // Obstacles can only be invisible when the cell has not been previously revealed
+            if (!hasBeenRevealed)
+            {
+                MakeInvisible(other);
+
+                // Since the objects can only be made visible before the cell has been revealed
+                // this can be in the body of the hasBeenRevealed-check
+                if (!obstacleColliders.Contains(other))
+                {
+                    obstacleColliders.Add(other);
+                }
             }
         }
     }
@@ -70,6 +87,12 @@ public class FogHideOtherObject : MonoBehaviour
         for (int i = 0; i < npcColliders.Count; i++)
         {
             MakeVisible(npcColliders[i]);
+        }
+
+        // Make all obstacles visible
+        for (int i = 0; i < obstacleColliders.Count; i++)
+        {
+            MakeVisible(obstacleColliders[i]);
         }
     }
 

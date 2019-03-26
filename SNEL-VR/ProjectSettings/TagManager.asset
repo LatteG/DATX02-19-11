@@ -7,6 +7,7 @@ TagManager:
   - PlayerFigurine
   - NPCFigurine
   - PlayerFigurineVision
+  - Obstacle
   layers:
   - Default
   - TransparentFX
