@@ -4,4 +4,7 @@
 TBD
 
 ## Feature list
-- TBD
+- Fog of war.
+  - Hides enemies when covered in fog.
+  - Hides obstacles when covered in fog unless the obstacle has been uncovered before.
+  - Reveals contents when the player figurine is in range and hides it again when the player figurine is out of range again.
