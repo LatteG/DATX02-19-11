@@ -14,21 +14,8 @@ public class FogHideOtherObject : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // If the player figurine has this cell in its range the cell should remember that it is currently being viewed and has been viewed.
-        // Also reveals anything it conceals.
-        /*if (ColliderHasTag(other, "PlayerFigurineVision"))
-        {
-            isRevealed = true;
-            if (!hasBeenRevealed)
-            {
-                hasBeenRevealed = true;
-                GetComponent<Renderer>().material = hasBeenRevealedMaterial;
-            }
-            MakeInvisible(this.gameObject);
-            RevealContents();
-        }
         // What to do when colliding with an NPC figurine.
-        else*/ if (ColliderHasTag(other, "NPCFigurine"))
+        if (ColliderHasTag(other, "NPCFigurine"))
         {
             // Hide if the cell is not hidden.
             if (!isRevealed)
@@ -62,16 +49,7 @@ public class FogHideOtherObject : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        // If the player figurine no longer has this cell in its range the cell should switch back to not being revealed.
-        // The cell should also once again hide all NPC figurines.
-        /*if (ColliderHasTag(other, "PlayerFigurineVision"))
-        {
-            isRevealed = false;
-            MakeVisible(this.gameObject);
-            HideContents();
-        }
-        // Make objects leaving the cell visible.
-        else*/ if (ColliderHasTag(other, "Obstacle") || ColliderHasTag(other, "NPCFigurine"))
+        if (ColliderHasTag(other, "Obstacle") || ColliderHasTag(other, "NPCFigurine"))
         {
             MakeVisible(other);
 
