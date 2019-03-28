@@ -36,7 +36,6 @@ public class FogSpawner : MonoBehaviour
             {
                 // Make a vector for the position of the fog element.
                 Vector3 pos = new Vector3(x, 0, minZ + (k + 0.5f) * cellSizeHor);
-                Debug.Log("Element " + (k + i * ((int) sizeX / cellSizeHor - cellSizeHor / 2)) +":" + pos);
                 GameObject fe = Instantiate(fogElement, pos, Quaternion.identity, this.transform);
 
                 // Resize new fog element.

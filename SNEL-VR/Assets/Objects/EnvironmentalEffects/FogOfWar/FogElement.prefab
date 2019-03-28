@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 865640660686519456}
   m_Layer: 0
   m_Name: FogElement
-  m_TagString: Untagged
+  m_TagString: Fog
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 865640661906320689}
   - component: {fileID: 865640661906320684}
   m_Layer: 0
-  m_Name: Fog cell
+  m_Name: FogCell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
