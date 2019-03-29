@@ -95,6 +95,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fef1b1f1dac4624b8225e8bd765721b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unvisitedFogMaterial: {fileID: 2100000, guid: 2af6b76083ea025448b1fdba5a40dcbb,
+    type: 2}
+  visitedFogMaterial: {fileID: 2100000, guid: 3aad85ee5af83994bb3980943b48dc0c, type: 2}
 --- !u!1 &5927008980755459714
 GameObject:
   m_ObjectHideFlags: 0

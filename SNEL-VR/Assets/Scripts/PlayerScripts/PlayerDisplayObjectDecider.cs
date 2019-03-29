@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerDisplayObjectDecider : MonoBehaviour
 {
+    public Material unvisitedFogMaterial;
+    public Material visitedFogMaterial;
+
     private Camera cam;
     private PlayerOwnedFigurines figs;
 
@@ -14,13 +17,9 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
 
     private void CullInvisible(Camera cam)
     {
-        GameObject[] npcFigurines = GameObject.FindGameObjectsWithTag("NPCFigurine");
-        GameObject[] obstacles = GameObject.FindGameObjectsWithTag("Obstacle");
-        GameObject[] fogCells = GameObject.FindGameObjectsWithTag("Fog");
-
-        foreach (GameObject npc in npcFigurines)
+        foreach (GameObject npc in GameObject.FindGameObjectsWithTag("NPCFigurine"))
         {
-            if (IsViewedBy(npc.GetComponent<Figurine_ObservedBy>().GetObservedBy()))
+            if (OwnedIsIn(npc.GetComponent<Figurine_ObservedBy>().GetObservedBy()))
             {
                 npc.layer = 0;
             }
@@ -30,17 +29,17 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
             }
         }
 
-        foreach (GameObject obs in obstacles)
+        foreach (GameObject obs in GameObject.FindGameObjectsWithTag("Obstacle"))
         {
-            if (!IsViewedBy(obs.GetComponent<Obstacle_RevealedTo>().GetObservedBy()))
+            if (!OwnedIsIn(obs.GetComponent<Obstacle_RevealedTo>().GetObservedBy()))
             {
                 obs.layer = 10;
             }
         }
 
-        foreach (GameObject fog in fogCells)
+        foreach (GameObject fog in GameObject.FindGameObjectsWithTag("Fog"))
         {
-            if (IsViewedBy(fog.GetComponent<FogHideOtherObject>().GetObservedBy()))
+            if (OwnedIsIn(fog.GetComponent<FogHideOtherObject>().GetObservedBy()))
             {
                 fog.layer = 10;
             }
@@ -57,9 +56,21 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
         {
             obs.layer = 9;
         }
+
+        foreach (GameObject fog in GameObject.FindGameObjectsWithTag("Fog"))
+        {
+            if (OwnedIsIn(fog.GetComponent<FogHideOtherObject>().getHasBeenObservedBy()))
+            {
+                fog.GetComponent<Renderer>().material = visitedFogMaterial;
+            }
+            else
+            {
+                fog.GetComponent<Renderer>().material = unvisitedFogMaterial;
+            }
+        }
     }
 
-    private bool IsViewedBy(GameObject[] visTo)
+    private bool OwnedIsIn(GameObject[] visTo)
     {
         foreach (GameObject v in visTo)
         {
