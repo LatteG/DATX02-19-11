@@ -4,62 +4,33 @@ using UnityEngine;
 
 public class FogHideOtherObject : MonoBehaviour
 {
-    public Material hasBeenRevealedMaterial;
-
-    private bool isRevealed = false;
-    private bool hasBeenRevealed = false;
-
     private List<Collider> npcColliders = new List<Collider>();
     private List<Collider> obstacleColliders = new List<Collider>();
+
+    private List<GameObject> observedBy = new List<GameObject>();
+    private List<GameObject> hasBeenObservedBy = new List<GameObject>();
 
     private void OnTriggerEnter(Collider other)
     {
         // What to do when colliding with an NPC figurine.
         if (ColliderHasTag(other, "NPCFigurine"))
         {
-            // Hide if the cell is not hidden.
-            if (!isRevealed)
-            {
-                MakeInvisible(other);
-            }
+            // Reset the figurines observers.
+            other.gameObject.GetComponent<Figurine_ObservedBy>().ClearObservers();
 
-            // Add NPC figurine to list of NPC figurines contained in the cell.
-            if (!npcColliders.Contains(other))
+            // Make the figurine visible to all figurines currently observing this fog element.
+            for (int i = 0; i < observedBy.Count; i++)
             {
-                npcColliders.Add(other);
+                MakeVisible(other, observedBy[i]);
             }
         }
         // What to do when colliding with an obstacle.
         else if (ColliderHasTag(other, "Obstacle"))
         {
-            // Obstacles can only be invisible when the cell has not been previously revealed
-            if (!hasBeenRevealed)
+            // Make the obstacle visible to all figurines currently observing this fog element.
+            for (int i = 0; i < observedBy.Count; i++)
             {
-                MakeInvisible(other);
-
-                // Since the objects can only be made visible before the cell has been revealed
-                // this can be in the body of the hasBeenRevealed-check
-                if (!obstacleColliders.Contains(other))
-                {
-                    obstacleColliders.Add(other);
-                }
-            }
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (ColliderHasTag(other, "Obstacle") || ColliderHasTag(other, "NPCFigurine"))
-        {
-            MakeVisible(other);
-
-            // Remove NPC figurines that leave the cell from the list of contained NPC figurines.
-            if (ColliderHasTag(other, "NPCFigurine"))
-            {
-                if (npcColliders.Contains(other))
-                {
-                    npcColliders.Remove(other);
-                }
+                MakeVisible(other, observedBy[i]);
             }
         }
     }
@@ -71,94 +42,97 @@ public class FogHideOtherObject : MonoBehaviour
     }
 
     // Called by a player's vision script when it has line of sight to the cell.
-    public void SeenBy(GameObject player)
+    public void SeenBy(GameObject figurine)
     {
-        // TODO: Change from a revealed boolean to some kind of map of revealed states tied to players.
-        isRevealed = true;
-        if (!hasBeenRevealed)
+        if (!observedBy.Contains(figurine))
         {
-            hasBeenRevealed = true;
-            GetComponent<Renderer>().material = hasBeenRevealedMaterial;
+            observedBy.Add(figurine);
+            if (!hasBeenObservedBy.Contains(figurine))
+            {
+                hasBeenObservedBy.Add(figurine);
+            }
         }
-        MakeInvisible(this.gameObject);
-        RevealContents();
+        RevealContents(figurine);
     }
 
     // Called by a player's vision script when it no longer has line of sight to the cell.
-    public void NotSeenBy(GameObject player)
+    public void NotSeenBy(GameObject figurine)
     {
-        // TODO: Change from a revealed boolean to some kind of map of revealed states tied to players.
-        isRevealed = false;
-        MakeVisible(this.gameObject);
-        HideContents();
+        observedBy.Remove(figurine);
+        HideContents(figurine);
     }
 
     // Reveal any and all objects hidden by this fog cell.
-    private void RevealContents()
+    private void RevealContents(GameObject figurine)
     {
         // Make all NPC figurines visible
         for (int i = 0; i < npcColliders.Count; i++)
         {
-            MakeVisible(npcColliders[i]);
+            MakeVisible(npcColliders[i], figurine);
         }
 
         // Make all obstacles visible
         for (int i = 0; i < obstacleColliders.Count; i++)
         {
-            MakeVisible(obstacleColliders[i]);
+            MakeVisible(obstacleColliders[i], figurine);
         }
     }
 
     // Hides all objects tagged with the NPCFigurines-tag that can be hidden by this fog cell.
-    private void HideContents()
+    private void HideContents(GameObject figurine)
     {
         // Make all NPC figurines visible
         for (int i = 0; i < npcColliders.Count; i++)
         {
-            MakeInvisible(npcColliders[i]);
+            MakeInvisible(npcColliders[i], figurine);
         }
     }
 
-    // Checks if the other collider has the wanted tag.
-    // If the collider is untagged it checks the tag of its gameObject.
-    // If that gameObject is untagged it checks if that gameObjects parent-gameObject has the tag.
-    // Returns false if any of the tags checked is neither "Untagged" nor tag, or if all are "Untagged", true otherwise.
+    // Checks if the GameObject holding the collider has the tag.
     private bool ColliderHasTag(Collider other, string tag)
     {
-        if (other.CompareTag(tag))
+        return other.gameObject.CompareTag(tag);
+    }
+
+    private void MakeInvisible(Collider c, GameObject figurine)
+    {
+        MakeInvisible(c.gameObject, figurine);
+    }
+    private void MakeInvisible(GameObject go, GameObject figurine)
+    {
+        if (go.CompareTag("NPCFigurine"))
         {
-            return true;
+            go.GetComponent<Figurine_ObservedBy>().RemoveObserver(figurine);
         }
-        else if (other.CompareTag("Untagged"))
+    }
+
+    private void MakeVisible(Collider c, GameObject figurine)
+    {
+        MakeVisible(c.gameObject, figurine);
+    }
+    private void MakeVisible(GameObject go, GameObject figurine)
+    {
+        if (go.CompareTag("NPCFigurine"))
         {
-            if (other.gameObject.CompareTag(tag))
-            {
-                return true;
-            }
-            else if (other.gameObject.CompareTag("Untagged"))
-            {
-                return other.gameObject.transform.parent.gameObject.CompareTag(tag);
-            }
+            go.GetComponent<Figurine_ObservedBy>().AddObserver(figurine);
         }
-
-        return false;
+        else if (go.CompareTag("Obstacle"))
+        {
+            go.GetComponent<Obstacle_RevealedTo>().AddObserver(figurine);
+        }
     }
 
-    private void MakeInvisible(Collider c)
+    public GameObject[] GetObservedBy()
     {
-        MakeInvisible(c.gameObject);
-    }
-    private void MakeInvisible(GameObject go)
-    {
-        go.GetComponent<MeshRenderer>().enabled = false;
+        GameObject[] retList = new GameObject[observedBy.Count];
+        observedBy.CopyTo(retList);
+        return retList;
     }
 
-    private void MakeVisible(Collider c)
+    public GameObject[] getHasBeenObservedBy()
     {
-        MakeVisible(c.gameObject);
-    }
-    private void MakeVisible(GameObject go)
-    {
-        go.GetComponent<MeshRenderer>().enabled = true;
+        GameObject[] retList = new GameObject[hasBeenObservedBy.Count];
+        hasBeenObservedBy.CopyTo(retList);
+        return retList;
     }
 }
