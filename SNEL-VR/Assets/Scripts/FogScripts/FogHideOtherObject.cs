@@ -23,6 +23,11 @@ public class FogHideOtherObject : MonoBehaviour
             {
                 MakeVisible(other, observedBy[i]);
             }
+
+            if (!npcColliders.Contains(other))
+            {
+                npcColliders.Add(other);
+            }
         }
         // What to do when colliding with an obstacle.
         else if (ColliderHasTag(other, "Obstacle"))
@@ -32,6 +37,23 @@ public class FogHideOtherObject : MonoBehaviour
             {
                 MakeVisible(other, observedBy[i]);
             }
+
+            if (!obstacleColliders.Contains(other))
+            {
+                obstacleColliders.Add(other);
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (ColliderHasTag(other, "NPCFigurine"))
+        {
+            npcColliders.Remove(other);
+        }
+        else if (ColliderHasTag(other, "Obstacle"))
+        {
+            obstacleColliders.Remove(other);
         }
     }
 
