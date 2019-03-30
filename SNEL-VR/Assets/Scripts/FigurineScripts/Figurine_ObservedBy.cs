@@ -26,8 +26,6 @@ public class Figurine_ObservedBy : MonoBehaviour
 
     public GameObject[] GetObservedBy()
     {
-        GameObject[] retList = new GameObject[observedBy.Count];
-        observedBy.CopyTo(retList);
-        return retList;
+        return observedBy.ToArray();
     }
 }

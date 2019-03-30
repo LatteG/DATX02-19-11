@@ -146,15 +146,11 @@ public class FogHideOtherObject : MonoBehaviour
 
     public GameObject[] GetObservedBy()
     {
-        GameObject[] retList = new GameObject[observedBy.Count];
-        observedBy.CopyTo(retList);
-        return retList;
+        return observedBy.ToArray();
     }
 
     public GameObject[] getHasBeenObservedBy()
     {
-        GameObject[] retList = new GameObject[hasBeenObservedBy.Count];
-        hasBeenObservedBy.CopyTo(retList);
-        return retList;
+        return hasBeenObservedBy.ToArray();
     }
 }

@@ -16,8 +16,6 @@ public class Obstacle_RevealedTo : MonoBehaviour
 
     public GameObject[] GetObservedBy()
     {
-        GameObject[] retList = new GameObject[observedBy.Count];
-        observedBy.CopyTo(retList);
-        return retList;
+        return observedBy.ToArray();
     }
 }
