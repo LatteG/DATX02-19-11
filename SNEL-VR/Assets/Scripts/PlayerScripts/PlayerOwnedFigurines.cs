@@ -5,4 +5,10 @@ using UnityEngine;
 public class PlayerOwnedFigurines : MonoBehaviour
 {
     public GameObject ownedFigurine;
+
+    public GameObject[] GetOwnedFigurines()
+    {
+        GameObject[] retArr = { ownedFigurine };
+        return retArr;
+    }
 }

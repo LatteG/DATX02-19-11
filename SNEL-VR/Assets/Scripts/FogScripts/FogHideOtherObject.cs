@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FogHideOtherObject : MonoBehaviour
 {
-    private List<Collider> npcColliders = new List<Collider>();
+    private List<Collider> figurineColliders = new List<Collider>();
     private List<Collider> obstacleColliders = new List<Collider>();
 
     private List<GameObject> observedBy = new List<GameObject>();
@@ -12,8 +12,8 @@ public class FogHideOtherObject : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // What to do when colliding with an NPC figurine.
-        if (ColliderHasTag(other, "NPCFigurine"))
+        // What to do when colliding with a figurine.
+        if (ColliderHasTag(other, "NPCFigurine") || ColliderHasTag(other, "PlayerFigurine"))
         {
             // Reset the figurines observers.
             other.gameObject.GetComponent<Figurine_ObservedBy>().ClearObservers();
@@ -24,9 +24,9 @@ public class FogHideOtherObject : MonoBehaviour
                 MakeVisible(other, observedBy[i]);
             }
 
-            if (!npcColliders.Contains(other))
+            if (!figurineColliders.Contains(other))
             {
-                npcColliders.Add(other);
+                figurineColliders.Add(other);
             }
         }
         // What to do when colliding with an obstacle.
@@ -47,9 +47,9 @@ public class FogHideOtherObject : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (ColliderHasTag(other, "NPCFigurine"))
+        if (ColliderHasTag(other, "NPCFigurine") || ColliderHasTag(other, "PlayerFigurine"))
         {
-            npcColliders.Remove(other);
+            figurineColliders.Remove(other);
         }
         else if (ColliderHasTag(other, "Obstacle"))
         {
@@ -88,9 +88,9 @@ public class FogHideOtherObject : MonoBehaviour
     private void RevealContents(GameObject figurine)
     {
         // Make all NPC figurines visible
-        for (int i = 0; i < npcColliders.Count; i++)
+        for (int i = 0; i < figurineColliders.Count; i++)
         {
-            MakeVisible(npcColliders[i], figurine);
+            MakeVisible(figurineColliders[i], figurine);
         }
 
         // Make all obstacles visible
@@ -104,9 +104,9 @@ public class FogHideOtherObject : MonoBehaviour
     private void HideContents(GameObject figurine)
     {
         // Make all NPC figurines visible
-        for (int i = 0; i < npcColliders.Count; i++)
+        for (int i = 0; i < figurineColliders.Count; i++)
         {
-            MakeInvisible(npcColliders[i], figurine);
+            MakeInvisible(figurineColliders[i], figurine);
         }
     }
 
@@ -122,7 +122,7 @@ public class FogHideOtherObject : MonoBehaviour
     }
     private void MakeInvisible(GameObject go, GameObject figurine)
     {
-        if (go.CompareTag("NPCFigurine"))
+        if (go.CompareTag("NPCFigurine") || go.CompareTag("PlayerFigurine"))
         {
             go.GetComponent<Figurine_ObservedBy>().RemoveObserver(figurine);
         }
@@ -134,7 +134,7 @@ public class FogHideOtherObject : MonoBehaviour
     }
     private void MakeVisible(GameObject go, GameObject figurine)
     {
-        if (go.CompareTag("NPCFigurine"))
+        if (go.CompareTag("NPCFigurine") || go.CompareTag("PlayerFigurine"))
         {
             go.GetComponent<Figurine_ObservedBy>().AddObserver(figurine);
         }

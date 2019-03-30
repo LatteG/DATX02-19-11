@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 8829548002214755655}
   - component: {fileID: 8829548002214755704}
   - component: {fileID: 8829548002214755705}
+  - component: {fileID: 6057943356348471409}
   m_Layer: 0
   m_Name: Figurine
-  m_TagString: Untagged
+  m_TagString: PlayerFigurine
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -109,6 +110,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &6057943356348471409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8829548002214755707}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c9a2831845ee1c409eec91cd3f10562, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8829548002790330799
 GameObject:
   m_ObjectHideFlags: 0
@@ -120,7 +133,7 @@ GameObject:
   - component: {fileID: 8829548002790330798}
   m_Layer: 0
   m_Name: Figurine_Player
-  m_TagString: PlayerFigurine
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
