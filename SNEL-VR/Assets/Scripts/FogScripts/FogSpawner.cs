@@ -20,6 +20,9 @@ public class FogSpawner : MonoBehaviour
         float minX = meshMin.x;
         float minZ = meshMin.z;
 
+        // Gets the y-coordinate, assumes an even surface with no change in the y-axis.
+        float posY = meshMin.y;
+
         // We have no more use for this.
         GetComponentInChildren<MeshCollider>().enabled = false;
 
@@ -35,7 +38,7 @@ public class FogSpawner : MonoBehaviour
             for (int k = 0; k < cols; k++)
             {
                 // Make a vector for the position of the fog element.
-                Vector3 pos = new Vector3(x, 0, minZ + (k + 0.5f) * cellSizeHor);
+                Vector3 pos = new Vector3(x, posY, minZ + (k + 0.5f) * cellSizeHor);
                 GameObject fe = Instantiate(fogElement, pos, Quaternion.identity, this.transform);
 
                 // Resize new fog element.
