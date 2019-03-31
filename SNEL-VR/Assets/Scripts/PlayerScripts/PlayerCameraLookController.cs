@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerLookController : MonoBehaviour
+public class PlayerCameraLookController : MonoBehaviour
 {
     public float lookSensitivity    = 50f;
     public LookInput inputMethod    = LookInput.NONE;
