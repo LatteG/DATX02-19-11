@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 3508976374353388247}
   - component: {fileID: 7605154039241910277}
   - component: {fileID: 2895457433700266041}
+  - component: {fileID: 783977817673062877}
   m_Layer: 0
   m_Name: Figurine
-  m_TagString: Untagged
+  m_TagString: NPCFigurine
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -28,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2691590353112806813}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 0.39999998, y: 0.5, z: 0.39999998}
   m_Children: []
   m_Father: {fileID: 592458350434367236}
@@ -109,6 +110,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &783977817673062877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2691590353112806813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c9a2831845ee1c409eec91cd3f10562, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3054508066924389319
 GameObject:
   m_ObjectHideFlags: 0
@@ -119,8 +132,8 @@ GameObject:
   m_Component:
   - component: {fileID: 592458350434367236}
   m_Layer: 0
-  m_Name: Enemy figurine
-  m_TagString: NPCFigurine
+  m_Name: Figurine_Enemy
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -133,7 +146,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3054508066924389319}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1185474669484261747}

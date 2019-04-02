@@ -6,7 +6,7 @@ public class Figurine_PlayerVision : MonoBehaviour
 {
     private static float sensitivity = 0.00000001f;
 
-    private bool hasMoved = false;
+    private bool hasMoved = true;
     private bool shouldUpdate = false;
 
     private Vector3 oldPos;
