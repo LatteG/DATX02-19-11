@@ -17,6 +17,7 @@ public class FogSpawner : MonoBehaviour
         float topParentScaleX = transform.lossyScale.x;
         float topParentScaleZ = transform.lossyScale.z;
 
+
         float sizeX = meshSize.x / topParentScaleX;
         float sizeZ = meshSize.z / topParentScaleZ;
 
