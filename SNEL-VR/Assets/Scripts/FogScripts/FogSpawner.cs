@@ -12,12 +12,17 @@ public class FogSpawner : MonoBehaviour
     {
         // Get size of the mesh called Boundary in the child.
         Vector3 meshSize = GetComponentInChildren<MeshCollider>().bounds.size;
-        float sizeX = meshSize.x;
-        float sizeZ = meshSize.z;
+
+        //To correct size/pos contra scale
+        float topParentScaleX = transform.lossyScale.x;
+        float topParentScaleZ = transform.lossyScale.z;
+
+        float sizeX = meshSize.x / topParentScaleX;
+        float sizeZ = meshSize.z / topParentScaleZ;
 
         // Get the starting points.
         Vector3 meshMin = GetComponentInChildren<MeshCollider>().bounds.min;
-        float minX = meshMin.x;
+        float minX = meshMin.x ;
         float minZ = meshMin.z;
 
         // Gets the y-coordinate, assumes an even surface with no change in the y-axis.
@@ -26,21 +31,20 @@ public class FogSpawner : MonoBehaviour
         // We have no more use for this.
         GetComponentInChildren<MeshCollider>().enabled = false;
 
-        int rows = (int) (sizeX / cellSizeHor - cellSizeHor / 2);
-        int cols = (int) (sizeZ / cellSizeHor - cellSizeHor / 2);
+        int rows = (int) (sizeX / cellSizeHor);
+        int cols = (int) (sizeZ / cellSizeHor);
         Vector3 cellSizeVector = new Vector3(cellSizeHor, cellSizeVer, cellSizeHor);
 
         // Fill the area defined by the MeshCollider with fog elements.
         for (int i = 0; i < rows; i++)
         {
             // Save the value of x for a column.
-            float x = minX + (i + 0.5f) * cellSizeHor;
+            float x = minX + (i + 0.5f) * topParentScaleX * cellSizeHor;
             for (int k = 0; k < cols; k++)
             {
                 // Make a vector for the position of the fog element.
-                Vector3 pos = new Vector3(x, posY, minZ + (k + 0.5f) * cellSizeHor);
+                Vector3 pos = new Vector3(x, posY, (minZ + (k + 0.5f) * topParentScaleZ * cellSizeHor));
                 GameObject fe = Instantiate(fogElement, pos, Quaternion.identity, this.transform);
-
                 // Resize new fog element.
                 fe.transform.localScale = cellSizeVector;
             }
