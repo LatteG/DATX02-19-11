@@ -9,12 +9,15 @@ public class Figurine_PlayerVision : MonoBehaviour
 
     private Vector3 pos;
     private Vector3 scale;
+    private Vector3 sphereCenter;
 
     private int obstacleLayerMask;
     private float visionRange;
 
     private Transform parentTransform;
     private GameObject figurine;
+
+    private List<Collider> fogCellsExitingRange;
 
     // Called whenever the fog should be updated from the figurine's perspective.
     public void ShouldUpdate()
@@ -32,11 +35,17 @@ public class Figurine_PlayerVision : MonoBehaviour
         pos = parentTransform.position;
 
         // Used for raycasts.
-        visionRange = GetComponent<SphereCollider>().radius;
+        visionRange = GetComponent<SphereCollider>().radius * scale.x * 0.95f;
+        sphereCenter = GetComponent<SphereCollider>().center;
+        sphereCenter.x *= scale.x;
+        sphereCenter.y *= scale.y;
+        sphereCenter.z *= scale.z;
         obstacleLayerMask = 1 << 9;
 
         // Used for LoS-updates in fog elements.
         figurine = parentTransform.gameObject;
+
+        fogCellsExitingRange = new List<Collider>();
     }
 
     // Updates the position and checks if the script has updated the fog.
@@ -45,6 +54,12 @@ public class Figurine_PlayerVision : MonoBehaviour
         pos = parentTransform.position;
         if (hasUpdated)
         {
+            foreach (Collider c in fogCellsExitingRange)
+            {
+                OnTriggerStay(c);
+            }
+            fogCellsExitingRange.Clear();
+
             shouldUpdate = false;
             hasUpdated = false;
         }
@@ -63,26 +78,29 @@ public class Figurine_PlayerVision : MonoBehaviour
         if (ColliderHasTag(other, "Fog"))
         {
             Vector3 fogPos = other.gameObject.GetComponent<FogHideOtherObject>().GetPosition();
-            Vector3 sphereCenter = GetComponent<SphereCollider>().center;
-            sphereCenter.x *= scale.x;
-            sphereCenter.y *= scale.y;
-            sphereCenter.z *= scale.z;
-            sphereCenter += pos;
-            Vector3 direction = (fogPos - sphereCenter);
+            Vector3 direction = fogPos - (sphereCenter + pos);
             float raycastRange = direction.magnitude;
 
-            // Checks if there is an obstacle between the figurine and fog element.
-            if (Physics.Raycast(sphereCenter, direction, raycastRange, obstacleLayerMask))
+            // Checks if the fog element is out of range.
+            if (raycastRange > visionRange)
             {
-                // Is an obstacle.
-                Debug.DrawLine(sphereCenter, other.gameObject.GetComponent<FogHideOtherObject>().GetPosition(), Color.red);
                 TellOutOfLOS(other);
             }
             else
             {
-                // Is no obstacle.
-                Debug.DrawLine(sphereCenter, other.gameObject.GetComponent<FogHideOtherObject>().GetPosition(), Color.green);
-                TellInLOS(other);
+                // Checks if there is an obstacle between the figurine and fog element.
+                if (Physics.Raycast(sphereCenter + pos, direction, raycastRange, obstacleLayerMask))
+                {
+                    // Is an obstacle.
+                    Debug.DrawLine(sphereCenter + pos, other.gameObject.GetComponent<FogHideOtherObject>().GetPosition(), Color.red);
+                    TellOutOfLOS(other);
+                }
+                else
+                {
+                    // Is no obstacle.
+                    Debug.DrawLine(sphereCenter + pos, other.gameObject.GetComponent<FogHideOtherObject>().GetPosition(), Color.green);
+                    TellInLOS(other);
+                }
             }
         }
     }
@@ -92,7 +110,11 @@ public class Figurine_PlayerVision : MonoBehaviour
     {
         if (ColliderHasTag(other, "Fog"))
         {
-            TellOutOfLOS(other);
+            // TellOutOfLOS(other);
+            if (!fogCellsExitingRange.Contains(other))
+            {
+                fogCellsExitingRange.Add(other);
+            }
         }
     }
 
