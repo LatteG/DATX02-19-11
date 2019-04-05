@@ -4,59 +4,46 @@ using UnityEngine;
 
 public class Figurine_PlayerVision : MonoBehaviour
 {
-    private static float sensitivity = 0.00000001f;
-
-    private bool hasMoved = false;
     private bool shouldUpdate = false;
+    private bool hasUpdated = false;
 
-    private Vector3 oldPos;
-    private Vector3 newPos;
+    private Vector3 pos;
+    private Vector3 scale;
 
     private int obstacleLayerMask;
     private float visionRange;
 
-    // Sets initial values and values that are never changed.
-    private void Start()
+    private Transform parentTransform;
+
+    // Called whenever the fog should be updated from the figurine's perspective.
+    public void ShouldUpdate()
     {
+        shouldUpdate = true;
+    }
+
+    // Sets initial values and values that are never changed.
+    private void OnEnable()
+    {
+        parentTransform = GetComponent<Transform>().parent;
+        scale = GetComponent<Transform>().lossyScale;
+
         // Used for the first FixedUpdate-call.
-        oldPos = GetComponent<Transform>().parent.position;
+        pos = parentTransform.position;
 
         // Used for raycasts.
         visionRange = GetComponent<SphereCollider>().radius;
         obstacleLayerMask = 1 << 9;
     }
 
-    // Check for movement to determine if the OnCollisionStay-script should fire.
+    // Updates the position and checks if the script has updated the fog.
     void FixedUpdate()
     {
-        newPos = GetComponent<Transform>().parent.position;
-
-        if (!shouldUpdate)
+        pos = parentTransform.position;
+        if (hasUpdated)
         {
-            // If the script does not allow updates then it should check if it SHOULD allow for updates.
-
-            float dx = Mathf.Abs(newPos.x - oldPos.x);
-            // float dy = Mathf.Abs(newPos.y - oldPos.y);
-            float dz = Mathf.Abs(newPos.z - oldPos.z);
-
-            // If the figurine has moved but is no longer moving in the horizontal plane then it
-            // should allow updates of the fog elements.
-            bool movementThisFrame = dx > sensitivity || dz > sensitivity;
-            if (hasMoved && !movementThisFrame)
-            {
-                shouldUpdate = true;
-            }
-
-            hasMoved = movementThisFrame;
-        }
-        else
-        {
-            // If the script has updated the fog cells since the last movement then it should no
-            // longer allow updates.
             shouldUpdate = false;
+            hasUpdated = false;
         }
-
-        oldPos = newPos;
     }
 
     // Checks if a fog element is visible or not and sends the appropriate call to its script.
@@ -67,11 +54,16 @@ public class Figurine_PlayerVision : MonoBehaviour
         {
             return;
         }
+        hasUpdated = true;
 
         if (ColliderHasTag(other, "Fog"))
         {
             Vector3 fogPos = other.gameObject.GetComponent<FogHideOtherObject>().GetPosition();
-            Vector3 sphereCenter = GetComponent<SphereCollider>().center + oldPos;
+            Vector3 sphereCenter = GetComponent<SphereCollider>().center;
+            sphereCenter.x *= scale.x;
+            sphereCenter.y *= scale.y;
+            sphereCenter.z *= scale.z;
+            sphereCenter += pos;
             Vector3 direction = (fogPos - sphereCenter);
             float raycastRange = direction.magnitude;
 
@@ -79,16 +71,13 @@ public class Figurine_PlayerVision : MonoBehaviour
             if (Physics.Raycast(sphereCenter, direction, raycastRange, obstacleLayerMask))
             {
                 // Is an obstacle.
-                // Debug.Log("Wall detected!");
                 Debug.DrawLine(sphereCenter, other.gameObject.GetComponent<FogHideOtherObject>().GetPosition(), Color.red);
-                // Debug.DrawLine(sphereCenter, sphereCenter + (direction.normalized * raycastRange), Color.red);
                 TellOutOfLOS(other);
             }
             else
             {
                 // Is no obstacle.
                 Debug.DrawLine(sphereCenter, other.gameObject.GetComponent<FogHideOtherObject>().GetPosition(), Color.green);
-                // Debug.DrawLine(sphereCenter, sphereCenter + (direction.normalized * raycastRange), Color.green);
                 TellInLOS(other);
             }
         }
