@@ -6,23 +6,17 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
 {
     public Material unvisitedFogMaterial;
     public Material visitedFogMaterial;
+    public GameObject player;
 
-    private Camera cam;
     private PlayerOwnedFigurines figs;
 
     private static int defaultLayer = 0;
-    private static int invisibleLayer = 10;
+    private static int invisibleLayer = 15;
     private static int obstacleLayer = 9;
-
-    // Startby fetching the script tracking the figurines owned by the player.
-    private void Start()
-    {
-        figs = GetComponent<Transform>().parent.gameObject.GetComponent<PlayerOwnedFigurines>();
-    }
 
     // Makes any object that should not be visible by this camera invisible by changing their layer
     // right before the culling.
-    private void CullInvisible(Camera cam)
+    private void OnPreCull()
     {
         // Put all NPC figurines visible by any owned figurines in the default layer and the rest
         // in the invisible layer.
@@ -65,7 +59,7 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
         // player in the default layer and the rest in the invisible layer.
         foreach (GameObject fig in GameObject.FindGameObjectsWithTag("PlayerFigurine"))
         {
-            if (IsOwned(fig) || OwnedIsIn(fig.GetComponent<Figurine_ObservedBy>().GetObservedBy()))
+            if (IsOwned(fig.transform.parent.gameObject) || OwnedIsIn(fig.GetComponent<Figurine_ObservedBy>().GetObservedBy()))
             {
                 fig.layer = defaultLayer;
             }
@@ -126,13 +120,10 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
         return false;
     }
 
+    // Adds CullInvisible to OnPreCull and get the ownedFigurines-script when enabled.
     private void OnEnable()
     {
-        Camera.onPreCull += CullInvisible;
-    }
-
-    private void OnDisable()
-    {
-        Camera.onPreCull -= CullInvisible;
+        // figs = GetComponent<Transform>().parent.gameObject.GetComponent<PlayerOwnedFigurines>();
+        figs = player.GetComponent<PlayerOwnedFigurines>();
     }
 }

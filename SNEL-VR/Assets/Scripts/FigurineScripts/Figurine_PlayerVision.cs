@@ -14,6 +14,7 @@ public class Figurine_PlayerVision : MonoBehaviour
     private float visionRange;
 
     private Transform parentTransform;
+    private GameObject figurine;
 
     // Called whenever the fog should be updated from the figurine's perspective.
     public void ShouldUpdate()
@@ -33,6 +34,9 @@ public class Figurine_PlayerVision : MonoBehaviour
         // Used for raycasts.
         visionRange = GetComponent<SphereCollider>().radius;
         obstacleLayerMask = 1 << 9;
+
+        // Used for LoS-updates in fog elements.
+        figurine = parentTransform.gameObject;
     }
 
     // Updates the position and checks if the script has updated the fog.
@@ -95,13 +99,13 @@ public class Figurine_PlayerVision : MonoBehaviour
     // Tells a fog element it is no longer visible.
     private void TellOutOfLOS(Collider other)
     {
-        other.gameObject.GetComponent<FogHideOtherObject>().NotSeenBy(this.gameObject.transform.parent.gameObject);
+        other.gameObject.GetComponent<FogHideOtherObject>().NotSeenBy(figurine);
     }
 
     // Tells a fog element it is visible.
     private void TellInLOS(Collider other)
     {
-        other.gameObject.GetComponent<FogHideOtherObject>().SeenBy(this.gameObject.transform.parent.gameObject);
+        other.gameObject.GetComponent<FogHideOtherObject>().SeenBy(figurine);
     }
 
     // Checks if the other collider has the wanted tag.
