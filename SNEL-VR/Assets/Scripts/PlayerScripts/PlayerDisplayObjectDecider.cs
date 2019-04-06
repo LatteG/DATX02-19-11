@@ -95,7 +95,7 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
     }
 
     // Checks if any object in the input array is owned by the player.
-    private bool OwnedIsIn(GameObject[] visTo)
+    private bool OwnedIsIn(HashSet<GameObject> visTo)
     {
         foreach (GameObject v in visTo)
         {
@@ -110,14 +110,7 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
     // Checks if the input object is owned by the player.
     private bool IsOwned(GameObject obj)
     {
-        foreach (GameObject own in figs.GetOwnedFigurines())
-        {
-            if (own.Equals(obj))
-            {
-                return true;
-            }
-        }
-        return false;
+        return figs.GetOwnedFigurines().Contains(obj);
     }
 
     // Adds CullInvisible to OnPreCull and get the ownedFigurines-script when enabled.

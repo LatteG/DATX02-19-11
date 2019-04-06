@@ -4,18 +4,15 @@ using UnityEngine;
 
 public class Obstacle_RevealedTo : MonoBehaviour
 {
-    private List<GameObject> observedBy = new List<GameObject>();
+    private HashSet<GameObject> observedBy = new HashSet<GameObject>();
 
     public void AddObserver(GameObject observer)
     {
-        if (!observedBy.Contains(observer))
-        {
-            observedBy.Add(observer);
-        }
+        observedBy.Add(observer);
     }
 
-    public GameObject[] GetObservedBy()
+    public HashSet<GameObject> GetObservedBy()
     {
-        return observedBy.ToArray();
+        return observedBy;
     }
 }
