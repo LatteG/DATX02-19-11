@@ -10,6 +10,9 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
 
     private PlayerOwnedFigurines figs;
 
+    private HashSet<GameObject> invisibleFogCells;
+    private HashSet<GameObject> visitedFogCells;
+
     private static int defaultLayer = 0;
     private static int invisibleLayer = 15;
     private static int obstacleLayer = 9;
@@ -43,7 +46,7 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
 
         // Put all fog elements visible by any owned figurines in the default layer and the rest
         // in the invisible layer.
-        foreach (GameObject fog in GameObject.FindGameObjectsWithTag("Fog"))
+        /*foreach (GameObject fog in GameObject.FindGameObjectsWithTag("Fog"))
         {
             if (OwnedIsIn(fog.GetComponent<FogHideOtherObject>().GetObservedBy()))
             {
@@ -53,7 +56,17 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
             {
                 fog.layer = defaultLayer;
             }
+        }*/
+        foreach (GameObject playerFig in figs.GetOwnedFigurines())
+        {
+            invisibleFogCells.UnionWith(playerFig.GetComponentInChildren<Figurine_PlayerVision>().GetFogCellsInRange());
+            visitedFogCells.UnionWith(playerFig.GetComponentInChildren<Figurine_PlayerVision>().GetKnownFogCells());
         }
+        foreach (GameObject fog in invisibleFogCells)
+        {
+            fog.layer = invisibleLayer;
+        }
+
 
         // Puts all player figurines owned by the player or visible to figurines owned by the
         // player in the default layer and the rest in the invisible layer.
@@ -81,17 +94,22 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
 
         // Update the material of all fog elements based on whether the owned figurines have
         // at some points seen them or not.
-        foreach (GameObject fog in GameObject.FindGameObjectsWithTag("Fog"))
+        foreach (GameObject fog in visitedFogCells)
         {
-            if (OwnedIsIn(fog.GetComponent<FogHideOtherObject>().getHasBeenObservedBy()))
-            {
-                fog.GetComponent<Renderer>().material = visitedFogMaterial;
-            }
-            else
-            {
-                fog.GetComponent<Renderer>().material = unvisitedFogMaterial;
-            }
+            fog.GetComponent<Renderer>().material = visitedFogMaterial;
         }
+    }
+
+    private void OnPostRender()
+    {
+        foreach (GameObject fog in visitedFogCells)
+        {
+            fog.GetComponent<Renderer>().material = unvisitedFogMaterial;
+            fog.layer = defaultLayer;
+        }
+
+        invisibleFogCells.Clear();
+        visitedFogCells.Clear();
     }
 
     // Checks if any object in the input array is owned by the player.
@@ -118,5 +136,7 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
     {
         // figs = GetComponent<Transform>().parent.gameObject.GetComponent<PlayerOwnedFigurines>();
         figs = player.GetComponent<PlayerOwnedFigurines>();
+        visitedFogCells = new HashSet<GameObject>();
+        invisibleFogCells = new HashSet<GameObject>();
     }
 }
