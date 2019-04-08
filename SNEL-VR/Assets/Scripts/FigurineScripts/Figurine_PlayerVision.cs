@@ -75,14 +75,12 @@ public class Figurine_PlayerVision : MonoBehaviour
             }
             fogOrFigExitingRange.Clear();
 
-            Debug.Log("Amount of figs in range: " + figsInRange.Count);
-
             shouldUpdate = false;
             hasUpdated = false;
         }
     }
 
-    // Checks if a fog element is visible or not and sends the appropriate call to its script.
+    // Checks if a collider should have its visibility sttus updated.
     private void OnTriggerStay(Collider other)
     {
         // Does not update anything if the figurine has not moved.
@@ -94,31 +92,40 @@ public class Figurine_PlayerVision : MonoBehaviour
 
         if (ColliderHasTag(other, "Fog") || ColliderHasTag(other, "NPCFigurine") || ColliderHasTag(other, "PlayerFigurine"))
         {
-            Vector3 otherPos = other.gameObject.GetComponent<Transform>().position;
-            Vector3 direction = otherPos - (sphereCenter + pos);
-            float raycastRange = direction.magnitude;
+            UpdateColliderStatus(other);
+        }
+    }
 
-            // Checks if the other object is out of range.
-            if (raycastRange > visionRange)
+    // Checks if the collider belongs to an object that should be visible to this figurine's owner.
+    // Returns true if the object is within the visibility range, and false if it is outside it.
+    public bool UpdateColliderStatus(Collider other)
+    {
+        Vector3 otherPos = other.gameObject.GetComponent<Transform>().position;
+        Vector3 direction = otherPos - (sphereCenter + pos);
+        float raycastRange = direction.magnitude;
+
+        // Checks if the other object is out of range.
+        if (raycastRange > visionRange)
+        {
+            TellOutOfLOS(other.gameObject);
+            return false;
+        }
+        else
+        {
+            // Checks if there is an obstacle between the figurine and fog element.
+            if (Physics.Raycast(sphereCenter + pos, direction, raycastRange, obstacleLayerMask))
             {
+                // Is an obstacle.
+                Debug.DrawLine(sphereCenter + pos, otherPos, Color.red);
                 TellOutOfLOS(other.gameObject);
             }
             else
             {
-                // Checks if there is an obstacle between the figurine and fog element.
-                if (Physics.Raycast(sphereCenter + pos, direction, raycastRange, obstacleLayerMask))
-                {
-                    // Is an obstacle.
-                    Debug.DrawLine(sphereCenter + pos, otherPos, Color.red);
-                    TellOutOfLOS(other.gameObject);
-                }
-                else
-                {
-                    // Is no obstacle.
-                    Debug.DrawLine(sphereCenter + pos, otherPos, Color.green);
-                    TellInLOS(other.gameObject);
-                }
+                // Is no obstacle.
+                Debug.DrawLine(sphereCenter + pos, otherPos, Color.green);
+                TellInLOS(other.gameObject);
             }
+            return true;
         }
     }
 

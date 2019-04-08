@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3508976374353388247}
   - component: {fileID: 7605154039241910277}
   - component: {fileID: 8356015031441935314}
+  - component: {fileID: 6113233158105435754}
   m_Layer: 15
   m_Name: Figurine
   m_TagString: NPCFigurine
@@ -103,6 +104,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1c9a2831845ee1c409eec91cd3f10562, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6113233158105435754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2691590353112806813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ba7b3357ef64284599db9a5b00e3582, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &3054508066924389319
