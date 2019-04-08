@@ -63,6 +63,7 @@ public class Figurine_UpdatePlayerVision : MonoBehaviour
                 awaitStandstill = true;
                 oldPos = figTransform.position;
                 waitedFrames = 0;
+                wasGrabbed = false;
             }
             else
             {

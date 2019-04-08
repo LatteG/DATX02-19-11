@@ -17,9 +17,10 @@ public class Figurine_PlayerVision : MonoBehaviour
     private Transform parentTransform;
     private GameObject figurine;
 
-    private HashSet<Collider> fogCellsExitingRange;
+    private HashSet<Collider> fogOrFigExitingRange;
     private HashSet<GameObject> fogCellsInRange;
     private HashSet<GameObject> knownFogCells;
+    private HashSet<GameObject> figsInRange;
 
     // Called whenever the fog should be updated from the figurine's perspective.
     public void ShouldUpdate()
@@ -47,9 +48,19 @@ public class Figurine_PlayerVision : MonoBehaviour
         // Used for LoS-updates in fog elements.
         figurine = parentTransform.gameObject;
 
-        fogCellsExitingRange = new HashSet<Collider>();
+        fogOrFigExitingRange = new HashSet<Collider>();
         fogCellsInRange = new HashSet<GameObject>();
         knownFogCells = new HashSet<GameObject>();
+        figsInRange = new HashSet<GameObject>();
+
+        foreach (Transform child in parentTransform)
+        {
+            if (child.gameObject.CompareTag("PlayerFigurine"))
+            {
+                figsInRange.Add(child.gameObject);
+                break;
+            }
+        }
     }
 
     // Updates the position and checks if the script has updated the fog.
@@ -58,11 +69,13 @@ public class Figurine_PlayerVision : MonoBehaviour
         pos = parentTransform.position;
         if (hasUpdated)
         {
-            foreach (Collider c in fogCellsExitingRange)
+            foreach (Collider c in fogOrFigExitingRange)
             {
                 OnTriggerStay(c);
             }
-            fogCellsExitingRange.Clear();
+            fogOrFigExitingRange.Clear();
+
+            Debug.Log("Amount of figs in range: " + figsInRange.Count);
 
             shouldUpdate = false;
             hasUpdated = false;
@@ -79,13 +92,13 @@ public class Figurine_PlayerVision : MonoBehaviour
         }
         hasUpdated = true;
 
-        if (ColliderHasTag(other, "Fog"))
+        if (ColliderHasTag(other, "Fog") || ColliderHasTag(other, "NPCFigurine") || ColliderHasTag(other, "PlayerFigurine"))
         {
-            Vector3 fogPos = other.gameObject.GetComponent<FogHideOtherObject>().GetPosition();
-            Vector3 direction = fogPos - (sphereCenter + pos);
+            Vector3 otherPos = other.gameObject.GetComponent<Transform>().position;
+            Vector3 direction = otherPos - (sphereCenter + pos);
             float raycastRange = direction.magnitude;
 
-            // Checks if the fog element is out of range.
+            // Checks if the other object is out of range.
             if (raycastRange > visionRange)
             {
                 TellOutOfLOS(other.gameObject);
@@ -96,13 +109,13 @@ public class Figurine_PlayerVision : MonoBehaviour
                 if (Physics.Raycast(sphereCenter + pos, direction, raycastRange, obstacleLayerMask))
                 {
                     // Is an obstacle.
-                    Debug.DrawLine(sphereCenter + pos, other.gameObject.GetComponent<FogHideOtherObject>().GetPosition(), Color.red);
+                    Debug.DrawLine(sphereCenter + pos, otherPos, Color.red);
                     TellOutOfLOS(other.gameObject);
                 }
                 else
                 {
                     // Is no obstacle.
-                    Debug.DrawLine(sphereCenter + pos, other.gameObject.GetComponent<FogHideOtherObject>().GetPosition(), Color.green);
+                    Debug.DrawLine(sphereCenter + pos, otherPos, Color.green);
                     TellInLOS(other.gameObject);
                 }
             }
@@ -112,27 +125,41 @@ public class Figurine_PlayerVision : MonoBehaviour
     // Sends a call to a fog element's script to tell it it is no longer visible when visited.
     private void OnTriggerExit(Collider other)
     {
-        if (ColliderHasTag(other, "Fog"))
+        if (ColliderHasTag(other, "Fog") || ColliderHasTag(other, "NPCFigurine") || ColliderHasTag(other, "PlayerFigurine"))
         {
-            fogCellsExitingRange.Add(other);
+            fogOrFigExitingRange.Add(other);
         }
     }
 
     // Tells a fog element it is no longer visible.
     private void TellOutOfLOS(GameObject other)
     {
-        other.GetComponent<FogHideOtherObject>().NotSeenBy(figurine);
+        if (other.CompareTag("Fog"))
+        {
+            other.GetComponent<FogHideOtherObject>().NotSeenBy(figurine);
 
-        fogCellsInRange.Remove(other);
+            fogCellsInRange.Remove(other);
+        }
+        else
+        {
+            figsInRange.Remove(other);
+        }
     }
 
     // Tells a fog element it is visible.
     private void TellInLOS(GameObject other)
     {
-        other.GetComponent<FogHideOtherObject>().SeenBy(figurine);
-        
-        fogCellsInRange.Add(other);
-        knownFogCells.Add(other);
+        if (other.CompareTag("Fog"))
+        {
+            other.GetComponent<FogHideOtherObject>().SeenBy(figurine);
+
+            fogCellsInRange.Add(other);
+            knownFogCells.Add(other);
+        }
+        else
+        {
+            figsInRange.Add(other);
+        }
     }
 
     // Checks if the other collider has the wanted tag.
@@ -168,5 +195,10 @@ public class Figurine_PlayerVision : MonoBehaviour
     public HashSet<GameObject> GetKnownFogCells()
     {
         return knownFogCells;
+    }
+
+    public HashSet<GameObject> GetFigsInRange()
+    {
+        return figsInRange;
     }
 }

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8829548002214755655}
   - component: {fileID: 8829548002214755704}
   - component: {fileID: 6057943356348471409}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Figurine
   m_TagString: PlayerFigurine
   m_Icon: {fileID: 0}

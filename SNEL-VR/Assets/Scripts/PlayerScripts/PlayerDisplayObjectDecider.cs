@@ -12,6 +12,7 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
 
     private HashSet<GameObject> invisibleFogCells;
     private HashSet<GameObject> visitedFogCells;
+    private HashSet<GameObject> visibleFigs;
 
     private static int defaultLayer = 0;
     private static int invisibleLayer = 15;
@@ -21,20 +22,6 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
     // right before the culling.
     private void OnPreCull()
     {
-        // Put all NPC figurines visible by any owned figurines in the default layer and the rest
-        // in the invisible layer.
-        foreach (GameObject npc in GameObject.FindGameObjectsWithTag("NPCFigurine"))
-        {
-            if (OwnedIsIn(npc.GetComponent<Figurine_ObservedBy>().GetObservedBy()))
-            {
-                npc.layer = defaultLayer;
-            }
-            else
-            {
-                npc.layer = invisibleLayer;
-            }
-        }
-
         // Put all obstacles that are not visible to any owned figurines in the invisible layer.
         foreach (GameObject obs in GameObject.FindGameObjectsWithTag("Obstacle"))
         {
@@ -44,31 +31,26 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
             }
         }
 
-        // Put all fog elements visible by any owned figurines in the default layer and the rest
-        // in the invisible layer.
+        // Get all fog cells that are in range of the owned figurines, the fog cells that have been in range
+        // of the owned figurines, and the figurines visible to the owned figurines.
         foreach (GameObject playerFig in figs.GetOwnedFigurines())
         {
-            invisibleFogCells.UnionWith(playerFig.GetComponentInChildren<Figurine_PlayerVision>().GetFogCellsInRange());
-            visitedFogCells.UnionWith(playerFig.GetComponentInChildren<Figurine_PlayerVision>().GetKnownFogCells());
+            Figurine_PlayerVision playerVis = playerFig.GetComponentInChildren<Figurine_PlayerVision>();
+            invisibleFogCells.UnionWith(playerVis.GetFogCellsInRange());
+            visitedFogCells.UnionWith(playerVis.GetKnownFogCells());
+            visibleFigs.UnionWith(playerVis.GetFigsInRange());
         }
+
+        // Makes the fog cells in range invisible.
         foreach (GameObject fog in invisibleFogCells)
         {
             fog.layer = invisibleLayer;
         }
 
-
-        // Puts all player figurines owned by the player or visible to figurines owned by the
-        // player in the default layer and the rest in the invisible layer.
-        foreach (GameObject fig in GameObject.FindGameObjectsWithTag("PlayerFigurine"))
+        // Makes the figs in range visible.
+        foreach (GameObject fig in visibleFigs)
         {
-            if (IsOwned(fig.transform.parent.gameObject) || OwnedIsIn(fig.GetComponent<Figurine_ObservedBy>().GetObservedBy()))
-            {
-                fig.layer = defaultLayer;
-            }
-            else
-            {
-                fig.layer = invisibleLayer;
-            }
+            fig.layer = defaultLayer;
         }
     }
 
@@ -87,18 +69,32 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
         {
             fog.GetComponent<Renderer>().material = visitedFogMaterial;
         }
+
+        // Makes the fog cells visible again to prevent inadvertent  invisibility for other cameras.
+        foreach (GameObject fog in invisibleFogCells)
+        {
+            fog.layer = defaultLayer;
+        }
+
+        // Makes the figurines invisible again to prevent inadvertent  invisibility for other cameras.
+        foreach (GameObject fig in visibleFigs)
+        {
+            fig.layer = invisibleLayer;
+        }
     }
 
     private void OnPostRender()
     {
+        // Changes the material of the figurines back to default in case they aren't visited by the other players.
         foreach (GameObject fog in visitedFogCells)
         {
             fog.GetComponent<Renderer>().material = unvisitedFogMaterial;
-            fog.layer = defaultLayer;
         }
 
+        // Clears the sets of fog cells and figurines in case some are no longer visible, an owned figurine is lost, etc.
         invisibleFogCells.Clear();
         visitedFogCells.Clear();
+        visibleFigs.Clear();
     }
 
     // Checks if any object in the input array is owned by the player.
@@ -127,5 +123,6 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
         figs = player.GetComponent<PlayerOwnedFigurines>();
         visitedFogCells = new HashSet<GameObject>();
         invisibleFogCells = new HashSet<GameObject>();
+        visibleFigs = new HashSet<GameObject>();
     }
 }
