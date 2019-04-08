@@ -46,17 +46,6 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
 
         // Put all fog elements visible by any owned figurines in the default layer and the rest
         // in the invisible layer.
-        /*foreach (GameObject fog in GameObject.FindGameObjectsWithTag("Fog"))
-        {
-            if (OwnedIsIn(fog.GetComponent<FogHideOtherObject>().GetObservedBy()))
-            {
-                fog.layer = invisibleLayer;
-            }
-            else
-            {
-                fog.layer = defaultLayer;
-            }
-        }*/
         foreach (GameObject playerFig in figs.GetOwnedFigurines())
         {
             invisibleFogCells.UnionWith(playerFig.GetComponentInChildren<Figurine_PlayerVision>().GetFogCellsInRange());
