@@ -4,59 +4,65 @@ using UnityEngine;
 
 public class Figurine_PlayerVision : MonoBehaviour
 {
-    private static float sensitivity = 0.00000001f;
-
-    private bool hasMoved = true;
     private bool shouldUpdate = false;
+    private bool hasUpdated = false;
 
-    private Vector3 oldPos;
-    private Vector3 newPos;
+    private Vector3 pos;
+    private Vector3 scale;
+    private Vector3 sphereCenter;
 
     private int obstacleLayerMask;
     private float visionRange;
 
-    // Sets initial values and values that are never changed.
-    private void Start()
-    {
-        // Used for the first FixedUpdate-call.
-        oldPos = GetComponent<Transform>().parent.position;
+    private Transform parentTransform;
+    private GameObject figurine;
 
-        // Used for raycasts.
-        visionRange = GetComponent<SphereCollider>().radius;
-        obstacleLayerMask = 1 << 9;
+    private List<Collider> fogCellsExitingRange;
+
+    // Called whenever the fog should be updated from the figurine's perspective.
+    public void ShouldUpdate()
+    {
+        shouldUpdate = true;
     }
 
-    // Check for movement to determine if the OnCollisionStay-script should fire.
+    // Sets initial values and values that are never changed.
+    private void OnEnable()
+    {
+        parentTransform = GetComponent<Transform>().parent;
+        scale = GetComponent<Transform>().lossyScale;
+
+        // Used for the first FixedUpdate-call.
+        pos = parentTransform.position;
+
+        // Used for raycasts.
+        visionRange = GetComponent<SphereCollider>().radius * scale.x * 0.95f;
+        sphereCenter = GetComponent<SphereCollider>().center;
+        sphereCenter.x *= scale.x;
+        sphereCenter.y *= scale.y;
+        sphereCenter.z *= scale.z;
+        obstacleLayerMask = 1 << 9;
+
+        // Used for LoS-updates in fog elements.
+        figurine = parentTransform.gameObject;
+
+        fogCellsExitingRange = new List<Collider>();
+    }
+
+    // Updates the position and checks if the script has updated the fog.
     void FixedUpdate()
     {
-        newPos = GetComponent<Transform>().parent.position;
-
-        if (!shouldUpdate)
+        pos = parentTransform.position;
+        if (hasUpdated)
         {
-            // If the script does not allow updates then it should check if it SHOULD allow for updates.
-
-            float dx = Mathf.Abs(newPos.x - oldPos.x);
-            // float dy = Mathf.Abs(newPos.y - oldPos.y);
-            float dz = Mathf.Abs(newPos.z - oldPos.z);
-
-            // If the figurine has moved but is no longer moving in the horizontal plane then it
-            // should allow updates of the fog elements.
-            bool movementThisFrame = dx > sensitivity || dz > sensitivity;
-            if (hasMoved && !movementThisFrame)
+            foreach (Collider c in fogCellsExitingRange)
             {
-                shouldUpdate = true;
+                OnTriggerStay(c);
             }
+            fogCellsExitingRange.Clear();
 
-            hasMoved = movementThisFrame;
-        }
-        else
-        {
-            // If the script has updated the fog cells since the last movement then it should no
-            // longer allow updates.
             shouldUpdate = false;
+            hasUpdated = false;
         }
-
-        oldPos = newPos;
     }
 
     // Checks if a fog element is visible or not and sends the appropriate call to its script.
@@ -67,29 +73,34 @@ public class Figurine_PlayerVision : MonoBehaviour
         {
             return;
         }
+        hasUpdated = true;
 
         if (ColliderHasTag(other, "Fog"))
         {
             Vector3 fogPos = other.gameObject.GetComponent<FogHideOtherObject>().GetPosition();
-            Vector3 sphereCenter = GetComponent<SphereCollider>().center + oldPos;
-            Vector3 direction = (fogPos - sphereCenter);
+            Vector3 direction = fogPos - (sphereCenter + pos);
             float raycastRange = direction.magnitude;
 
-            // Checks if there is an obstacle between the figurine and fog element.
-            if (Physics.Raycast(sphereCenter, direction, raycastRange, obstacleLayerMask))
+            // Checks if the fog element is out of range.
+            if (raycastRange > visionRange)
             {
-                // Is an obstacle.
-                // Debug.Log("Wall detected!");
-                Debug.DrawLine(sphereCenter, other.gameObject.GetComponent<FogHideOtherObject>().GetPosition(), Color.red);
-                // Debug.DrawLine(sphereCenter, sphereCenter + (direction.normalized * raycastRange), Color.red);
                 TellOutOfLOS(other);
             }
             else
             {
-                // Is no obstacle.
-                Debug.DrawLine(sphereCenter, other.gameObject.GetComponent<FogHideOtherObject>().GetPosition(), Color.green);
-                // Debug.DrawLine(sphereCenter, sphereCenter + (direction.normalized * raycastRange), Color.green);
-                TellInLOS(other);
+                // Checks if there is an obstacle between the figurine and fog element.
+                if (Physics.Raycast(sphereCenter + pos, direction, raycastRange, obstacleLayerMask))
+                {
+                    // Is an obstacle.
+                    Debug.DrawLine(sphereCenter + pos, other.gameObject.GetComponent<FogHideOtherObject>().GetPosition(), Color.red);
+                    TellOutOfLOS(other);
+                }
+                else
+                {
+                    // Is no obstacle.
+                    Debug.DrawLine(sphereCenter + pos, other.gameObject.GetComponent<FogHideOtherObject>().GetPosition(), Color.green);
+                    TellInLOS(other);
+                }
             }
         }
     }
@@ -99,20 +110,24 @@ public class Figurine_PlayerVision : MonoBehaviour
     {
         if (ColliderHasTag(other, "Fog"))
         {
-            TellOutOfLOS(other);
+            // TellOutOfLOS(other);
+            if (!fogCellsExitingRange.Contains(other))
+            {
+                fogCellsExitingRange.Add(other);
+            }
         }
     }
 
     // Tells a fog element it is no longer visible.
     private void TellOutOfLOS(Collider other)
     {
-        other.gameObject.GetComponent<FogHideOtherObject>().NotSeenBy(this.gameObject.transform.parent.gameObject);
+        other.gameObject.GetComponent<FogHideOtherObject>().NotSeenBy(figurine);
     }
 
     // Tells a fog element it is visible.
     private void TellInLOS(Collider other)
     {
-        other.gameObject.GetComponent<FogHideOtherObject>().SeenBy(this.gameObject.transform.parent.gameObject);
+        other.gameObject.GetComponent<FogHideOtherObject>().SeenBy(figurine);
     }
 
     // Checks if the other collider has the wanted tag.

@@ -20,18 +20,18 @@ TagManager:
   - 
   - PostProcessing
   - ObstacleLayer
+  - Grabbable
+  - 
+  - 
+  - 
+  - 
   - InvisibleLayer
   - 
   - 
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - FloorLayer
+  - PlayerCharacterLayer
   - 
   - 
   - 
