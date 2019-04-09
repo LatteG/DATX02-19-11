@@ -13,6 +13,7 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
     private HashSet<GameObject> invisibleFogCells;
     private HashSet<GameObject> visitedFogCells;
     private HashSet<GameObject> visibleFigs;
+    private HashSet<GameObject> knownObstacles;
 
     private static int defaultLayer = 0;
     private static int invisibleLayer = 15;
@@ -23,22 +24,25 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
     private void OnPreCull()
     {
         // Put all obstacles that are not visible to any owned figurines in the invisible layer.
-        foreach (GameObject obs in GameObject.FindGameObjectsWithTag("Obstacle"))
+        /*foreach (GameObject obs in GameObject.FindGameObjectsWithTag("Obstacle"))
         {
             if (!OwnedIsIn(obs.GetComponent<Obstacle_RevealedTo>().GetObservedBy()))
             {
                 obs.layer = invisibleLayer;
             }
-        }
+        }*/
 
         // Get all fog cells that are in range of the owned figurines, the fog cells that have been in range
-        // of the owned figurines, and the figurines visible to the owned figurines.
+        // of the owned figurines, the figurines visible to the owned figurines, and the obstacles known to
+        // the owned figurines.
         foreach (GameObject playerFig in figs.GetOwnedFigurines())
         {
             Figurine_PlayerVision playerVis = playerFig.GetComponentInChildren<Figurine_PlayerVision>();
+
             invisibleFogCells.UnionWith(playerVis.GetFogCellsInRange());
             visitedFogCells.UnionWith(playerVis.GetKnownFogCells());
             visibleFigs.UnionWith(playerVis.GetFigsInRange());
+            knownObstacles.UnionWith(playerVis.GetKnownObstacles());
         }
 
         // Makes the fog cells in range invisible.
@@ -52,17 +56,17 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
         {
             fig.layer = defaultLayer;
         }
+
+        // Makes the known obstacles visible.
+        foreach (GameObject obs in knownObstacles)
+        {
+            obs.layer = defaultLayer;
+        }
     }
 
     // Updates textures and resets obstacles' layer before rendering.
     private void OnPreRender()
     {
-        // Put all obstacles in the obstacle layer.
-        foreach (GameObject obs in GameObject.FindGameObjectsWithTag("Obstacle"))
-        {
-            obs.layer = obstacleLayer;
-        }
-
         // Update the material of all fog elements based on whether the owned figurines have
         // at some points seen them or not.
         foreach (GameObject fog in visitedFogCells)
@@ -70,16 +74,22 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
             fog.GetComponent<Renderer>().material = visitedFogMaterial;
         }
 
-        // Makes the fog cells visible again to prevent inadvertent  invisibility for other cameras.
+        // Makes the fog cells visible again to prevent inadvertent visibility for other cameras.
         foreach (GameObject fog in invisibleFogCells)
         {
             fog.layer = defaultLayer;
         }
 
-        // Makes the figurines invisible again to prevent inadvertent  invisibility for other cameras.
+        // Makes the figurines invisible again to prevent inadvertent visibility for other cameras.
         foreach (GameObject fig in visibleFigs)
         {
             fig.layer = invisibleLayer;
+        }
+
+        // Makes the obstacles invisible again to prevent inadvertent visibility for other cameras.
+        foreach (GameObject obs in knownObstacles)
+        {
+            obs.layer = invisibleLayer;
         }
     }
 
@@ -95,6 +105,7 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
         invisibleFogCells.Clear();
         visitedFogCells.Clear();
         visibleFigs.Clear();
+        knownObstacles.Clear();
     }
 
     // Checks if any object in the input array is owned by the player.
@@ -124,5 +135,6 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
         visitedFogCells = new HashSet<GameObject>();
         invisibleFogCells = new HashSet<GameObject>();
         visibleFigs = new HashSet<GameObject>();
+        knownObstacles = new HashSet<GameObject>();
     }
 }

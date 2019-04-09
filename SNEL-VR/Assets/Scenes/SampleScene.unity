@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -320,36 +320,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Figurine_Player2
       objectReference: {fileID: 0}
-    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.050000004
-      objectReference: {fileID: 0}
-    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.050000004
-      objectReference: {fileID: 0}
-    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 8829548002790330798, guid: 0919273d5666bf944ba903096ea2cc5a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -404,6 +374,36 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.050000004
+      objectReference: {fileID: 0}
+    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.050000004
+      objectReference: {fileID: 0}
+    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0066209f147558e4aaa50845efe55dcf, type: 3}
@@ -1585,6 +1585,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Figurine_Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 3054508066924389319, guid: 66f8d895dabee83468dba0de87b8946b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 592458350434367236, guid: 66f8d895dabee83468dba0de87b8946b,
         type: 3}
@@ -3433,6 +3438,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: FogSpawner
+      objectReference: {fileID: 0}
+    - target: {fileID: 7647315897191392820, guid: 967bf2c1d426be048a21af9760df9aab,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7647315897191392818, guid: 967bf2c1d426be048a21af9760df9aab,
         type: 3}

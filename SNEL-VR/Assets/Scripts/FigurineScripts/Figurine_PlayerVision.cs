@@ -21,6 +21,7 @@ public class Figurine_PlayerVision : MonoBehaviour
     private HashSet<GameObject> fogCellsInRange;
     private HashSet<GameObject> knownFogCells;
     private HashSet<GameObject> figsInRange;
+    private HashSet<GameObject> knownObstacles;
 
     // Called whenever the fog should be updated from the figurine's perspective.
     public void ShouldUpdate()
@@ -52,6 +53,7 @@ public class Figurine_PlayerVision : MonoBehaviour
         fogCellsInRange = new HashSet<GameObject>();
         knownFogCells = new HashSet<GameObject>();
         figsInRange = new HashSet<GameObject>();
+        knownObstacles = new HashSet<GameObject>();
 
         foreach (Transform child in parentTransform)
         {
@@ -94,14 +96,17 @@ public class Figurine_PlayerVision : MonoBehaviour
         {
             UpdateColliderStatus(other);
         }
+        else
+        {
+            UpdateObstacleColliderStatus(other);
+        }
     }
 
     // Checks if the collider belongs to an object that should be visible to this figurine's owner.
     // Returns true if the object is within the visibility range, and false if it is outside it.
     public bool UpdateColliderStatus(Collider other)
     {
-        Vector3 otherPos = other.gameObject.GetComponent<Transform>().position;
-        Vector3 direction = otherPos - (sphereCenter + pos);
+        Vector3 direction = other.gameObject.GetComponent<Transform>().position - (sphereCenter + pos);
         float raycastRange = direction.magnitude;
 
         // Checks if the other object is out of range.
@@ -112,20 +117,81 @@ public class Figurine_PlayerVision : MonoBehaviour
         }
         else
         {
-            // Checks if there is an obstacle between the figurine and fog element.
-            if (Physics.Raycast(sphereCenter + pos, direction, raycastRange, obstacleLayerMask))
-            {
-                // Is an obstacle.
-                Debug.DrawLine(sphereCenter + pos, otherPos, Color.red);
-                TellOutOfLOS(other.gameObject);
-            }
-            else
-            {
-                // Is no obstacle.
-                Debug.DrawLine(sphereCenter + pos, otherPos, Color.green);
-                TellInLOS(other.gameObject);
-            }
+            DoLOSRaycast(other, direction, raycastRange);
             return true;
+        }
+    }
+
+    public bool UpdateObstacleColliderStatus(Collider other)
+    {
+        // Make sure the collider belongs to an obstacle.
+        if (!ColliderHasTag(other, "Obstacle"))
+        {
+            return false;
+        }
+
+        // No need to do any more calls if the obstacle is already known.
+        if (knownObstacles.Contains(other.gameObject))
+        {
+            return true;
+        }
+
+        Transform obstacleTransform = other.gameObject.GetComponent<Transform>().parent;
+        Vector3 obstaclePos = obstacleTransform.position;
+        Vector3 direction = obstaclePos - (sphereCenter + pos);
+        float raycastRange = direction.magnitude;
+
+        // Makes sure the object is in range.
+        if (raycastRange > visionRange)
+        {
+            return false;
+        }
+        else
+        {
+            // Gets the blocking part of of the object other belongs to.
+            GameObject blocker = null;
+            foreach (Transform child in obstacleTransform)
+            {
+                if (child.gameObject.layer == (int) Mathf.Log(obstacleLayerMask, 2))
+                {
+                    blocker = child.gameObject;
+                    break;
+                }
+            }
+
+            // Makes sure that blocker is assigned some value.
+            if (blocker == null)
+            {
+                return false;
+            }
+
+            // Disables the blocking part of the obstacle to prevent it from being "in the way" of itself.
+            blocker.layer = 0;
+            
+            DoLOSRaycast(other, direction, raycastRange);
+
+            // Enables the blocking part of the obstacle to allow it to block LOS to other objects.
+            blocker.layer = (int)Mathf.Log(obstacleLayerMask, 2);
+
+            return true;
+        }
+    }
+
+    // Calls the raycast and appropriate method based on its result.
+    private void DoLOSRaycast(Collider other, Vector3 direction, float raycastRange)
+    {
+        // Checks if there is an obstacle between the figurine and fog element.
+        if (Physics.Raycast(sphereCenter + pos, direction, raycastRange, obstacleLayerMask))
+        {
+            // Is an obstacle.
+            Debug.DrawLine(sphereCenter + pos, other.gameObject.GetComponent<Transform>().position, Color.red);
+            TellOutOfLOS(other.gameObject);
+        }
+        else
+        {
+            // Is no obstacle.
+            Debug.DrawLine(sphereCenter + pos, other.gameObject.GetComponent<Transform>().position, Color.green);
+            TellInLOS(other.gameObject);
         }
     }
 
@@ -147,7 +213,7 @@ public class Figurine_PlayerVision : MonoBehaviour
 
             fogCellsInRange.Remove(other);
         }
-        else
+        else if (!other.CompareTag("Obstacle"))
         {
             figsInRange.Remove(other);
         }
@@ -162,6 +228,10 @@ public class Figurine_PlayerVision : MonoBehaviour
 
             fogCellsInRange.Add(other);
             knownFogCells.Add(other);
+        }
+        else if (other.CompareTag("Obstacle"))
+        {
+            knownObstacles.Add(other);
         }
         else
         {
@@ -207,5 +277,10 @@ public class Figurine_PlayerVision : MonoBehaviour
     public HashSet<GameObject> GetFigsInRange()
     {
         return figsInRange;
+    }
+
+    public HashSet<GameObject> GetKnownObstacles()
+    {
+        return knownObstacles;
     }
 }
