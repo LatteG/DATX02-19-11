@@ -9,6 +9,8 @@ TagManager:
   - PlayerFigurineVision
   - Obstacle
   - Fog
+  - PlayerSpawner
+  - GameMaster
   layers:
   - Default
   - TransparentFX

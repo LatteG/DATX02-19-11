@@ -11,9 +11,18 @@ public class GameMasterManager : MonoBehaviour
 
     private Transform playerSpawner;
 
+    private List<GameObject> activePlayers;
+
     public void Start()
     {
+
         playerSpawner = transform.GetChild(0);
+
+        activePlayers = new List<GameObject>();
+        GameObject startPlayer = GameObject.FindGameObjectWithTag("Player");
+        Debug.Log("Start player: "+startPlayer.GetHashCode());
+        activePlayers.Add(startPlayer);
+
         InitSpawns();
     }
 
@@ -27,6 +36,7 @@ public class GameMasterManager : MonoBehaviour
         {
             spawnBusy.Add(child.GetComponent<MeshCollider>().GetHashCode(), false);
             availableSpawns.Add(child.GetComponent<MeshCollider>());
+
         }
 
         //Tmp
@@ -59,5 +69,15 @@ public class GameMasterManager : MonoBehaviour
     public List<MeshCollider> GetAvailableSpawns()
     {
         return this.availableSpawns;
+    }
+
+    public void UpdateActivePlayers(GameObject newPlayer)
+    {
+        activePlayers.Add(newPlayer);
+    }
+
+    public List<GameObject> GetActivePlayers()
+    {
+        return this.activePlayers;
     }
 }
