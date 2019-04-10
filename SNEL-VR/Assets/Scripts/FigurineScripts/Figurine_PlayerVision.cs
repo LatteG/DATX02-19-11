@@ -206,13 +206,7 @@ public class Figurine_PlayerVision : MonoBehaviour
     // Tells a fog element it is no longer visible.
     private void TellOutOfLOS(GameObject other)
     {
-        if (other.CompareTag("Fog"))
-        {
-            other.GetComponent<FogHideOtherObject>().NotSeenBy(figurine);
-
-            tempKnownObjects.Remove(other);
-        }
-        else if (!other.CompareTag("Obstacle"))
+        if (!other.CompareTag("Obstacle"))
         {
             tempKnownObjects.Remove(other);
         }
@@ -223,8 +217,6 @@ public class Figurine_PlayerVision : MonoBehaviour
     {
         if (other.CompareTag("Fog"))
         {
-            other.GetComponent<FogHideOtherObject>().SeenBy(figurine);
-
             permKnownObjects.Add(other);
             tempKnownObjects.Add(other);
         }
