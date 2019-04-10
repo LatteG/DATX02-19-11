@@ -13,6 +13,6 @@ public class KillPlayers : MonoBehaviour
 
     public void KillOnClick()
     {
-        tmp.DeactivatePlayers();
+        //tmp.DeactivatePlayers();
     }
 }

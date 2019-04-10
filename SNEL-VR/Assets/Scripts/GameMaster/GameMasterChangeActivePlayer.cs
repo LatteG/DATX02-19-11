@@ -6,60 +6,28 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
 {
     private GameMasterManager gmm;
 
-    private GameObject activePlayer;
+    private Player activePlayer;
 
     public void Start()
     {
-        //SetActivePlayer();
         gmm = GameObject.FindWithTag("GameMaster").GetComponent<GameMasterManager>();
+        SetActivePlayer(gmm.GetActivePlayers()[0]);
     }
-    public void ChangePlayer(GameObject player)
+    public void ChangePlayer(Player player)
     {
-        activePlayer = player;
-        DeactivatePlayers();
-        activePlayer.SetActive(true);
+        activePlayer.SetPlayerPos(gmm.physicalPlayer.transform.position);
+        SetActivePlayer(player);
+        Vector3 pos = player.GetPlayerPos();
+        pos.y += 4.0f;
+        gmm.physicalPlayer.transform.position = pos;
+
     }
 
-    //Deactivates all other players
-    public void DeactivatePlayers()
+
+    public void SetActivePlayer(Player player)
     {
-        List<GameObject> activePlayers = gmm.GetActivePlayers();
-
-        foreach (GameObject player in activePlayers)
-        {
-            if (!GameObject.ReferenceEquals(player, activePlayer))
-            {
-                player.SetActive(false);
-            }
-        }
-
-        
+        this.activePlayer = player;
     }
 
-    //Fuuulhack. Not used
-    private GameObject FindTopParent(Camera c)
-    {
-        Transform t = c.transform;
-        for (int i = 0; i<10; i++)
-        {
-            
-            if (t.parent.CompareTag("Player"))
-            {
-                Debug.Log("YAAAY");
-                return t.parent.gameObject;
-                
-            }
-            t = t.parent.transform;
-        }
-
-        return null;
-    }
-
-    //Not used
-    private void SetActivePlayer()
-    {
-        Debug.Log("Main camera: " + Camera.main);
-        activePlayer = FindTopParent(Camera.main);
-        Debug.Log("ActivePlayer: " + activePlayer);
-    }
+  
 }

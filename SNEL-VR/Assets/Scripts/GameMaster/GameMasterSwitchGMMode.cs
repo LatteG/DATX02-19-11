@@ -7,7 +7,7 @@ public class GameMasterSwitchGMMode : MonoBehaviour
     private GameMasterManager gmm;
     private GameMasterChangeActivePlayer gmcap;
     private bool isGMMode;
-    private GameObject activePlayer;
+    private Player activePlayer;
 
     public GameObject gmCanvas;
 
@@ -31,7 +31,7 @@ public class GameMasterSwitchGMMode : MonoBehaviour
     {
         gmCanvas.SetActive(true);
         gmCanvas.transform.GetChild(2).gameObject.SetActive(false); //change
-        gmcap.ChangePlayer(gmm.gameMasterPlayer);
+        gmcap.ChangePlayer(gmm.GetActivePlayers()[0]);
         isGMMode = true;
 
     }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameMasterManager : MonoBehaviour
 {
-    public GameObject gameMasterPlayer;
+    public GameObject physicalPlayer;
     //Hash map for spawns. Might be able to use only list instead, and add/remove from it
     private Dictionary<float, bool> spawnBusy;
 
@@ -12,17 +12,25 @@ public class GameMasterManager : MonoBehaviour
 
     private Transform playerSpawner;
 
-    private List<GameObject> activePlayers;
+    private List<Player> activePlayers;
 
     public void Start()
     {
 
         playerSpawner = transform.GetChild(0);
 
-        activePlayers = new List<GameObject>();
-        GameObject startPlayer = GameObject.FindGameObjectWithTag("Player");
-        Debug.Log("Start player: "+startPlayer.GetHashCode());
-        activePlayers.Add(startPlayer);
+        activePlayers = new List<Player>();
+        physicalPlayer = GameObject.FindGameObjectWithTag("Player"); //change tag to GameMaster
+
+        Player gameMaster = new Player();
+        float x = physicalPlayer.transform.position.x;  
+        float y = physicalPlayer.transform.position.y;
+        float z = physicalPlayer.transform.position.z;
+        Vector3 gameMasterPos = new Vector3(x, y, z);
+
+        gameMaster.InitPlayer(gameMasterPos, 0, "GameMaster");
+
+        activePlayers.Add(gameMaster);
 
         InitSpawns();
     }
@@ -72,12 +80,12 @@ public class GameMasterManager : MonoBehaviour
         return this.availableSpawns;
     }
 
-    public void UpdateActivePlayers(GameObject newPlayer)
+    public void UpdateActivePlayers(Player newPlayer)
     {
         activePlayers.Add(newPlayer);
     }
 
-    public List<GameObject> GetActivePlayers()
+    public List<Player> GetActivePlayers()
     {
         return this.activePlayers;
     }

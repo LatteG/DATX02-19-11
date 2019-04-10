@@ -5,10 +5,8 @@ using UnityEngine;
 
 public class GameMasterCreateNewPlayer : MonoBehaviour
 {
-    //Bug: Right now the rayTransform in UIHelpers/EventSystem is not set when spawning. Might be fixed by having only one UIHelper in the scene, and updating it when switching/spawning players.
-    //Or just test it in VR
-
     private GameMasterManager gmm;
+    private int count;
 
     //tmp
     private GameMasterChangeActivePlayer gmcap;
@@ -17,6 +15,7 @@ public class GameMasterCreateNewPlayer : MonoBehaviour
 
     public void Start()
     {
+        count = 1;
         gmm = GameObject.FindWithTag("GameMaster").GetComponent<GameMasterManager>();
         gmcap = GameObject.FindWithTag("GameMaster").GetComponent<GameMasterChangeActivePlayer>();
 
@@ -31,15 +30,16 @@ public class GameMasterCreateNewPlayer : MonoBehaviour
         {
             if (!gmm.IsBusy(mc.GetHashCode()))
             {
-                Vector3 pos = new Vector3(mc.bounds.min.x, mc.bounds.min.y, mc.bounds.min.z);
-                GameObject newPlayer = Instantiate(player, pos, Quaternion.identity, transform.root.transform);
+                Vector3 pos = mc.transform.position;
+                pos.y += 4.0f;
+                Player newPlayer = new Player();
+                newPlayer.InitPlayer(pos, count, "Player " + count);
+                Debug.Log("My name is: " + newPlayer.name);
+
                 gmm.UpdateSpawnBusy(mc.GetHashCode(), true);
                 gmm.UpdateActivePlayers(newPlayer);
                 Debug.Log("I'm alive!!");
-
-                //tmp
-                //gmcap.ChangePlayer(newPlayer);
-                //break;
+                count++;
             }
         }
     }
