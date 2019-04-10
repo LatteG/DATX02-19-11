@@ -11,6 +11,8 @@ TagManager:
   - Fog
   - PlayerSpawner
   - GameMaster
+  - GMCanvas
+  - ChoosePlayerButtons
   layers:
   - Default
   - TransparentFX

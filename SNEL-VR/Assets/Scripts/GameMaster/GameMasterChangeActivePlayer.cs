@@ -15,17 +15,14 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
     }
     public void ChangePlayer(GameObject player)
     {
-        //SetActivePlayer();
         activePlayer = player;
         DeactivatePlayers();
         activePlayer.SetActive(true);
-        Debug.Log("Active player: " + activePlayer.GetHashCode());
     }
 
-    //Deactivates all other players (doesn't work atm)
+    //Deactivates all other players
     public void DeactivatePlayers()
     {
-        
         List<GameObject> activePlayers = gmm.GetActivePlayers();
 
         foreach (GameObject player in activePlayers)
@@ -39,7 +36,7 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
         
     }
 
-    //Fuuulhack
+    //Fuuulhack. Not used
     private GameObject FindTopParent(Camera c)
     {
         Transform t = c.transform;
@@ -58,6 +55,7 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
         return null;
     }
 
+    //Not used
     private void SetActivePlayer()
     {
         Debug.Log("Main camera: " + Camera.main);

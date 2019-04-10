@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GameMasterManager : MonoBehaviour
 {
+    public GameObject gameMasterPlayer;
     //Hash map for spawns. Might be able to use only list instead, and add/remove from it
     private Dictionary<float, bool> spawnBusy;
 
