@@ -17,11 +17,10 @@ public class Figurine_PlayerVision : MonoBehaviour
     private Transform parentTransform;
     private GameObject figurine;
 
-    private HashSet<Collider> fogOrFigExitingRange;
-    private HashSet<GameObject> fogCellsInRange;
-    private HashSet<GameObject> knownFogCells;
-    private HashSet<GameObject> figsInRange;
-    private HashSet<GameObject> knownObstacles;
+    private HashSet<Collider> tempKnownObjectExitingRange;
+
+    private HashSet<GameObject> permKnownObjects;
+    private HashSet<GameObject> tempKnownObjects;
 
     // Called whenever the fog should be updated from the figurine's perspective.
     public void ShouldUpdate()
@@ -49,17 +48,17 @@ public class Figurine_PlayerVision : MonoBehaviour
         // Used for LoS-updates in fog elements.
         figurine = parentTransform.gameObject;
 
-        fogOrFigExitingRange = new HashSet<Collider>();
-        fogCellsInRange = new HashSet<GameObject>();
-        knownFogCells = new HashSet<GameObject>();
-        figsInRange = new HashSet<GameObject>();
-        knownObstacles = new HashSet<GameObject>();
+        tempKnownObjectExitingRange = new HashSet<Collider>();
 
+        permKnownObjects = new HashSet<GameObject>();
+        tempKnownObjects = new HashSet<GameObject>();
+
+        // Adds the attached figurine to the set of permanently known objects.
         foreach (Transform child in parentTransform)
         {
             if (child.gameObject.CompareTag("PlayerFigurine"))
             {
-                figsInRange.Add(child.gameObject);
+                permKnownObjects.Add(child.gameObject);
                 break;
             }
         }
@@ -71,11 +70,11 @@ public class Figurine_PlayerVision : MonoBehaviour
         pos = parentTransform.position;
         if (hasUpdated)
         {
-            foreach (Collider c in fogOrFigExitingRange)
+            foreach (Collider c in tempKnownObjectExitingRange)
             {
                 OnTriggerStay(c);
             }
-            fogOrFigExitingRange.Clear();
+            tempKnownObjectExitingRange.Clear();
 
             shouldUpdate = false;
             hasUpdated = false;
@@ -131,7 +130,7 @@ public class Figurine_PlayerVision : MonoBehaviour
         }
 
         // No need to do any more calls if the obstacle is already known.
-        if (knownObstacles.Contains(other.gameObject))
+        if (permKnownObjects.Contains(other.gameObject))
         {
             return true;
         }
@@ -200,7 +199,7 @@ public class Figurine_PlayerVision : MonoBehaviour
     {
         if (ColliderHasTag(other, "Fog") || ColliderHasTag(other, "NPCFigurine") || ColliderHasTag(other, "PlayerFigurine"))
         {
-            fogOrFigExitingRange.Add(other);
+            tempKnownObjectExitingRange.Add(other);
         }
     }
 
@@ -211,11 +210,11 @@ public class Figurine_PlayerVision : MonoBehaviour
         {
             other.GetComponent<FogHideOtherObject>().NotSeenBy(figurine);
 
-            fogCellsInRange.Remove(other);
+            tempKnownObjects.Remove(other);
         }
         else if (!other.CompareTag("Obstacle"))
         {
-            figsInRange.Remove(other);
+            tempKnownObjects.Remove(other);
         }
     }
 
@@ -226,16 +225,16 @@ public class Figurine_PlayerVision : MonoBehaviour
         {
             other.GetComponent<FogHideOtherObject>().SeenBy(figurine);
 
-            fogCellsInRange.Add(other);
-            knownFogCells.Add(other);
+            permKnownObjects.Add(other);
+            tempKnownObjects.Add(other);
         }
         else if (other.CompareTag("Obstacle"))
         {
-            knownObstacles.Add(other);
+            permKnownObjects.Add(other);
         }
         else
         {
-            figsInRange.Add(other);
+            tempKnownObjects.Add(other);
         }
     }
 
@@ -264,23 +263,13 @@ public class Figurine_PlayerVision : MonoBehaviour
         return false;
     }
 
-    public HashSet<GameObject> GetFogCellsInRange()
+    public HashSet<GameObject> GetTempKnownObjects()
     {
-        return fogCellsInRange;
+        return tempKnownObjects;
     }
 
-    public HashSet<GameObject> GetKnownFogCells()
+    public HashSet<GameObject> GetPermKnownObjects()
     {
-        return knownFogCells;
-    }
-
-    public HashSet<GameObject> GetFigsInRange()
-    {
-        return figsInRange;
-    }
-
-    public HashSet<GameObject> GetKnownObstacles()
-    {
-        return knownObstacles;
+        return permKnownObjects;
     }
 }
