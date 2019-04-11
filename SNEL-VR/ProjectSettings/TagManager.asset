@@ -13,6 +13,7 @@ TagManager:
   - GameMaster
   - GMCanvas
   - ChoosePlayerButtons
+  - Table
   layers:
   - Default
   - TransparentFX

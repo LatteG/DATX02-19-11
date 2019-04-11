@@ -7,22 +7,23 @@ public class GameMasterSwitchGMMode : MonoBehaviour
     private GameMasterManager gmm;
     private GameMasterChangeActivePlayer gmcap;
     private bool isGMMode;
-    private Player activePlayer;
+    private Player activePlayer; //remove
 
     public GameObject gmCanvas;
 
-    public void Start()
+    public void OnEnable()
     {
         gmm = GameObject.FindWithTag("GameMaster").GetComponent<GameMasterManager>();
         gmcap = GameObject.FindWithTag("GameMaster").GetComponent<GameMasterChangeActivePlayer>();
+        ActivateGMMode();
     }
     public void Update()
     {
-        if (Input.GetButtonDown("Fire3") && !isGMMode)
+        if ((Input.GetButtonDown("Fire3") || Input.GetButtonDown("Oculus_GearVR_LThumbstickX")) && !isGMMode)
         {
             ActivateGMMode();
         }
-        else if(Input.GetButtonDown("Fire3") && isGMMode)
+        else if((Input.GetButtonDown("Fire3") || Input.GetButtonDown("Oculus_GearVR_LThumbstickX")) && isGMMode)
         {
             DeactivateGMMode();
         }
@@ -31,7 +32,7 @@ public class GameMasterSwitchGMMode : MonoBehaviour
     {
         gmCanvas.SetActive(true);
         gmCanvas.transform.GetChild(2).gameObject.SetActive(false); //change
-        gmcap.ChangePlayer(gmm.GetActivePlayers()[0]);
+        gmcap.ChangePlayerGM();
         isGMMode = true;
 
     }
@@ -43,8 +44,8 @@ public class GameMasterSwitchGMMode : MonoBehaviour
 
         isGMMode = false;
         gmCanvas.SetActive(false);
-        activePlayer = gmm.GetActivePlayers()[1];
-        gmcap.ChangePlayer(activePlayer);
+        //activePlayer = gmm.GetActivePlayers()[1];
+        gmcap.ChangePlayer();
         
     }
 

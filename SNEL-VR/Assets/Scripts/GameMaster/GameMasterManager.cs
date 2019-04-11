@@ -5,16 +5,12 @@ using UnityEngine;
 public class GameMasterManager : MonoBehaviour
 {
     public GameObject physicalPlayer;
-    //Hash map for spawns. Might be able to use only list instead, and add/remove from it
     private Dictionary<float, bool> spawnBusy;
-
     private List<MeshCollider> availableSpawns;
-
     private Transform playerSpawner;
-
     private List<Player> activePlayers;
 
-    public void Start()
+    public void OnEnable()
     {
 
         playerSpawner = transform.GetChild(0);
@@ -28,11 +24,12 @@ public class GameMasterManager : MonoBehaviour
         float z = physicalPlayer.transform.position.z;
         Vector3 gameMasterPos = new Vector3(x, y, z);
 
-        gameMaster.InitPlayer(gameMasterPos, 0, "GameMaster");
+        gameMaster.InitPlayer(gameMasterPos, physicalPlayer.transform.rotation, 0, "GameMaster");
 
         activePlayers.Add(gameMaster);
 
         InitSpawns();
+
     }
 
     //Search for MeshColliders and add them to hash map
@@ -43,9 +40,11 @@ public class GameMasterManager : MonoBehaviour
 
         foreach (Transform child in playerSpawner)
         {
-            spawnBusy.Add(child.GetComponent<MeshCollider>().GetHashCode(), false);
-            availableSpawns.Add(child.GetComponent<MeshCollider>());
-
+            if (child.gameObject.active)
+            {
+                spawnBusy.Add(child.GetComponent<MeshCollider>().GetHashCode(), false);
+                availableSpawns.Add(child.GetComponent<MeshCollider>());
+            }
         }
 
         //Tmp
