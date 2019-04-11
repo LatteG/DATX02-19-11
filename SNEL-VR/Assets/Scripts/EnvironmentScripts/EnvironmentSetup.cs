@@ -36,8 +36,14 @@ public class EnvironmentSetup : MonoBehaviour
         SpawnFog(meshMin, meshSize, new Vector3(cellSizeHor, cellSizeVer, cellSizeHor), scale);
 
         // Increase the y-axis to make the grid lines spawn on top of the fog instad of under it.
-        meshMin.y += cellSizeVer * 1.01f;
+        meshMin.y += cellSizeVer * 1.05f;
+
+        // Offset the meshMin to align the grid with the fog
+        Vector3 boundsScale = this.GetComponentInChildren<MeshCollider>().gameObject.GetComponent<Transform>().localScale;
         meshMin -= setupTransform.position;
+        meshMin.x -= (1 - scale.x) * boundsScale.x / 2;
+        meshMin.z -= (1 - scale.z) * boundsScale.y / 2;
+
         SpawnGridLines(meshMin, meshSize, scale);
     }
 
@@ -76,7 +82,7 @@ public class EnvironmentSetup : MonoBehaviour
             Vector3[] positions = { new Vector3(linePosX, areaStart.y, areaStart.z),
                                     new Vector3(linePosX, areaStart.y, areaStart.z + areaSize.z) };
 
-            SpawnGridLine(positions);
+            SpawnGridLine(positions, scale.x);
         }
 
         // Spawn the horizontal lines
@@ -86,11 +92,11 @@ public class EnvironmentSetup : MonoBehaviour
             Vector3[] positions = { new Vector3(areaStart.x, areaStart.y, linePosZ),
                                     new Vector3(areaStart.x + areaSize.x, areaStart.y, linePosZ) };
 
-            SpawnGridLine(positions);
+            SpawnGridLine(positions, scale.y);
         }
     }
 
-    private void SpawnGridLine(Vector3[] positions)
+    private void SpawnGridLine(Vector3[] positions, float scale)
     {
         // Spawn the line and set its vertices.
         GameObject line = Instantiate(gridLine, setupTransform);
@@ -98,8 +104,8 @@ public class EnvironmentSetup : MonoBehaviour
 
         lineRen.SetPositions(positions);
 
-        lineRen.startWidth = gridWidth;
-        lineRen.endWidth = gridWidth;
+        lineRen.startWidth = gridWidth * scale;
+        lineRen.endWidth = gridWidth * scale;
 
         Debug.Log("Spawns line between " + positions[0] + " and " + positions[1]);
     }
