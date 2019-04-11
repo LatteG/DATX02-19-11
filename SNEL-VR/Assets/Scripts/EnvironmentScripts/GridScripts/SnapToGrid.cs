@@ -6,18 +6,38 @@ using UnityEngine;
 public class SnapToGrid : MonoBehaviour
 {
     private Vector3 gridCenter;
+    private HashSet<Collider> collidersToBeProcessed;
 
     private void OnEnable()
     {
         gridCenter = this.gameObject.GetComponent<MeshRenderer>().bounds.center;
+        collidersToBeProcessed = new HashSet<Collider>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        collidersToBeProcessed.Add(other);
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        collidersToBeProcessed.Remove(other);
+    }
+
+    private void FixedUpdate()
+    {
+        foreach (Collider c in collidersToBeProcessed)
+        {
+            ProcessCollider(c);
+        }
+    }
+
+    private void ProcessCollider(Collider other)
+    {
         if (other.gameObject.tag.Contains("Figurine") && !other.gameObject.CompareTag("PlayerFigurineVision"))
         {
             Transform figTransform = other.gameObject.GetComponent<Transform>().parent;
-            
+
             if (!figTransform.gameObject.GetComponent<OculusSampleFramework.DistanceGrabbable>().isGrabbed)
             {
                 MoveObjectToGridCenter(figTransform);
@@ -26,7 +46,13 @@ public class SnapToGrid : MonoBehaviour
                 {
                     figTransform.gameObject.GetComponentInChildren<Figurine_PlayerVision>().ShouldUpdate();
                 }
+
+                collidersToBeProcessed.Remove(other);
             }
+        }
+        else
+        {
+            collidersToBeProcessed.Remove(other);
         }
     }
 

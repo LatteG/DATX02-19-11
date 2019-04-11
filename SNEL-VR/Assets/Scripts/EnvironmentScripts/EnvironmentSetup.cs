@@ -9,8 +9,11 @@ public class EnvironmentSetup : MonoBehaviour
     public float gridSize = 1f;
     public float gridWidth = 0.005f;
 
+    public bool enableSnapToGrid = true;
+
     public GameObject fogElement;
     public GameObject gridLine;
+    public GameObject gridSquare;
 
     private Transform setupTransform;
     
@@ -33,10 +36,10 @@ public class EnvironmentSetup : MonoBehaviour
         // We have no more use for this.
         GetComponentInChildren<MeshCollider>().enabled = false;
 
-        SpawnFog(meshMin, meshSize, new Vector3(cellSizeHor, cellSizeVer, cellSizeHor), scale);
+        SetupFog(meshMin, meshSize, new Vector3(cellSizeHor, cellSizeVer, cellSizeHor), scale);
 
-        // Increase the y-axis to make the grid lines spawn on top of the fog instad of under it.
-        meshMin.y += cellSizeVer * 1.05f;
+        // Increase the y-axis to make the grid spawn on top of the table instead of in it.
+        meshMin.y += 0.005f;
 
         // Offset the meshMin to align the grid with the fog
         Vector3 boundsScale = this.GetComponentInChildren<MeshCollider>().gameObject.GetComponent<Transform>().localScale;
@@ -44,20 +47,18 @@ public class EnvironmentSetup : MonoBehaviour
         meshMin.x -= (1 - scale.x) * boundsScale.x / 2;
         meshMin.z -= (1 - scale.z) * boundsScale.y / 2;
 
-        SpawnGridLines(meshMin, meshSize, scale);
+        SetupGrid(meshMin, meshSize, scale);
     }
 
-    private void SpawnFog(Vector3 areaStart, Vector3 areaSize, Vector3 cellSize, Vector3 scale)
+    private void SetupFog(Vector3 areaStart, Vector3 areaSize, Vector3 cellSize, Vector3 scale)
     {
         int cols = (int)(areaSize.x / cellSizeHor);
         int rows = (int)(areaSize.z / cellSizeHor);
 
+        // Sets up the container for the fog elements
         GameObject fogContainer = new GameObject("FogContainer");
         Transform fogContainerTransform = fogContainer.GetComponent<Transform>();
-        fogContainerTransform.SetParent(setupTransform);
-        fogContainerTransform.localPosition = new Vector3(0, 0, 0);
-        fogContainerTransform.localRotation = Quaternion.identity;
-        fogContainerTransform.localScale = new Vector3(1, 1, 1);
+        SetupContainerTransform(fogContainerTransform);
 
         // Fill the area defined by the MeshCollider with fog elements.
         for (int i = 0; i < cols; i++)
@@ -76,20 +77,26 @@ public class EnvironmentSetup : MonoBehaviour
         }
     }
 
-    private void SpawnGridLines(Vector3 areaStart, Vector3 areaSize, Vector3 scale)
+    private void SetupGrid(Vector3 areaStart, Vector3 areaSize, Vector3 scale)
     {
-        int cols = (int)(areaSize.x / gridSize) + 1;
-        int rows = (int)(areaSize.z / gridSize) + 1;
+        int cols = (int)(areaSize.x / gridSize);
+        int rows = (int)(areaSize.z / gridSize);
 
+        // Sets up the container for the grid lines
         GameObject gridLineContainer = new GameObject("GridLineContainer");
         Transform gridLineContainerTransform = gridLineContainer.GetComponent<Transform>();
-        gridLineContainerTransform.SetParent(setupTransform);
-        gridLineContainerTransform.localPosition = new Vector3(0, 0, 0);
-        gridLineContainerTransform.localRotation = Quaternion.identity;
-        gridLineContainerTransform.localScale = new Vector3(1, 1, 1);
+        SetupContainerTransform(gridLineContainerTransform);
 
-        // Spawn the vertical lines
-        for (int i = 0; i < cols; i++)
+        
+        // Sets up the container for the grid squares
+        GameObject gridSquareContainer = new GameObject("GridSquareContainer");
+
+        Transform gridSquareContainerTransform = gridSquareContainer.GetComponent<Transform>();
+        SetupContainerTransform(gridSquareContainerTransform);
+
+
+        // Spawn the vertical lines.
+        for (int i = 0; i <= cols; i++)
         {
             // Prepare the positions for the vertices in the line.
             float linePosX = areaStart.x + i * gridSize;
@@ -99,14 +106,36 @@ public class EnvironmentSetup : MonoBehaviour
             SpawnGridLine(positions, scale.x, gridLineContainerTransform);
         }
 
-        // Spawn the horizontal lines
-        for (int i = 0; i < rows; i++)
+        // Spawn the horizontal lines.
+        for (int i = 0; i <= rows; i++)
         {
             float linePosZ = areaStart.z + i * gridSize;
             Vector3[] positions = { new Vector3(areaStart.x, areaStart.y, linePosZ),
                                     new Vector3(areaStart.x + areaSize.x, areaStart.y, linePosZ) };
 
             SpawnGridLine(positions, scale.y, gridLineContainerTransform);
+        }
+
+        areaStart.y -= 0.0025f;
+
+        // Create the grid slots.
+        for (int x = 0; x < cols; x++)
+        {
+            float xCoord = areaStart.x + (x + 0.5f) * gridSize;
+
+            for (int z = 0; z < rows; z++)
+            {
+                float zCoord = areaStart.z + (z + 0.5f) * gridSize;
+                Vector3 pos = new Vector3(xCoord, areaStart.y, zCoord);
+
+                GameObject gs = Instantiate(gridSquare, gridSquareContainerTransform);
+                gs.GetComponent<Transform>().localPosition = pos;
+
+                if (enableSnapToGrid)
+                {
+                    gs.GetComponent<SnapToGrid>().enabled = true;
+                }
+            }
         }
     }
 
@@ -120,5 +149,13 @@ public class EnvironmentSetup : MonoBehaviour
 
         lineRen.startWidth = gridWidth * scale;
         lineRen.endWidth = gridWidth * scale;
+    }
+
+    private void SetupContainerTransform(Transform t)
+    {
+        t.SetParent(setupTransform);
+        t.localPosition = new Vector3(0, 0, 0);
+        t.localRotation = Quaternion.identity;
+        t.localScale = new Vector3(1, 1, 1);
     }
 }
