@@ -52,6 +52,13 @@ public class EnvironmentSetup : MonoBehaviour
         int cols = (int)(areaSize.x / cellSizeHor);
         int rows = (int)(areaSize.z / cellSizeHor);
 
+        GameObject fogContainer = new GameObject("FogContainer");
+        Transform fogContainerTransform = fogContainer.GetComponent<Transform>();
+        fogContainerTransform.SetParent(setupTransform);
+        fogContainerTransform.localPosition = new Vector3(0, 0, 0);
+        fogContainerTransform.localRotation = Quaternion.identity;
+        fogContainerTransform.localScale = new Vector3(1, 1, 1);
+
         // Fill the area defined by the MeshCollider with fog elements.
         for (int i = 0; i < cols; i++)
         {
@@ -61,7 +68,7 @@ public class EnvironmentSetup : MonoBehaviour
             {
                 // Make a vector for the position of the fog element.
                 Vector3 pos = new Vector3(x, areaStart.y, areaStart.z + (k + 0.5f) * scale.z * cellSizeHor);
-                GameObject fe = Instantiate(fogElement, pos, Quaternion.identity, setupTransform);
+                GameObject fe = Instantiate(fogElement, pos, Quaternion.identity, fogContainerTransform);
 
                 // Resize new fog element.
                 fe.transform.localScale = cellSize;
@@ -74,6 +81,13 @@ public class EnvironmentSetup : MonoBehaviour
         int cols = (int)(areaSize.x / gridSize) + 1;
         int rows = (int)(areaSize.z / gridSize) + 1;
 
+        GameObject gridLineContainer = new GameObject("GridLineContainer");
+        Transform gridLineContainerTransform = gridLineContainer.GetComponent<Transform>();
+        gridLineContainerTransform.SetParent(setupTransform);
+        gridLineContainerTransform.localPosition = new Vector3(0, 0, 0);
+        gridLineContainerTransform.localRotation = Quaternion.identity;
+        gridLineContainerTransform.localScale = new Vector3(1, 1, 1);
+
         // Spawn the vertical lines
         for (int i = 0; i < cols; i++)
         {
@@ -82,7 +96,7 @@ public class EnvironmentSetup : MonoBehaviour
             Vector3[] positions = { new Vector3(linePosX, areaStart.y, areaStart.z),
                                     new Vector3(linePosX, areaStart.y, areaStart.z + areaSize.z) };
 
-            SpawnGridLine(positions, scale.x);
+            SpawnGridLine(positions, scale.x, gridLineContainerTransform);
         }
 
         // Spawn the horizontal lines
@@ -92,21 +106,19 @@ public class EnvironmentSetup : MonoBehaviour
             Vector3[] positions = { new Vector3(areaStart.x, areaStart.y, linePosZ),
                                     new Vector3(areaStart.x + areaSize.x, areaStart.y, linePosZ) };
 
-            SpawnGridLine(positions, scale.y);
+            SpawnGridLine(positions, scale.y, gridLineContainerTransform);
         }
     }
 
-    private void SpawnGridLine(Vector3[] positions, float scale)
+    private void SpawnGridLine(Vector3[] positions, float scale, Transform parentTransform)
     {
         // Spawn the line and set its vertices.
-        GameObject line = Instantiate(gridLine, setupTransform);
+        GameObject line = Instantiate(gridLine, parentTransform);
         LineRenderer lineRen = line.GetComponent<LineRenderer>();
 
         lineRen.SetPositions(positions);
 
         lineRen.startWidth = gridWidth * scale;
         lineRen.endWidth = gridWidth * scale;
-
-        Debug.Log("Spawns line between " + positions[0] + " and " + positions[1]);
     }
 }
