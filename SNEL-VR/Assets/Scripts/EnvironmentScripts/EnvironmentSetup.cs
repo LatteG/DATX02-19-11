@@ -118,6 +118,10 @@ public class EnvironmentSetup : MonoBehaviour
 
         areaStart.y -= 0.0025f;
 
+        gridSquareContainer.AddComponent<GridHandler>();
+        GridHandler gridSquareContainerGridHandler = gridSquareContainer.GetComponent<GridHandler>();
+        gridSquareContainerGridHandler.init(rows, cols, gridSize, areaStart);
+
         // Create the grid slots.
         for (int x = 0; x < cols; x++)
         {
@@ -135,6 +139,8 @@ public class EnvironmentSetup : MonoBehaviour
                 {
                     gs.GetComponent<SnapToGrid>().enabled = true;
                 }
+
+                gridSquareContainerGridHandler.AddToMap(gs);
             }
         }
     }
