@@ -9,12 +9,14 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
     private Player activePlayer;
     private Dictionary<int, Player> turnQueue;
     private int nextPlayer;
+    private Transform tableTransform;
 
 
 
     // This needs to be called after the players have been spawned in
     public void OnEnable()
     {
+        tableTransform = GameObject.FindWithTag("Table").transform;
         turnQueue = new Dictionary<int, Player>();
         gmm = GameObject.FindWithTag("GameMaster").GetComponent<GameMasterManager>();
         SetActivePlayer(gmm.GetActivePlayers()[0]);
@@ -45,8 +47,11 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
         Debug.Log("PlayerName: " + gmm.GetActivePlayers()[0].name);
 
         int index = FindPlayer(activePlayer);
-        gmm.GetActivePlayers()[index].SetPlayerPos(gmm.physicalPlayer.transform.position);
-        gmm.GetActivePlayers()[index].SetPlayerRotation(gmm.physicalPlayer.transform.rotation);
+        //gmm.GetActivePlayers()[index].SetPlayerPos(gmm.physicalPlayer.transform.position);
+        //gmm.GetActivePlayers()[index].SetPlayerRotation(gmm.physicalPlayer.transform.rotation);
+
+        activePlayer.SetPlayerPos(gmm.physicalPlayer.transform.position);
+        activePlayer.SetPlayerRotation(gmm.physicalPlayer.transform.rotation);
 
         SetActivePlayer(gmm.GetActivePlayers()[0]);
         SetPositions();
@@ -82,11 +87,19 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
     private void SetPositions()
     {
         int index = FindPlayer(activePlayer);
-        Vector3 pos = gmm.GetActivePlayers()[index].GetPlayerPos();
-        //pos.y += 4.0f;
-        Quaternion rotation = gmm.GetActivePlayers()[index].GetPlayerRotation();
+        //Vector3 pos = gmm.GetActivePlayers()[index].GetPlayerPos();
+        Vector3 pos = activePlayer.GetPlayerPos();
+        pos.y += 4.0f;
+        
+
+        Vector3 dir = tableTransform.position - pos;
+        dir.y = 0; // keep the direction strictly horizontal
+        //Quaternion rotation = Quaternion.LookRotation(dir);
+        //Quaternion rotation = gmm.GetActivePlayers()[index].GetPlayerRotation();
+        Quaternion rotation = activePlayer.GetPlayerRotation();
         //gmm.physicalPlayer.transform.position = pos;
-        gmm.physicalPlayer.transform.SetPositionAndRotation(pos, rotation);
+        //gmm.physicalPlayer.transform.SetPositionAndRotation(pos, rotation);
+        gmm.physicalPlayer.transform.position = pos;
         //Camera mainCamera = Camera.main;
         //mainCamera.transform.LookAt(tableTransform);
     }
