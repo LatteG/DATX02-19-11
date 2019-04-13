@@ -1,16 +1,19 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameMasterManager : MonoBehaviour
 {
     public GameObject physicalPlayer;
+    public int playerAmount;
+
     private Dictionary<float, bool> spawnBusy;
     private List<MeshCollider> availableSpawns;
     private Transform playerSpawner;
     private List<Player> activePlayers;
-
     private Vector3 gameMasterPos;
+    private Quaternion gameMasterRotation;
 
     public void OnEnable()
     {
@@ -22,16 +25,21 @@ public class GameMasterManager : MonoBehaviour
         //physicalPlayer = GameObject.FindGameObjectWithTag("Player"); //change tag to GameMaster
 
         Player gameMaster = new Player();
-        float x = physicalPlayer.transform.position.x;  
-        float y = 3.0f;
-        float z = physicalPlayer.transform.position.z;
-        gameMasterPos = new Vector3(x, y, z);
 
-        gameMaster.InitPlayer(gameMasterPos, physicalPlayer.transform.rotation, 0, "GameMaster");
+        //float x = physicalPlayer.transform.GetChild(0).position.x;  
+        //float y = 3.0f;
+        //float z = physicalPlayer.transform.GetChild(0).position.z;
+        //gameMasterPos = new Vector3(x, y, z);
+
+        gameMasterPos = new Vector3(12, 3, -1.5f);
+        gameMasterRotation = physicalPlayer.transform.GetChild(0).rotation;
+
+        gameMaster.InitPlayer(gameMasterPos, gameMasterRotation, 0, "GameMaster");
 
         activePlayers.Add(gameMaster);
 
         InitSpawns();
+        
 
     }
 
@@ -40,19 +48,29 @@ public class GameMasterManager : MonoBehaviour
     {
         spawnBusy = new Dictionary<float, bool>();
         availableSpawns = new List<MeshCollider>();
+        int count = 1;
 
         foreach (Transform child in playerSpawner)
         {
-            if (child.gameObject.active)
+            if (child.gameObject.active) //this if-statement is maybe obsolete
             {
-                spawnBusy.Add(child.GetComponent<MeshCollider>().GetHashCode(), false);
-                availableSpawns.Add(child.GetComponent<MeshCollider>());
+                if (playerAmount >= count)
+                {
+                    spawnBusy.Add(child.GetComponent<MeshCollider>().GetHashCode(), false);
+                    availableSpawns.Add(child.GetComponent<MeshCollider>());
+
+                }else child.gameObject.SetActive(false);
+
+                count++;
             }
         }
 
-        //Tmp
-        Debug.Log(spawnBusy.Count);
+        //Debug.Log("Spawn busy: " + spawnBusy.Count);
+        //Debug.Log("Avaiable spawns: " + availableSpawns.Count);
+
     }
+
+  
 
     //Checks if spot is free or not
     public bool IsBusy(float mc)
@@ -95,5 +113,10 @@ public class GameMasterManager : MonoBehaviour
     public Vector3 GetGameMasterPos()
     {
         return this.gameMasterPos;
+    }
+
+    internal Quaternion GetGameMasterRotation()
+    {
+        return this.gameMasterRotation;
     }
 }

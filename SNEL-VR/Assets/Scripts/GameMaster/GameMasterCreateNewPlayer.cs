@@ -9,9 +9,6 @@ public class GameMasterCreateNewPlayer : MonoBehaviour //change name to GameMast
     private int count;
     private Transform tableTransform;
 
-    //tmp
-    private GameMasterChangeActivePlayer gmcap;
-
     public GameObject player;
 
     public void OnEnable()
@@ -19,7 +16,6 @@ public class GameMasterCreateNewPlayer : MonoBehaviour //change name to GameMast
         tableTransform = GameObject.FindWithTag("Table").transform;
         count = 1;
         gmm = GameObject.FindWithTag("GameMaster").GetComponent<GameMasterManager>();
-        gmcap = GameObject.FindWithTag("GameMaster").GetComponent<GameMasterChangeActivePlayer>();
         SpawnPlayer();
     }
 
@@ -43,9 +39,11 @@ public class GameMasterCreateNewPlayer : MonoBehaviour //change name to GameMast
 
                 gmm.UpdateSpawnBusy(mc.GetHashCode(), true);
                 gmm.UpdateActivePlayers(newPlayer);
-                //Debug.Log("I'm alive!!");
+                
                 count++;
             }
         }
+
+        //Debug.Log("Active players: " + gmm.GetActivePlayers().Count);
     }
 }

@@ -8,6 +8,8 @@ public class Player
     private Vector3 pos;
     private Quaternion rotation;
     private int ID;
+
+    private GameObject avatar; 
     public string name;
 
     public void InitPlayer(Vector3 pos, Quaternion rotation, int ID, string name)
@@ -16,6 +18,14 @@ public class Player
         this.rotation = rotation;
         this.ID = ID;
         this.name = name;
+
+        SetAvatar();
+    }
+
+    private void SetAvatar()
+    {
+        Vector3 pos_avatar = new Vector3(this.pos.x, 1f, this.pos.z);
+        avatar = GameObject.Instantiate(GameObject.FindGameObjectWithTag("Avatar"), pos_avatar, this.rotation) as GameObject;
     }
 
     public void PlayerUpdatePos(Vector3 newPos)
@@ -46,5 +56,21 @@ public class Player
     internal Quaternion GetPlayerRotation()
     {
         return this.rotation;
+    }
+    public void ShowAvatar()
+    {
+        this.avatar.SetActive(true);
+    }
+
+    public void HideAvatar()
+    {
+        this.avatar.SetActive(false);
+    }
+
+    public void MoveAvatar()
+    {
+        Vector3 pos_avatar = new Vector3(this.pos.x, 1f, this.pos.z);
+        avatar.transform.position = pos_avatar;
+        avatar.transform.rotation = this.rotation;
     }
 }

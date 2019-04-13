@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class GameMasterChangeActivePlayer : MonoBehaviour
 {
-    //TODO: Make set positions more structurally decomposed
     private GameMasterManager gmm;
     private Player activePlayer;
     private Dictionary<int, Player> turnQueue;
@@ -26,28 +25,29 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
 
     public void ChangePlayer()
     {
-        Debug.Log("In CP: Recent player was: " + activePlayer.name);
-        Debug.Log("I had pos: " + activePlayer.GetPlayerPos());
-
+        
         SetActivePlayer(turnQueue[nextPlayer]);
         SetPosition();
-
-        Debug.Log("In CP: New player is: " + activePlayer.name);
-        Debug.Log("I have pos: " + activePlayer.GetPlayerPos());
+        UpdatePlayerAvatar();
 
         nextPlayer = (nextPlayer + 1) % gmm.GetActivePlayers().Count;
+
+        //Since turnQueue doesn't have the key 0
         if (nextPlayer == 0) nextPlayer = 1;
     }
 
     public void ChangePlayerGM()
     {
         //Save position of previous player. 
-        //SavePosition();
-        //GM is placed at the same spot all the time.
-        gmm.physicalPlayer.transform.position = gmm.GetGameMasterPos();
+        SavePosition();
 
-        Debug.Log("I'm the master!");
-        Debug.Log("In CPGM: Recent player was: " + activePlayer.name);
+        //GM is placed at the same spot all the time.
+        gmm.physicalPlayer.transform.GetChild(0).position = gmm.GetGameMasterPos();
+        gmm.physicalPlayer.transform.GetChild(0).rotation = gmm.GetGameMasterRotation();
+        UpdatePlayerAvatar();
+
+        //Debug.Log("I'm the master!");
+        //Debug.Log("In CPGM: Recent player was: " + activePlayer.name);
     }
 
     public void SetActivePlayer(Player player)
@@ -73,25 +73,27 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
             }
         }
 
-        Debug.Log("TurnQueue size: "+turnQueue.Count);
+        //Debug.Log("TurnQueue size: "+turnQueue.Count);
 
     }
 
     private void SavePosition()
     {
         int index = FindPlayer(activePlayer);
-        gmm.GetActivePlayers()[index].SetPlayerPos(gmm.physicalPlayer.transform.position);
+        gmm.GetActivePlayers()[index].SetPlayerPos(gmm.physicalPlayer.transform.GetChild(0).position);
+        gmm.GetActivePlayers()[index].SetPlayerRotation(gmm.physicalPlayer.transform.GetChild(0).rotation);
 
     }
 
     private void SetPosition()
     {
         int index = FindPlayer(activePlayer);
-        gmm.physicalPlayer.transform.position = gmm.GetActivePlayers()[index].GetPlayerPos();
+        gmm.physicalPlayer.transform.GetChild(0).position = gmm.GetActivePlayers()[index].GetPlayerPos();
+        gmm.physicalPlayer.transform.GetChild(0).rotation = gmm.GetActivePlayers()[index].GetPlayerRotation();
 
     }
 
-  
+    //Might not be needed, but to prevent pointer bugs.
     private int FindPlayer(Player player)
     {
         for(int i = 0; i < gmm.GetActivePlayers().Count; i++)
@@ -103,5 +105,22 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
         }
 
         return -1;
+    }
+
+    private void UpdatePlayerAvatar()
+    {
+        activePlayer.HideAvatar();
+        activePlayer.MoveAvatar();
+        gmm.GetActivePlayers()[0].HideAvatar();
+
+        foreach(Player player in gmm.GetActivePlayers())
+        {
+            if (!player.name.Equals(activePlayer.name))
+            {
+                player.ShowAvatar();
+            }
+        }
+
+
     }
 }
