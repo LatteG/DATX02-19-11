@@ -26,35 +26,28 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
 
     public void ChangePlayer()
     {
-        Debug.Log("NextPlayer: " + nextPlayer);
-        Debug.Log("PlayerName: " + turnQueue[nextPlayer].name);
+        Debug.Log("In CP: Recent player was: " + activePlayer.name);
+        Debug.Log("I had pos: " + activePlayer.GetPlayerPos());
 
-        int index = FindPlayer(activePlayer);
-        gmm.GetActivePlayers()[index].SetPlayerPos(gmm.physicalPlayer.transform.position);
-        gmm.GetActivePlayers()[index].SetPlayerRotation(gmm.physicalPlayer.transform.rotation);
-        
         SetActivePlayer(turnQueue[nextPlayer]);
-        SetPositions();
-       
-        nextPlayer = (nextPlayer + 1) % gmm.GetActivePlayers().Count;
-        if (nextPlayer == 0) nextPlayer += 1;
+        SetPosition();
 
-        
+        Debug.Log("In CP: New player is: " + activePlayer.name);
+        Debug.Log("I have pos: " + activePlayer.GetPlayerPos());
+
+        nextPlayer = (nextPlayer + 1) % gmm.GetActivePlayers().Count;
+        if (nextPlayer == 0) nextPlayer = 1;
     }
 
     public void ChangePlayerGM()
     {
-        Debug.Log("PlayerName: " + gmm.GetActivePlayers()[0].name);
+        //Save position of previous player. 
+        //SavePosition();
+        //GM is placed at the same spot all the time.
+        gmm.physicalPlayer.transform.position = gmm.GetGameMasterPos();
 
-        int index = FindPlayer(activePlayer);
-        //gmm.GetActivePlayers()[index].SetPlayerPos(gmm.physicalPlayer.transform.position);
-        //gmm.GetActivePlayers()[index].SetPlayerRotation(gmm.physicalPlayer.transform.rotation);
-
-        activePlayer.SetPlayerPos(gmm.physicalPlayer.transform.position);
-        activePlayer.SetPlayerRotation(gmm.physicalPlayer.transform.rotation);
-
-        SetActivePlayer(gmm.GetActivePlayers()[0]);
-        SetPositions();
+        Debug.Log("I'm the master!");
+        Debug.Log("In CPGM: Recent player was: " + activePlayer.name);
     }
 
     public void SetActivePlayer(Player player)
@@ -84,24 +77,18 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
 
     }
 
-    private void SetPositions()
+    private void SavePosition()
     {
         int index = FindPlayer(activePlayer);
-        //Vector3 pos = gmm.GetActivePlayers()[index].GetPlayerPos();
-        Vector3 pos = activePlayer.GetPlayerPos();
-        pos.y += 4.0f;
-        
+        gmm.GetActivePlayers()[index].SetPlayerPos(gmm.physicalPlayer.transform.position);
 
-        Vector3 dir = tableTransform.position - pos;
-        dir.y = 0; // keep the direction strictly horizontal
-        //Quaternion rotation = Quaternion.LookRotation(dir);
-        //Quaternion rotation = gmm.GetActivePlayers()[index].GetPlayerRotation();
-        Quaternion rotation = activePlayer.GetPlayerRotation();
-        //gmm.physicalPlayer.transform.position = pos;
-        //gmm.physicalPlayer.transform.SetPositionAndRotation(pos, rotation);
-        gmm.physicalPlayer.transform.position = pos;
-        //Camera mainCamera = Camera.main;
-        //mainCamera.transform.LookAt(tableTransform);
+    }
+
+    private void SetPosition()
+    {
+        int index = FindPlayer(activePlayer);
+        gmm.physicalPlayer.transform.position = gmm.GetActivePlayers()[index].GetPlayerPos();
+
     }
 
   

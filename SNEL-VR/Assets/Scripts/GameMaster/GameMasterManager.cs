@@ -10,19 +10,22 @@ public class GameMasterManager : MonoBehaviour
     private Transform playerSpawner;
     private List<Player> activePlayers;
 
+    private Vector3 gameMasterPos;
+
     public void OnEnable()
     {
 
         playerSpawner = transform.GetChild(0);
 
         activePlayers = new List<Player>();
-        physicalPlayer = GameObject.FindGameObjectWithTag("Player"); //change tag to GameMaster
+
+        //physicalPlayer = GameObject.FindGameObjectWithTag("Player"); //change tag to GameMaster
 
         Player gameMaster = new Player();
         float x = physicalPlayer.transform.position.x;  
-        float y = physicalPlayer.transform.position.y;
+        float y = 3.0f;
         float z = physicalPlayer.transform.position.z;
-        Vector3 gameMasterPos = new Vector3(x, y, z);
+        gameMasterPos = new Vector3(x, y, z);
 
         gameMaster.InitPlayer(gameMasterPos, physicalPlayer.transform.rotation, 0, "GameMaster");
 
@@ -87,5 +90,10 @@ public class GameMasterManager : MonoBehaviour
     public List<Player> GetActivePlayers()
     {
         return this.activePlayers;
+    }
+
+    public Vector3 GetGameMasterPos()
+    {
+        return this.gameMasterPos;
     }
 }
