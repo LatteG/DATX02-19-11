@@ -116,20 +116,25 @@ public class EnvironmentSetup : MonoBehaviour
             SpawnGridLine(positions, scale.y, gridLineContainerTransform);
         }
 
+        areaStart.x += 0.5f * gridSize;
         areaStart.y -= 0.0025f;
+        areaStart.z += 0.5f * gridSize;
 
         gridSquareContainer.AddComponent<GridHandler>();
         GridHandler gridSquareContainerGridHandler = gridSquareContainer.GetComponent<GridHandler>();
-        gridSquareContainerGridHandler.init(rows, cols, gridSize, areaStart);
+        gridSquareContainerGridHandler.init(rows, cols, gridSize, scale);
+
+        int added = 0;
+        int notAdded = 0;
 
         // Create the grid slots.
         for (int x = 0; x < cols; x++)
         {
-            float xCoord = areaStart.x + (x + 0.5f) * gridSize;
+            float xCoord = areaStart.x + x * gridSize;
 
             for (int z = 0; z < rows; z++)
             {
-                float zCoord = areaStart.z + (z + 0.5f) * gridSize;
+                float zCoord = areaStart.z + z * gridSize;
                 Vector3 pos = new Vector3(xCoord, areaStart.y, zCoord);
 
                 GameObject gs = Instantiate(gridSquare, gridSquareContainerTransform);
@@ -140,9 +145,19 @@ public class EnvironmentSetup : MonoBehaviour
                     gs.GetComponent<SnapToGrid>().enabled = true;
                 }
 
-                gridSquareContainerGridHandler.AddToMap(gs);
+                if (gridSquareContainerGridHandler.AddToMap(gs))
+                {
+                    added++;
+                }
+                else
+                {
+                    notAdded++;
+                    Destroy(gs);
+                }
             }
         }
+
+        Debug.Log("Added " + added + " grid squares and failed to add " + notAdded + " grid squares.");
     }
 
     private void SpawnGridLine(Vector3[] positions, float scale, Transform parentTransform)

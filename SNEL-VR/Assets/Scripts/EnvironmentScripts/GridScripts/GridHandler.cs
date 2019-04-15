@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using OVRTouchSample;
 using UnityEngine;
@@ -8,6 +8,8 @@ public class GridHandler : MonoBehaviour
     private int rows;
     private int cols;
     private float gridSize;
+    private Vector3 scale;
+
     private Vector3 originPoint;
 
     private Dictionary<Vector2, GameObject> gridMap;
@@ -18,32 +20,33 @@ public class GridHandler : MonoBehaviour
         this.enabled = false;
     }
 
-    public void init(int rows, int cols, float gridSize, Vector3 originPoint)
+    public void init(int rows, int cols, float gridSize, Vector3 scale)
     {
         this.rows = rows;
         this.cols = cols;
-        this.gridSize = gridSize;
-        this.originPoint = originPoint;
+        this.gridSize = gridSize * scale.x;
+        this.scale = scale;
 
-        this.enabled = true;
+        enabled = true;
     }
 
     private void OnEnable()
     {
         if (rows == -1 || cols == -1 || gridSize <= 0)
         {
-            this.enabled = false;
+            enabled = false;
             return;
         }
 
         gridMap = new Dictionary<Vector2, GameObject>();
-
-        GameObject gsc = this.gameObject;
-        gsc.AddComponent<BoxCollider>();
-        BoxCollider bc = gsc.GetComponent<BoxCollider>();
-        bc.size = new Vector3(cols * gridSize, 0.1f, rows * gridSize);
-        bc.center = new Vector3(0, 0.1f, 0);
+        figurines = new HashSet<GameObject>();
+        originPoint = gameObject.GetComponent<Transform>().position - new Vector3(cols * scale.x / 2f, 0, rows * scale.z / 2f);
+        
+        gameObject.AddComponent<BoxCollider>();
+        BoxCollider bc = gameObject.GetComponent<BoxCollider>();
         bc.isTrigger = true;
+        bc.size = new Vector3(cols * gridSize / scale.x, 0.1f, rows * gridSize / scale.x);
+        bc.center = new Vector3(-0.5f * gridSize, 0.1f, -0.5f * gridSize);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -51,6 +54,7 @@ public class GridHandler : MonoBehaviour
         if (other.gameObject.CompareTag("NPCFigurine") || other.gameObject.CompareTag("PlayerFigurine"))
         {
             figurines.Add(other.gameObject.GetComponent<Transform>().parent.gameObject);
+            // Debug.Log("A figurine with the tag \"" + other.gameObject.tag + "\" has entered the grid.");
         }
     }
 
@@ -60,16 +64,50 @@ public class GridHandler : MonoBehaviour
         {
             if (!fig.GetComponent<OculusSampleFramework.DistanceGrabbable>().isGrabbed)
             {
-                Transform figTransform = fig.GetComponent<Transform>();
-                figTransform.position = GetSnapToGridPosition(figTransform.position);
+                if (fig.GetComponent<Transform>().hasChanged)
+                {
+                    SnapToGrid(fig);
+                }
             }
         }
+    }
+
+    public void SnapToGrid(GameObject fig)
+    {
+        Transform figTransform = fig.GetComponent<Transform>();
+
+        // Get the current position and offset it to suit the grid.
+        Vector3 oldPos = figTransform.position;
+        oldPos.x -= gridSize / 2;
+        oldPos.z -= gridSize / 2;
+
+        // Get the new position.
+        Vector3 newPos = GetSnapToGridPosition(oldPos);
+        newPos.y = oldPos.y;
+
+        // Set the new position.
+        figTransform.position = newPos;
+
+        // Reset the angle around the x- and z-axis.
+        Quaternion figRot = figTransform.rotation;
+        figRot.eulerAngles = new Vector3(0, figRot.eulerAngles.y, 0);
+
+        // Set the velocity and angular velocity to zero
+        Rigidbody figRigidbody = fig.GetComponent<Rigidbody>();
+        figRigidbody.velocity = new Vector3(0, 0, 0);
+        figRigidbody.angularVelocity = new Vector3(0, 0, 0);
+        figRigidbody.Sleep();
+
+        figTransform.hasChanged = false;
+
+        Debug.Log("Figurine has been moved from " + oldPos + " to " + newPos);
+        Debug.DrawLine(oldPos, figTransform.position, Color.blue, 0.25f);
     }
 
     private Vector2 PositionToKey(Vector3 pos)
     {
         float x = (pos.x - originPoint.x) / gridSize;
-        float y = (pos.y - originPoint.y) / gridSize;
+        float y = (pos.z - originPoint.z) / gridSize;
 
         return new Vector2(Mathf.RoundToInt(x), Mathf.RoundToInt(y));
     }
@@ -84,7 +122,9 @@ public class GridHandler : MonoBehaviour
 
     public bool AddToMap(GameObject value)
     {
-        return AddToMap(value, PositionToKey(value.GetComponent<Transform>().position));
+        Vector3 pos = value.GetComponent<MeshRenderer>().bounds.min;
+        Vector2 key = PositionToKey(pos);
+        return AddToMap(value, key);
     }
     public bool AddToMap(GameObject value, Vector2 key)
     {
@@ -105,11 +145,20 @@ public class GridHandler : MonoBehaviour
     public Vector3 GetSnapToGridPosition(Vector3 pos)
     {
         Vector2 key = PositionToKey(pos);
-        if (!IsValidKey(key))
+        if (!gridMap.ContainsKey(key))
         {
             return pos;
         }
 
-        return gridMap[key].GetComponent<Transform>().position;
+        //Vector3 retPos = gridMap[key].GetComponent<MeshRenderer>().bounds.min;
+        //retPos.x += gridSize / 2;
+        //retPos.z += gridSize / 2;
+
+        Vector3 retPos = gridMap[key].GetComponent<Transform>().position;
+        //retPos.x -= gridSize / 2;
+        //retPos.z -= gridSize / 2;
+
+
+        return retPos;
     }
 }
