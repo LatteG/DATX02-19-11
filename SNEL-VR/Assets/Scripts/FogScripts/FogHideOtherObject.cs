@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class FogHideOtherObject : MonoBehaviour
 {
-    private List<Collider> figurineColliders = new List<Collider>();
-    private List<Collider> obstacleColliders = new List<Collider>();
+    private HashSet<Collider> figurineColliders = new HashSet<Collider>();
+    private HashSet<Collider> obstacleColliders = new HashSet<Collider>();
 
-    private List<GameObject> observedBy = new List<GameObject>();
-    private List<GameObject> hasBeenObservedBy = new List<GameObject>();
+    private HashSet<GameObject> observedBy = new HashSet<GameObject>();
+    private HashSet<GameObject> hasBeenObservedBy = new HashSet<GameObject>();
 
     private void OnTriggerEnter(Collider other)
     {
@@ -19,29 +19,23 @@ public class FogHideOtherObject : MonoBehaviour
             other.gameObject.GetComponent<Figurine_ObservedBy>().ClearObservers();
 
             // Make the figurine visible to all figurines currently observing this fog element.
-            for (int i = 0; i < observedBy.Count; i++)
+            foreach (GameObject fig in observedBy)
             {
-                MakeVisible(other, observedBy[i]);
+                MakeVisible(other, fig);
             }
-
-            if (!figurineColliders.Contains(other))
-            {
-                figurineColliders.Add(other);
-            }
+            
+            figurineColliders.Add(other);
         }
         // What to do when colliding with an obstacle.
         else if (ColliderHasTag(other, "Obstacle"))
         {
             // Make the obstacle visible to all figurines currently observing this fog element.
-            for (int i = 0; i < observedBy.Count; i++)
+            foreach (GameObject fig in observedBy)
             {
-                MakeVisible(other, observedBy[i]);
+                MakeVisible(other, fig);
             }
 
-            if (!obstacleColliders.Contains(other))
-            {
-                obstacleColliders.Add(other);
-            }
+            obstacleColliders.Add(other);
         }
     }
 
@@ -66,14 +60,8 @@ public class FogHideOtherObject : MonoBehaviour
     // Called by a player's vision script when it has line of sight to the cell.
     public void SeenBy(GameObject figurine)
     {
-        if (!observedBy.Contains(figurine))
-        {
-            observedBy.Add(figurine);
-            if (!hasBeenObservedBy.Contains(figurine))
-            {
-                hasBeenObservedBy.Add(figurine);
-            }
-        }
+        observedBy.Add(figurine);
+        hasBeenObservedBy.Add(figurine);
         RevealContents(figurine);
     }
 
@@ -85,28 +73,28 @@ public class FogHideOtherObject : MonoBehaviour
     }
 
     // Reveal any and all objects hidden by this fog cell.
-    private void RevealContents(GameObject figurine)
+    private void RevealContents(GameObject playerFig)
     {
         // Make all NPC figurines visible
-        for (int i = 0; i < figurineColliders.Count; i++)
+        foreach (Collider fig in figurineColliders)
         {
-            MakeVisible(figurineColliders[i], figurine);
+            MakeVisible(fig, playerFig);
         }
 
         // Make all obstacles visible
-        for (int i = 0; i < obstacleColliders.Count; i++)
+        foreach (Collider obstacle in obstacleColliders)
         {
-            MakeVisible(obstacleColliders[i], figurine);
+            MakeVisible(obstacle, playerFig);
         }
     }
 
     // Hides all objects tagged with the NPCFigurines-tag that can be hidden by this fog cell.
-    private void HideContents(GameObject figurine)
+    private void HideContents(GameObject playerFig)
     {
         // Make all NPC figurines visible
-        for (int i = 0; i < figurineColliders.Count; i++)
+        foreach (Collider fig in figurineColliders)
         {
-            MakeInvisible(figurineColliders[i], figurine);
+            MakeInvisible(fig, playerFig);
         }
     }
 
@@ -144,13 +132,13 @@ public class FogHideOtherObject : MonoBehaviour
         }
     }
 
-    public GameObject[] GetObservedBy()
+    public HashSet<GameObject> GetObservedBy()
     {
-        return observedBy.ToArray();
+        return observedBy;
     }
 
-    public GameObject[] getHasBeenObservedBy()
+    public HashSet<GameObject> getHasBeenObservedBy()
     {
-        return hasBeenObservedBy.ToArray();
+        return hasBeenObservedBy;
     }
 }

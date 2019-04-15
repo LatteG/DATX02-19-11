@@ -259,7 +259,7 @@ PrefabInstance:
     - target: {fileID: 8829548002790330798, guid: 0919273d5666bf944ba903096ea2cc5a,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 8829548002790330798, guid: 0919273d5666bf944ba903096ea2cc5a,
         type: 3}
@@ -320,36 +320,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Figurine_Player2
       objectReference: {fileID: 0}
-    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.050000004
-      objectReference: {fileID: 0}
-    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.050000004
-      objectReference: {fileID: 0}
-    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 8829548002790330798, guid: 0919273d5666bf944ba903096ea2cc5a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -404,6 +374,36 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.050000004
+      objectReference: {fileID: 0}
+    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.050000004
+      objectReference: {fileID: 0}
+    - target: {fileID: 5232382488076646358, guid: 0066209f147558e4aaa50845efe55dcf,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0066209f147558e4aaa50845efe55dcf, type: 3}
@@ -1586,6 +1586,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Figurine_Enemy
       objectReference: {fileID: 0}
+    - target: {fileID: 3054508066924389319, guid: 66f8d895dabee83468dba0de87b8946b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 592458350434367236, guid: 66f8d895dabee83468dba0de87b8946b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1594,7 +1599,7 @@ PrefabInstance:
     - target: {fileID: 592458350434367236, guid: 66f8d895dabee83468dba0de87b8946b,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 592458350434367236, guid: 66f8d895dabee83468dba0de87b8946b,
         type: 3}
@@ -2731,6 +2736,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Obstacle_Wall
       objectReference: {fileID: 0}
+    - target: {fileID: 4637816363565740481, guid: 194a84b963922914b8e943b4d07649a7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4637816363565740482, guid: 194a84b963922914b8e943b4d07649a7,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3420,6 +3430,41 @@ PrefabInstance:
       propertyPath: show
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1136089980047273883, guid: d1b40ba5e9107a84fa5937bdb083d981,
+        type: 3}
+      propertyPath: m_focusColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1136089980047273883, guid: d1b40ba5e9107a84fa5937bdb083d981,
+        type: 3}
+      propertyPath: m_focusColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1138124198083297967, guid: d1b40ba5e9107a84fa5937bdb083d981,
+        type: 3}
+      propertyPath: m_focusColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1138124198083297967, guid: d1b40ba5e9107a84fa5937bdb083d981,
+        type: 3}
+      propertyPath: m_focusColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1032175183010609493, guid: d1b40ba5e9107a84fa5937bdb083d981,
+        type: 3}
+      propertyPath: OutlineColorInRange.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1032175183010609493, guid: d1b40ba5e9107a84fa5937bdb083d981,
+        type: 3}
+      propertyPath: OutlineColorInRange.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1032175183010609493, guid: d1b40ba5e9107a84fa5937bdb083d981,
+        type: 3}
+      propertyPath: OutlineColorHighlighted.a
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d1b40ba5e9107a84fa5937bdb083d981, type: 3}
 --- !u!1001 &7647315897910301335
@@ -3433,6 +3478,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: FogSpawner
+      objectReference: {fileID: 0}
+    - target: {fileID: 7647315897191392820, guid: 967bf2c1d426be048a21af9760df9aab,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7647315897191392818, guid: 967bf2c1d426be048a21af9760df9aab,
         type: 3}
@@ -3488,6 +3538,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7647315897191392819, guid: 967bf2c1d426be048a21af9760df9aab,
+        type: 3}
+      propertyPath: cellSizeVer
+      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 967bf2c1d426be048a21af9760df9aab, type: 3}
