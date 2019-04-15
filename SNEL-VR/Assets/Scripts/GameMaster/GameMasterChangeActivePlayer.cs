@@ -9,6 +9,7 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
     private Dictionary<int, Player> turnQueue;
     private int nextPlayer;
     private Transform tableTransform;
+    private bool isGM;
 
 
 
@@ -21,13 +22,16 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
         SetActivePlayer(gmm.GetActivePlayers()[0]);
         InitTurnQueue();
         nextPlayer = 1;
+        isGM = true;
     }
 
     public void ChangePlayer()
     {
-        
+        isGM = false;
+       
         SetActivePlayer(turnQueue[nextPlayer]);
         SetPosition();
+
         UpdatePlayerAvatar();
 
         nextPlayer = (nextPlayer + 1) % gmm.GetActivePlayers().Count;
@@ -38,6 +42,7 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
 
     public void ChangePlayerGM()
     {
+        isGM = true;
         //Save position of previous player. 
         SavePosition();
 
@@ -109,18 +114,19 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
 
     private void UpdatePlayerAvatar()
     {
-        activePlayer.HideAvatar();
-        activePlayer.MoveAvatar();
-        gmm.GetActivePlayers()[0].HideAvatar();
-
         foreach(Player player in gmm.GetActivePlayers())
         {
-            if (!player.name.Equals(activePlayer.name))
+            if (!player.name.Equals(activePlayer.name));
             {
                 player.ShowAvatar();
             }
         }
 
+        int index = FindPlayer(activePlayer);
+
+        gmm.GetActivePlayers()[index].MoveAvatar();
+        if (!isGM) gmm.GetActivePlayers()[index].HideAvatar();
+        gmm.GetActivePlayers()[0].HideAvatar();
 
     }
 }
