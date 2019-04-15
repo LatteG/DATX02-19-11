@@ -8,6 +8,7 @@ public class GameMasterInit : MonoBehaviour
     GameMasterCreateNewPlayer gmcnp;
     GameMasterChangeActivePlayer gmcap;
     GameMasterSwitchGMMode gmsgmm;
+    Figurine_SpawnFigurines fsf;
 
     void OnEnable()
     {
@@ -15,11 +16,13 @@ public class GameMasterInit : MonoBehaviour
         gmcnp = gameObject.GetComponentInChildren<GameMasterCreateNewPlayer>();
         gmcap = gameObject.GetComponent<GameMasterChangeActivePlayer>();
         gmsgmm = gameObject.GetComponent<GameMasterSwitchGMMode>();
+        fsf = GameObject.FindWithTag("FigurineSpawner").GetComponent<Figurine_SpawnFigurines>();
 
         gmm.enabled = true;
         gmcnp.enabled = true;
         gmcap.enabled = true;
         gmsgmm.enabled = true;
+        fsf.enabled = true;
     }
 
 }

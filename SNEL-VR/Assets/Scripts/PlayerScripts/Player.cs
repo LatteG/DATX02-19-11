@@ -8,8 +8,9 @@ public class Player
     private Vector3 pos;
     private Quaternion rotation;
     private int ID;
+    private GameObject avatar;
+    private List<GameObject> ownedFigurines;
 
-    private GameObject avatar; 
     public string name;
 
     public void InitPlayer(Vector3 pos, Quaternion rotation, int ID, string name)
@@ -18,6 +19,7 @@ public class Player
         this.rotation = rotation;
         this.ID = ID;
         this.name = name;
+        this.ownedFigurines = new List<GameObject>();
 
         SetAvatar();
     }
@@ -26,11 +28,6 @@ public class Player
     {
         Vector3 pos_avatar = new Vector3(this.pos.x, 1f, this.pos.z);
         avatar = GameObject.Instantiate(GameObject.FindGameObjectWithTag("Avatar"), pos_avatar, this.rotation) as GameObject;
-    }
-
-    public void PlayerUpdatePos(Vector3 newPos)
-    {
-        pos = newPos;
     }
 
     public Vector3 GetPlayerPos()
@@ -72,5 +69,15 @@ public class Player
         Vector3 pos_avatar = new Vector3(this.pos.x, 1f, this.pos.z);
         avatar.transform.position = pos_avatar;
         avatar.transform.rotation = this.rotation;
+    }
+
+    internal List<GameObject> GetOwnedFigurines()
+    {
+        return this.ownedFigurines;
+    }
+
+    public void AddFigurine(GameObject fig)
+    {
+        this.ownedFigurines.Add(fig);
     }
 }

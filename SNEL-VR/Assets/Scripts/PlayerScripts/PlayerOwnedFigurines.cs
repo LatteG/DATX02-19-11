@@ -10,10 +10,12 @@ public class PlayerOwnedFigurines : MonoBehaviour
 
     private void Start()
     {
+        
         foreach (GameObject fig in inputFigurines)
         {
             AddFigurine(fig);
         }
+        
     }
 
     public void AddFigurine(GameObject fig)
@@ -34,5 +36,10 @@ public class PlayerOwnedFigurines : MonoBehaviour
         // GameObject[] retList = new GameObject[ownedFigurines.Count];
         // ownedFigurines.CopyTo(retList);
         return ownedFigurines.ToArray();
+    }
+
+    public void ChangeOwnedFigurines(List<GameObject> newFigurines)
+    {
+        this.ownedFigurines = newFigurines;
     }
 }

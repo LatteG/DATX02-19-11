@@ -5,6 +5,9 @@ using UnityEngine;
 public class GameMasterChangeActivePlayer : MonoBehaviour
 {
     private GameMasterManager gmm;
+    //change later to make dependencies better
+    private PlayerOwnedFigurines pof;
+
     private Player activePlayer;
     private Dictionary<int, Player> turnQueue;
     private int nextPlayer;
@@ -19,6 +22,7 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
         tableTransform = GameObject.FindWithTag("Table").transform;
         turnQueue = new Dictionary<int, Player>();
         gmm = GameObject.FindWithTag("GameMaster").GetComponent<GameMasterManager>();
+        pof = GameObject.FindWithTag("Player").GetComponentInChildren<PlayerOwnedFigurines>();
         SetActivePlayer(gmm.GetActivePlayers()[0]);
         InitTurnQueue();
         nextPlayer = 1;
@@ -38,6 +42,10 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
 
         //Since turnQueue doesn't have the key 0
         if (nextPlayer == 0) nextPlayer = 1;
+
+        //change later to make dependencies better
+        pof.ChangeOwnedFigurines(gmm.GetActivePlayers()[FindPlayer(activePlayer)].GetOwnedFigurines());
+        
     }
 
     public void ChangePlayerGM()
@@ -51,8 +59,8 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
         gmm.physicalPlayer.transform.GetChild(0).rotation = gmm.GetGameMasterRotation();
         UpdatePlayerAvatar();
 
-        //Debug.Log("I'm the master!");
-        //Debug.Log("In CPGM: Recent player was: " + activePlayer.name);
+        //change later to make dependencies better
+        pof.ChangeOwnedFigurines(gmm.GetActivePlayers()[0].GetOwnedFigurines());
     }
 
     public void SetActivePlayer(Player player)

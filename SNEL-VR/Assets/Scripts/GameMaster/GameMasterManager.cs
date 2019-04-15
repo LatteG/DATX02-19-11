@@ -15,6 +15,7 @@ public class GameMasterManager : MonoBehaviour
     private Vector3 gameMasterPos;
     private Quaternion gameMasterRotation;
 
+
     public void OnEnable()
     {
 

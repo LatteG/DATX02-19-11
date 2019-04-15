@@ -15,6 +15,7 @@ TagManager:
   - ChoosePlayerButtons
   - Table
   - Avatar
+  - FigurineSpawner
   layers:
   - Default
   - TransparentFX
