@@ -96,7 +96,7 @@ public class GridHandler : MonoBehaviour
 
         figTransform.hasChanged = false;
 
-        Debug.Log("Figurine has been moved from " + oldPos + " to " + newPos);
+        // Debug.Log("Figurine has been moved from " + oldPos + " to " + newPos);
         Debug.DrawLine(oldPos, newPos, Color.blue, 0.25f);
     }
 

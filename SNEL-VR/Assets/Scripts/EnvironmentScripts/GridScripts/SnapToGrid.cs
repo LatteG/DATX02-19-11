@@ -23,7 +23,6 @@ public class SnapToGrid : MonoBehaviour
         if (snappingTags.Contains(other.gameObject.tag))
         {
             gridHandler.AddToSnappingQueue(other.gameObject.transform.parent.gameObject);
-            Debug.Log("Figurine entered a grid square!");
         }
     }
 
@@ -33,7 +32,6 @@ public class SnapToGrid : MonoBehaviour
         if (snappingTags.Contains(other.gameObject.tag))
         {
             gridHandler.ZeroVelocity(other.gameObject.transform.parent.gameObject);
-            Debug.Log("Figurine exited a grid square!");
         }
     }
 }
