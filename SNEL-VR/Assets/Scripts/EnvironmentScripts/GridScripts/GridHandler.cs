@@ -13,13 +13,15 @@ public class GridHandler : MonoBehaviour
     private Vector3 originPoint;
 
     private Dictionary<Vector2, GameObject> gridMap;
-    private HashSet<GameObject> figurines;
+    private HashSet<GameObject> figurinesToBeSnapped;
+    private HashSet<GameObject> snappedFigurines;
 
     private void Awake()
     {
         this.enabled = false;
     }
 
+    // Initializes and enables the script.
     public void init(int rows, int cols, float gridSize, Vector3 scale)
     {
         this.rows = rows;
@@ -30,6 +32,7 @@ public class GridHandler : MonoBehaviour
         enabled = true;
     }
 
+    // Checks that the script should be enabled and then initializes some variables.
     private void OnEnable()
     {
         if (rows == -1 || cols == -1 || gridSize <= 0)
@@ -39,50 +42,29 @@ public class GridHandler : MonoBehaviour
         }
 
         gridMap = new Dictionary<Vector2, GameObject>();
-        figurines = new HashSet<GameObject>();
+        figurinesToBeSnapped = new HashSet<GameObject>();
+        snappedFigurines = new HashSet<GameObject>();
         originPoint = gameObject.GetComponent<Transform>().position - new Vector3(cols * scale.x / 2f, 0, rows * scale.z / 2f);
-        
-        gameObject.AddComponent<BoxCollider>();
-        BoxCollider bc = gameObject.GetComponent<BoxCollider>();
-        bc.isTrigger = true;
-        bc.size = new Vector3(cols * gridSize / scale.x, 0.1f, rows * gridSize / scale.x);
-        bc.center = new Vector3(-0.5f * gridSize, 0.1f, -0.5f * gridSize);
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("NPCFigurine") || other.gameObject.CompareTag("PlayerFigurine"))
-        {
-            figurines.Add(other.gameObject.GetComponent<Transform>().parent.gameObject);
-            // Debug.Log("A figurine with the tag \"" + other.gameObject.tag + "\" has entered the grid.");
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.CompareTag("NPCFigurine") || other.gameObject.CompareTag("PlayerFigurine"))
-        {
-            figurines.Remove(other.gameObject.GetComponent<Transform>().parent.gameObject);
-            ZeroVelocity(other.gameObject.GetComponent<Transform>().parent.gameObject);
-            // Debug.Log("A figurine with the tag \"" + other.gameObject.tag + "\" has left the grid.");
-        }
     }
 
     private void FixedUpdate()
     {
-        foreach (GameObject fig in figurines)
+        // Snaps figurines to the grid unless they are being held.
+        foreach (GameObject fig in figurinesToBeSnapped)
         {
             if (!fig.GetComponent<OculusSampleFramework.DistanceGrabbable>().isGrabbed)
             {
-                if (fig.GetComponent<Transform>().hasChanged)
-                {
-                    SnapToGrid(fig);
-                }
+                SnapToGrid(fig);
+                snappedFigurines.Add(fig);
             }
         }
+
+        // Removes the ones that were snapped from the figurinesToBeSnapped-HashSet.
+        figurinesToBeSnapped.ExceptWith(snappedFigurines);
+        snappedFigurines.Clear();
     }
 
-    public void SnapToGrid(GameObject fig)
+    private void SnapToGrid(GameObject fig)
     {
         Transform figTransform = fig.GetComponent<Transform>();
 
@@ -111,6 +93,7 @@ public class GridHandler : MonoBehaviour
         Debug.DrawLine(oldPos, newPos, Color.blue, 0.25f);
     }
 
+    // Translates a position to a key but does not check for validity.
     private Vector2 PositionToKey(Vector3 pos)
     {
         float x = (pos.x - originPoint.x) / gridSize;
@@ -119,6 +102,7 @@ public class GridHandler : MonoBehaviour
         return new Vector2(Mathf.RoundToInt(x), Mathf.RoundToInt(y));
     }
 
+    // Checks if a key is within the valid intervals.
     private bool IsValidKey(Vector2 key)
     {
         return key.x >= 0 
@@ -127,6 +111,8 @@ public class GridHandler : MonoBehaviour
             && key.y < rows;
     }
 
+    // Adds a game object to the Dictionary that keeps track on all grid squares.
+    // Returns false if the position leads to an invalid key.
     public bool AddToMap(GameObject value)
     {
         Vector3 pos = value.GetComponent<MeshRenderer>().bounds.min;
@@ -149,7 +135,14 @@ public class GridHandler : MonoBehaviour
         return true;
     }
 
-    private void ZeroVelocity(GameObject go)
+    // Adds a figurine that should be snapped to a grid position.
+    public void AddToSnappingQueue(GameObject fig)
+    {
+        figurinesToBeSnapped.Add(fig);
+    }
+
+    // Zeroes the velocity and angular velocity of the Rigidbody attached to the GameObject.
+    public void ZeroVelocity(GameObject go)
     {
         Rigidbody rb = go.GetComponent<Rigidbody>();
         rb.velocity = Vector3.zero;
@@ -157,7 +150,8 @@ public class GridHandler : MonoBehaviour
         rb.Sleep();
     }
 
-    public Vector3 GetSnapToGridPosition(Vector3 pos)
+    // Returns the position of the center of the grid square that pos is in, returns pos if pos is outside of all grid squares.
+    private Vector3 GetSnapToGridPosition(Vector3 pos)
     {
         Vector2 key = PositionToKey(pos);
         if (!IsValidKey(key))

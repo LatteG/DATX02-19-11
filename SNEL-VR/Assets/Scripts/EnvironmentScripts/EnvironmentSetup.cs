@@ -116,35 +116,44 @@ public class EnvironmentSetup : MonoBehaviour
             SpawnGridLine(positions, scale.y, gridLineContainerTransform);
         }
 
+        // Offsets the areaStart to make sure the grid squares are spawned in the correct positions.
         areaStart.x += 0.5f * gridSize;
         areaStart.y -= 0.0025f;
         areaStart.z += 0.5f * gridSize;
 
+        // Adds a GridHandler to the EnvironmentSetup.
         gridSquareContainer.AddComponent<GridHandler>();
         GridHandler gridSquareContainerGridHandler = gridSquareContainer.GetComponent<GridHandler>();
         gridSquareContainerGridHandler.init(rows, cols, gridSize, scale);
 
+        // Used for debugging purposes.
         int added = 0;
         int notAdded = 0;
 
         // Create the grid slots.
         for (int x = 0; x < cols; x++)
         {
+            // Calculate x-coordinate.
             float xCoord = areaStart.x + x * gridSize;
 
             for (int z = 0; z < rows; z++)
             {
+                // Calculates the z-coordinate.
                 float zCoord = areaStart.z + z * gridSize;
+                // Position vector of the GridSquare.
                 Vector3 pos = new Vector3(xCoord, areaStart.y, zCoord);
 
+                // Spawn the GridSquare and move it to its position.
                 GameObject gs = Instantiate(gridSquare, gridSquareContainerTransform);
                 gs.GetComponent<Transform>().localPosition = pos;
 
+                // Enable snap to grid if wanted.
                 if (enableSnapToGrid)
                 {
                     gs.GetComponent<SnapToGrid>().enabled = true;
                 }
 
+                // Checks how many of the GridSquares were spawned in proper positions.
                 if (gridSquareContainerGridHandler.AddToMap(gs))
                 {
                     added++;
@@ -172,6 +181,7 @@ public class EnvironmentSetup : MonoBehaviour
         lineRen.endWidth = gridLineWidth * scale;
     }
 
+    // Sets the transform for containers that are put in EnvironmentSetup.
     private void SetupContainerTransform(Transform t)
     {
         t.SetParent(setupTransform);

@@ -2623,7 +2623,7 @@ PrefabInstance:
     - target: {fileID: 7647315897191392819, guid: 967bf2c1d426be048a21af9760df9aab,
         type: 3}
       propertyPath: enableSnapToGrid
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7647315897191392819, guid: 967bf2c1d426be048a21af9760df9aab,
         type: 3}
