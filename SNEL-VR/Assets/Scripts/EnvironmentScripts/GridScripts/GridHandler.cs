@@ -58,6 +58,16 @@ public class GridHandler : MonoBehaviour
         }
     }
 
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("NPCFigurine") || other.gameObject.CompareTag("PlayerFigurine"))
+        {
+            figurines.Remove(other.gameObject.GetComponent<Transform>().parent.gameObject);
+            ZeroVelocity(other.gameObject.GetComponent<Transform>().parent.gameObject);
+            // Debug.Log("A figurine with the tag \"" + other.gameObject.tag + "\" has left the grid.");
+        }
+    }
+
     private void FixedUpdate()
     {
         foreach (GameObject fig in figurines)
@@ -90,18 +100,15 @@ public class GridHandler : MonoBehaviour
 
         // Reset the angle around the x- and z-axis.
         Quaternion figRot = figTransform.rotation;
-        figRot.eulerAngles = new Vector3(0, figRot.eulerAngles.y, 0);
+        figRot.eulerAngles = Vector3.zero;
 
         // Set the velocity and angular velocity to zero
-        Rigidbody figRigidbody = fig.GetComponent<Rigidbody>();
-        figRigidbody.velocity = new Vector3(0, 0, 0);
-        figRigidbody.angularVelocity = new Vector3(0, 0, 0);
-        figRigidbody.Sleep();
+        ZeroVelocity(fig);
 
         figTransform.hasChanged = false;
 
         Debug.Log("Figurine has been moved from " + oldPos + " to " + newPos);
-        Debug.DrawLine(oldPos, figTransform.position, Color.blue, 0.25f);
+        Debug.DrawLine(oldPos, newPos, Color.blue, 0.25f);
     }
 
     private Vector2 PositionToKey(Vector3 pos)
@@ -142,23 +149,22 @@ public class GridHandler : MonoBehaviour
         return true;
     }
 
+    private void ZeroVelocity(GameObject go)
+    {
+        Rigidbody rb = go.GetComponent<Rigidbody>();
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        rb.Sleep();
+    }
+
     public Vector3 GetSnapToGridPosition(Vector3 pos)
     {
         Vector2 key = PositionToKey(pos);
-        if (!gridMap.ContainsKey(key))
+        if (!IsValidKey(key))
         {
             return pos;
         }
 
-        //Vector3 retPos = gridMap[key].GetComponent<MeshRenderer>().bounds.min;
-        //retPos.x += gridSize / 2;
-        //retPos.z += gridSize / 2;
-
-        Vector3 retPos = gridMap[key].GetComponent<Transform>().position;
-        //retPos.x -= gridSize / 2;
-        //retPos.z -= gridSize / 2;
-
-
-        return retPos;
+        return gridMap[key].GetComponent<Transform>().position;
     }
 }

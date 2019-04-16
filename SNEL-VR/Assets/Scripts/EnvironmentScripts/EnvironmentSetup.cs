@@ -7,7 +7,7 @@ public class EnvironmentSetup : MonoBehaviour
     public float cellSizeHor = 0.1f;
     public float cellSizeVer = 1f;
     public float gridSize = 1f;
-    public float gridWidth = 0.005f;
+    public float gridLineWidth = 0.005f;
 
     public bool enableSnapToGrid = true;
 
@@ -168,8 +168,8 @@ public class EnvironmentSetup : MonoBehaviour
 
         lineRen.SetPositions(positions);
 
-        lineRen.startWidth = gridWidth * scale;
-        lineRen.endWidth = gridWidth * scale;
+        lineRen.startWidth = gridLineWidth * scale;
+        lineRen.endWidth = gridLineWidth * scale;
     }
 
     private void SetupContainerTransform(Transform t)
