@@ -56,6 +56,13 @@ public class GridHandler : MonoBehaviour
             {
                 SnapToGrid(fig);
                 snappedFigurines.Add(fig);
+
+                Figurine_UpdatePlayerVision ffupv = fig.GetComponent<Figurine_UpdatePlayerVision>();
+
+                if (ffupv != null)
+                {
+                    ffupv.ExternalUpdateCall();
+                }
             }
         }
 
