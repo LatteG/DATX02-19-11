@@ -9,7 +9,7 @@ public class Player
     private Quaternion rotation;
     private int ID;
     private GameObject avatar;
-    private List<GameObject> ownedFigurines;
+    private HashSet<GameObject> ownedFigurines;
 
     public string name;
 
@@ -19,7 +19,7 @@ public class Player
         this.rotation = rotation;
         this.ID = ID;
         this.name = name;
-        this.ownedFigurines = new List<GameObject>();
+        this.ownedFigurines = new HashSet<GameObject>();
 
         SetAvatar();
     }
@@ -71,7 +71,7 @@ public class Player
         avatar.transform.rotation = this.rotation;
     }
 
-    internal List<GameObject> GetOwnedFigurines()
+    internal HashSet<GameObject> GetOwnedFigurines()
     {
         return this.ownedFigurines;
     }

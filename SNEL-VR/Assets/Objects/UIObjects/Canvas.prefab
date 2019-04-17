@@ -265,8 +265,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5095213089819091061}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1.4}
-  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
+  m_LocalPosition: {x: 0, y: 0, z: -0.32}
+  m_LocalScale: {x: 0.05, y: 0.05, z: 0.01}
   m_Children:
   - {fileID: 914786862940936952}
   - {fileID: 7619982233428527388}
@@ -276,7 +276,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 15.36, y: 2.5}
+  m_AnchoredPosition: {x: -0.12, y: 13.28}
   m_SizeDelta: {x: 1042, y: 423}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &2829725546401922353
@@ -366,6 +366,7 @@ GameObject:
   - component: {fileID: 7602365865846480247}
   - component: {fileID: 6172590082875424685}
   - component: {fileID: 6969331588567698786}
+  - component: {fileID: 396048918534547675}
   m_Layer: 5
   m_Name: MoveButton
   m_TagString: Untagged
@@ -469,9 +470,32 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6172590082875424685}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 396048918534547675}
+        m_MethodName: Teleport
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &396048918534547675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5176480666477001810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79082f861416913419b8f30063831239, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8577726605771889859
 GameObject:
   m_ObjectHideFlags: 0
@@ -486,7 +510,7 @@ GameObject:
   - component: {fileID: 7858298059532121935}
   - component: {fileID: 8113235213047318183}
   - component: {fileID: 6607558663321231470}
-  - component: {fileID: 4610043781745051202}
+  - component: {fileID: 2549522459571064096}
   m_Layer: 5
   m_Name: AttackButton
   m_TagString: Untagged
@@ -591,8 +615,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4610043781745051202}
-        m_MethodName: ColorChange
+      - m_Target: {fileID: 2549522459571064096}
+        m_MethodName: Teleport
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -644,7 +668,7 @@ MonoBehaviour:
     m_Bits: 4294967295
   pointer: {fileID: 0}
   sortOrder: 0
---- !u!114 &4610043781745051202
+--- !u!114 &2549522459571064096
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -653,12 +677,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8577726605771889859}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76bcbce222cdb614a897d63413e057dd, type: 3}
+  m_Script: {fileID: 11500000, guid: 79082f861416913419b8f30063831239, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ModeObject: {fileID: 0}
-  AttackMaterial: {fileID: 2100000, guid: f377075091da3c84681dc4bbf48b1478, type: 2}
-  ActionMaterial: {fileID: 0}
 --- !u!1 &9172913528784539441
 GameObject:
   m_ObjectHideFlags: 0
@@ -673,7 +694,7 @@ GameObject:
   - component: {fileID: 2398372986576772013}
   - component: {fileID: 5275605920208761701}
   - component: {fileID: 8398560709257646904}
-  - component: {fileID: 5705472790656060765}
+  - component: {fileID: 8630384099726512971}
   m_Layer: 5
   m_Name: ActionButton
   m_TagString: Untagged
@@ -778,8 +799,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5705472790656060765}
-        m_MethodName: ColorChange2
+      - m_Target: {fileID: 8630384099726512971}
+        m_MethodName: Teleport
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -831,7 +852,7 @@ MonoBehaviour:
     m_Bits: 4294967295
   pointer: {fileID: 0}
   sortOrder: 0
---- !u!114 &5705472790656060765
+--- !u!114 &8630384099726512971
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -840,9 +861,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 9172913528784539441}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76bcbce222cdb614a897d63413e057dd, type: 3}
+  m_Script: {fileID: 11500000, guid: 79082f861416913419b8f30063831239, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ModeObject: {fileID: 0}
-  AttackMaterial: {fileID: 0}
-  ActionMaterial: {fileID: 2100000, guid: a046ce9e5f939e648913c183f565f0d1, type: 2}

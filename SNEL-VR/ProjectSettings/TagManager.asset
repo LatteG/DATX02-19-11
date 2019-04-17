@@ -16,6 +16,7 @@ TagManager:
   - Table
   - Avatar
   - FigurineSpawner
+  - Laser
   layers:
   - Default
   - TransparentFX

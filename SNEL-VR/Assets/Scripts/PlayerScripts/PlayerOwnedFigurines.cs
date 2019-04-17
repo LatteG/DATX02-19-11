@@ -33,7 +33,7 @@ public class PlayerOwnedFigurines : MonoBehaviour
         return ownedFigurines;
     }
 
-    public void ChangeOwnedFigurines(List<GameObject> newFigurines)
+    public void ChangeOwnedFigurines(HashSet<GameObject> newFigurines)
     {
         this.ownedFigurines = newFigurines;
     }
