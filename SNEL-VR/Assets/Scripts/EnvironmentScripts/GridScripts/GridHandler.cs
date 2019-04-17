@@ -168,4 +168,86 @@ public class GridHandler : MonoBehaviour
 
         return gridMap[key].GetComponent<Transform>().position;
     }
+
+    public HashSet<GameObject> ShowMovment(GameObject fig)
+    {
+        Transform figTransform = fig.GetComponent<Transform>();
+        Vector3 figPos = figTransform.position;
+        int steps = 3;
+
+        HashSet<Vector2> inRange = FindSquaresInRange(steps, figPos);
+
+        HashSet<GameObject> squares = new HashSet<GameObject>();
+
+        foreach(Vector2 k in inRange)
+        {
+            squares.Add(gridMap[k]);
+        }
+
+        return squares;
+    }
+
+    private HashSet<Vector2> GetNeighbours(Vector2 key)
+    {
+        HashSet<Vector2> retSet = new HashSet<Vector2>();
+
+        Vector2 temp = new Vector2(key.x + 1, key.y);
+        if (IsValidKey(temp))
+        {
+            retSet.Add(temp);
+        }
+        temp = new Vector2(key.x - 1, key.y);
+        if (IsValidKey(temp))
+        {
+            retSet.Add(temp);
+        }
+        temp = new Vector2(key.x, key.y + 1);
+        if (IsValidKey(temp))
+        {
+            retSet.Add(temp);
+        }
+        temp = new Vector2(key.x, key.y - 1);
+        if (IsValidKey(temp))
+        {
+            retSet.Add(temp);
+        }
+
+        return retSet;
+    }
+
+    private HashSet<Vector2> FindSquaresInRange(int steps, Vector3 pos)
+    {
+        Vector2 posOnGrid = PositionToKey(pos);
+
+        if(!IsValidKey(posOnGrid))
+        {
+            return null;
+        }
+
+        HashSet<Vector2> start = new HashSet<Vector2>();
+        start.Add(posOnGrid);
+
+        return FindSquaresInRange(steps, start);
+
+    }
+    private HashSet<Vector2> FindSquaresInRange(int steps, HashSet<Vector2> current)
+    {
+        HashSet<Vector2> next = new HashSet<Vector2>();
+
+        foreach(Vector2 c in current)
+        {
+            next.UnionWith(GetNeighbours(c));
+        }
+
+        if(steps <= 1)
+        {
+            current.UnionWith(next);
+        }
+        else
+        {
+            next.ExceptWith(current);
+            current.UnionWith(FindSquaresInRange(--steps, next));
+        }
+        return current;
+    }
 }
