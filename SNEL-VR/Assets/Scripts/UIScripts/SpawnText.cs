@@ -12,4 +12,5 @@ public class SpawnText : MonoBehaviour
     {
         Instantiate(text, pos, Quaternion.identity);
     }
+
 }

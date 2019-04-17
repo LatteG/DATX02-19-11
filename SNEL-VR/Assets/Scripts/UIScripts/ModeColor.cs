@@ -19,14 +19,12 @@ public class ModeColor : MonoBehaviour
     {
         //Debug.Log("Nu trycktes knappen ner.");
         ModeObject.sharedMaterial = AttackMaterial;
-    
     }
 
     public void ColorChange2()
     {
         //Debug.Log("Nu trycktes knappen ner.");
         ModeObject.sharedMaterial = ActionMaterial;
-
     }
 
 }
