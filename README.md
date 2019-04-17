@@ -14,3 +14,8 @@ TBD
 - Grid.
   - Draws a grid on the ground covered bvy the fog, visible where the fog is uncovered.
   - Snap to grid for figurines.
+- Hot-seat multiplayer
+  - Switch between GM and player with a button press.
+  - Players are placed in randomized turn queue.
+  - Set player amount.
+  - Correct information is shown
