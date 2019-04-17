@@ -13,6 +13,7 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
     private int nextPlayer;
     private Transform tableTransform;
     private bool isGM;
+    private Camera mainCamera;
 
 
 
@@ -27,6 +28,7 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
         InitTurnQueue();
         nextPlayer = 1;
         isGM = true;
+        mainCamera = Camera.main;
     }
 
     public void ChangePlayer()
@@ -45,7 +47,8 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
 
         //change later to make dependencies better
         pof.ChangeOwnedFigurines(gmm.GetActivePlayers()[FindPlayer(activePlayer)].GetOwnedFigurines());
-        
+        mainCamera.cullingMask = ~(1<<15);
+
     }
 
     public void ChangePlayerGM()
@@ -61,6 +64,7 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
 
         //change later to make dependencies better
         pof.ChangeOwnedFigurines(gmm.GetActivePlayers()[0].GetOwnedFigurines());
+        mainCamera.cullingMask = ~(0);
     }
 
     public void SetActivePlayer(Player player)
