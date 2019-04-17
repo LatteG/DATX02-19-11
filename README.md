@@ -11,3 +11,6 @@ TBD
 - VR.
   - Can move around in VR, both roomscale and locomotion via joystick.
   - Can pick up and move figurines in VR, only updates fog of war when a player figurine is released and it has come to a halt.
+- Grid.
+  - Draws a grid on the ground covered bvy the fog, visible where the fog is uncovered.
+  - Snap to grid for figurines.

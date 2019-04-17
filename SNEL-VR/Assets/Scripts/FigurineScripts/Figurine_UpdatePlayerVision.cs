@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using OVRTouchSample;
 using UnityEngine;
@@ -63,11 +63,17 @@ public class Figurine_UpdatePlayerVision : MonoBehaviour
                 awaitStandstill = true;
                 oldPos = figTransform.position;
                 waitedFrames = 0;
+                wasGrabbed = false;
             }
             else
             {
                 wasGrabbed = isGrabbed;
             }
         }
+    }
+
+    public void ExternalUpdateCall()
+    {
+        playerVision.ShouldUpdate();
     }
 }

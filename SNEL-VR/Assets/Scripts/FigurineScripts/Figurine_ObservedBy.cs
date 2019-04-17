@@ -4,14 +4,11 @@ using UnityEngine;
 
 public class Figurine_ObservedBy : MonoBehaviour
 {
-    private List<GameObject> observedBy = new List<GameObject>();
+    private HashSet<GameObject> observedBy = new HashSet<GameObject>();
 
     public void AddObserver(GameObject observer)
     {
-        if (!observedBy.Contains(observer))
-        {
-            observedBy.Add(observer);
-        }
+        observedBy.Add(observer);
     }
 
     public void RemoveObserver(GameObject observer)
@@ -24,8 +21,8 @@ public class Figurine_ObservedBy : MonoBehaviour
         observedBy.Clear();
     }
 
-    public GameObject[] GetObservedBy()
+    public HashSet<GameObject> GetObservedBy()
     {
-        return observedBy.ToArray();
+        return observedBy;
     }
 }
