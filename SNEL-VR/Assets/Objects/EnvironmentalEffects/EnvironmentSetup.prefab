@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7647315897191392818}
   - component: {fileID: 7647315897191392819}
   m_Layer: 0
-  m_Name: FogSpawner
+  m_Name: EnvironmentSetup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,7 +46,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellSizeHor: 0.25
   cellSizeVer: 0.5
+  gridSize: 1
+  gridWidth: 0.005
   fogElement: {fileID: 865640660686519463, guid: 315f6be96a9585941b02c974915574ff,
+    type: 3}
+  gridLine: {fileID: 1744362040593873343, guid: 952bc263c8bea634f8a506c4b1a1fd4c,
+    type: 3}
+  gridSquare: {fileID: 2233809744250843810, guid: 930c547088c3ff5469083dbca8595387,
     type: 3}
 --- !u!1 &7647315897805872827
 GameObject:
