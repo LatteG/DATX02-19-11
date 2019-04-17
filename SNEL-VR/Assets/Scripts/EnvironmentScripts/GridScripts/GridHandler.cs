@@ -168,4 +168,84 @@ public class GridHandler : MonoBehaviour
 
         return gridMap[key].GetComponent<Transform>().position;
     }
+
+    // Returns all squares within a set amount of steps from the figurine
+    public HashSet<GameObject> FindSquares(GameObject fig)
+    {
+        Transform figTransform = fig.GetComponent<Transform>();
+        Vector3 pos = figTransform.position;
+        int steps = 3;
+        HashSet<Vector2> inRange = FindInRange(steps, pos);
+        HashSet<GameObject> squares = new HashSet<GameObject>();
+        foreach(Vector2 u in inRange)
+        {
+            squares.Add(gridMap[u]);
+        }
+        return squares;
+    }
+
+    // Returns the positions of all squares a set amount of steps away from a given start position
+    private HashSet<Vector2> FindInRange(int steps, Vector3 pos)
+    {
+        Vector2 gridPos = PositionToKey(pos);
+        if(!IsValidKey(gridPos))
+        {
+            return null;
+        }
+        HashSet<Vector2> start = new HashSet<Vector2>();
+        start.Add(gridPos);
+        return FindInRange(steps, start);
+    }
+
+    // Returns the positions of all squares a set amount of steps away from a set of already found squares
+    private HashSet<Vector2> FindInRange(int steps, HashSet<Vector2> current)
+    {
+        HashSet<Vector2> next = new HashSet<Vector2>();
+        foreach(Vector2 u in current)
+        {
+            next.UnionWith(GetNeighbours(u));
+        }
+        if(steps <= 1)
+        {
+            current.UnionWith(next);
+        }
+        else
+        {
+            next.ExceptWith(current);
+            current.UnionWith(FindInRange(--steps, next));
+        }
+
+        return current;
+
+    }
+
+    // Returns the positions of the squares one step away from a given position
+    private HashSet<Vector2> GetNeighbours(Vector2 key)
+    {
+        HashSet<Vector2> retSet = new HashSet<Vector2>();
+
+        Vector2 temp = new Vector2(key.x + 1, key.y);
+        if (IsValidKey(temp))
+        {
+            retSet.Add(temp);
+        }
+        temp = new Vector2(key.x - 1, key.y);
+        if (IsValidKey(temp))
+        {
+            retSet.Add(temp);
+        }
+        temp = new Vector2(key.x, key.y + 1);
+        if (IsValidKey(temp))
+        {
+            retSet.Add(temp);
+        }
+        temp = new Vector2(key.x, key.y - 1);
+        if (IsValidKey(temp))
+        {
+            retSet.Add(temp);
+        }
+
+        return retSet;
+    }
 }
+
