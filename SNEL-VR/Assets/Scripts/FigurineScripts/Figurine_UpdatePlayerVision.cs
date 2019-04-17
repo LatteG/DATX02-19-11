@@ -71,4 +71,9 @@ public class Figurine_UpdatePlayerVision : MonoBehaviour
             }
         }
     }
+
+    public void ExternalUpdateCall()
+    {
+        playerVision.ShouldUpdate();
+    }
 }
