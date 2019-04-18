@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Figurine_SpawnFigurines : MonoBehaviour
 {
-    //Setting references when instantiating by finding them in the scene by sript doesn't work. 
-    //They are set in the inspector instead. Then set before instantiation.
+    //Setting references for the canvas in player figurine when instantiating by finding them in the scene by sript doesn't work. 
+    //They are set in the inspector instead. Then set before instantiation. <Disabled atm>
 
     private GameMasterManager gmm;  
     private List<MeshCollider> availableSpawns;
@@ -46,9 +46,9 @@ public class Figurine_SpawnFigurines : MonoBehaviour
         {
             Vector3 pos = availableSpawns[i-1].transform.position;
 
-            figurine.GetComponentInChildren<RotateCanvas>().target = targetTransform;
-            figurine.GetComponentInChildren<Canvas>().worldCamera = eventCamera;
-            figurine.GetComponentInChildren<OVRRaycaster>().pointer = pointer;
+            //figurine.GetComponentInChildren<RotateCanvas>().target = targetTransform;
+            //figurine.GetComponentInChildren<Canvas>().worldCamera = eventCamera;
+            //figurine.GetComponentInChildren<OVRRaycaster>().pointer = pointer;
 
             GameObject figurine_tmp = Instantiate(figurine, pos, Quaternion.identity, transformFigurines) as GameObject;
 

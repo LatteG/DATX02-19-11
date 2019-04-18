@@ -12,6 +12,7 @@ public class Player
     private HashSet<GameObject> ownedFigurines;
 
     public string name;
+    public bool avatarShowing;
 
     public void InitPlayer(Vector3 pos, Quaternion rotation, int ID, string name)
     {
@@ -20,6 +21,7 @@ public class Player
         this.ID = ID;
         this.name = name;
         this.ownedFigurines = new HashSet<GameObject>();
+        this.avatarShowing = false;
 
         SetAvatar();
     }
@@ -57,11 +59,13 @@ public class Player
     public void ShowAvatar()
     {
         this.avatar.SetActive(true);
+        this.avatarShowing = false;
     }
 
     public void HideAvatar()
     {
         this.avatar.SetActive(false);
+        this.avatarShowing = true;
     }
 
     public void MoveAvatar()

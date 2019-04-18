@@ -47,6 +47,7 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
 
         //change later to make dependencies better
         pof.ChangeOwnedFigurines(gmm.GetActivePlayers()[FindPlayer(activePlayer)].GetOwnedFigurines());
+
         mainCamera.cullingMask = ~(1<<15);
 
     }
@@ -64,6 +65,7 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
 
         //change later to make dependencies better
         pof.ChangeOwnedFigurines(gmm.GetActivePlayers()[0].GetOwnedFigurines());
+
         mainCamera.cullingMask = ~(0);
     }
 
@@ -92,6 +94,12 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
 
         //Debug.Log("TurnQueue size: "+turnQueue.Count);
 
+    }
+
+    public Player GetActivePlayer()
+    {
+        int index = FindPlayer(activePlayer);
+        return gmm.GetActivePlayers()[index];
     }
 
     private void SavePosition()
