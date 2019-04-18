@@ -9,6 +9,7 @@ TagManager:
   - PlayerFigurineVision
   - Obstacle
   - Fog
+  - GridHandler
   layers:
   - Default
   - TransparentFX

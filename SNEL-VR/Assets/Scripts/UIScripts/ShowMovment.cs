@@ -16,13 +16,13 @@ public class ShowMovment : MonoBehaviour
     // Finds and highlights the the squares within movement range
     public void Highlight()
     {
-        GridHandler gridhandler = new GridHandler();
+        GridHandler gridhandler = GameObject.FindWithTag("GridHandler").GetComponent<GridHandler>();
         GameObject figurine = GameObject.FindWithTag("PlayerFigurine");
         HashSet<GameObject> movement = gridhandler.FindSquares(figurine);
         foreach(GameObject square in movement)
         {
             Renderer renderer = square.GetComponent<Renderer>();
-            renderer.material.SetColor("_Color", Color.cyan);
+            renderer.material.SetColor("_Color", new Color(0, 0xba, 0xbe));
         }
     }
 }

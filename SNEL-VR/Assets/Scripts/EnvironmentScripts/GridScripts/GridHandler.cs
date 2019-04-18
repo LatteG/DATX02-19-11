@@ -176,6 +176,10 @@ public class GridHandler : MonoBehaviour
         Vector3 pos = figTransform.position;
         int steps = 3;
         HashSet<Vector2> inRange = FindInRange(steps, pos);
+        if (inRange == null)
+        {
+            return null;
+        }
         HashSet<GameObject> squares = new HashSet<GameObject>();
         foreach(Vector2 u in inRange)
         {
@@ -188,6 +192,7 @@ public class GridHandler : MonoBehaviour
     private HashSet<Vector2> FindInRange(int steps, Vector3 pos)
     {
         Vector2 gridPos = PositionToKey(pos);
+        Debug.Log(gridPos);
         if(!IsValidKey(gridPos))
         {
             return null;
