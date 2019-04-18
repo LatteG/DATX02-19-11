@@ -22,6 +22,11 @@ public class Figurine_PlayerVision : MonoBehaviour
     private HashSet<GameObject> permKnownObjects;
     private HashSet<GameObject> tempKnownObjects;
 
+    private HashSet<GameObject> obstaclesInRange;
+    private HashSet<Collider> collidersToBeProcessed;
+
+    private LineOfSightCalculator loscalc;
+
     // Called whenever the fog should be updated from the figurine's perspective.
     public void ShouldUpdate()
     {
@@ -52,6 +57,10 @@ public class Figurine_PlayerVision : MonoBehaviour
 
         permKnownObjects = new HashSet<GameObject>();
         tempKnownObjects = new HashSet<GameObject>();
+        obstaclesInRange = new HashSet<GameObject>();
+        collidersToBeProcessed = new HashSet<Collider>();
+
+        loscalc = new LineOfSightCalculator();
 
         // Adds the attached figurine to the set of permanently known objects.
         foreach (Transform child in parentTransform)
@@ -67,7 +76,13 @@ public class Figurine_PlayerVision : MonoBehaviour
     // Updates the position and checks if the script has updated the fog.
     void FixedUpdate()
     {
+        loscalc.CalculateLOS(pos, visionRange, obstaclesInRange);
+        loscalc.DebugDrawTriangles(pos.y);
+
+        obstaclesInRange.Clear();
+
         pos = parentTransform.position;
+        return;
         if (hasUpdated)
         {
             foreach (Collider c in tempKnownObjectExitingRange)
@@ -85,19 +100,22 @@ public class Figurine_PlayerVision : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         // Does not update anything if the figurine has not moved.
-        if (!shouldUpdate)
+        /*if (!shouldUpdate)
         {
             return;
         }
-        hasUpdated = true;
+        hasUpdated = true;*/
 
         if (ColliderHasTag(other, "Fog") || ColliderHasTag(other, "NPCFigurine") || ColliderHasTag(other, "PlayerFigurine"))
         {
-            UpdateColliderStatus(other);
+            // UpdateColliderStatus(other);
+            collidersToBeProcessed.Add(other);
         }
         else if (ColliderHasTag(other, "Obstacle"))
         {
-            UpdateObstacleColliderStatus(other);
+            // UpdateObstacleColliderStatus(other);
+            collidersToBeProcessed.Add(other);
+            obstaclesInRange.Add(other.gameObject);
         }
     }
 
