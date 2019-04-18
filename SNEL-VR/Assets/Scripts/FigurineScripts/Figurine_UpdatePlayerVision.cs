@@ -22,15 +22,16 @@ public class Figurine_UpdatePlayerVision : MonoBehaviour
     private void OnEnable()
     {
         playerVision = GetComponentInChildren<Figurine_PlayerVision>();
-        distanceGrabbable = GetComponent<OculusSampleFramework.DistanceGrabbable>();
-        figTransform = GetComponent<Transform>();
+        // distanceGrabbable = GetComponent<OculusSampleFramework.DistanceGrabbable>();
+        // figTransform = GetComponent<Transform>();
 
-        playerVision.ShouldUpdate();
+        // playerVision.ShouldUpdate();
     }
 
     // Checks if the figurine's vision should be updated.
     private void FixedUpdate()
     {
+        return;
         // Checks if the figurine has been released and is waiting until it has stopped moving.
         if (awaitStandstill)
         {

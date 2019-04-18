@@ -95,7 +95,7 @@ public class Figurine_PlayerVision : MonoBehaviour
         {
             UpdateColliderStatus(other);
         }
-        else
+        else if (ColliderHasTag(other, "Obstacle"))
         {
             UpdateObstacleColliderStatus(other);
         }
@@ -183,13 +183,13 @@ public class Figurine_PlayerVision : MonoBehaviour
         if (Physics.Raycast(sphereCenter + pos, direction, raycastRange, obstacleLayerMask))
         {
             // Is an obstacle.
-            Debug.DrawLine(sphereCenter + pos, other.gameObject.GetComponent<Transform>().position, Color.red);
+            Debug.DrawLine(sphereCenter + pos, other.gameObject.GetComponent<Transform>().position, Color.red, 1);
             TellOutOfLOS(other.gameObject);
         }
         else
         {
             // Is no obstacle.
-            Debug.DrawLine(sphereCenter + pos, other.gameObject.GetComponent<Transform>().position, Color.green);
+            Debug.DrawLine(sphereCenter + pos, other.gameObject.GetComponent<Transform>().position, Color.green, 1);
             TellInLOS(other.gameObject);
         }
     }
