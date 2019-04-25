@@ -27,6 +27,8 @@ public class Figurine_PlayerVision : MonoBehaviour
 
     private LineOfSightCalculator _losCalc;
 
+    private readonly float _debugDrawLineDuration = 1;
+
     // Called whenever the fog should be updated from the figurine's perspective.
     public void ShouldUpdate()
     {
@@ -85,7 +87,7 @@ public class Figurine_PlayerVision : MonoBehaviour
         }
 
         _losCalc.CalculateLos(_pos, _obstaclesInRange, _visionRange);
-        _losCalc.DebugDrawTriangles(_pos.y, 1);
+        _losCalc.DebugDrawTriangles(_pos.y + _scale.x * 0.5f, _debugDrawLineDuration);
 
         _obstaclesInRange.Clear();
 
@@ -107,7 +109,7 @@ public class Figurine_PlayerVision : MonoBehaviour
         _hasUpdated = false;
     }
 
-    // Checks if a collider should have its visibility sttus updated.
+    // Checks if a collider should have its visibility status updated.
     private void OnTriggerStay(Collider other)
     {
         // Does not update anything if the figurine has not moved.
@@ -135,21 +137,17 @@ public class Figurine_PlayerVision : MonoBehaviour
     // Returns true if the object is within the visibility range, and false if it is outside it.
     public bool UpdateColliderStatus(Collider other)
     {
-//        Vector3 direction = other.gameObject.transform.position - (_sphereCenter + _pos);
-//        float raycastRange = direction.magnitude;
-//
-//        // Checks if the other object is out of range.
-//        if (raycastRange > _visionRange)
-//        {
-//            TellOutOfLOS(other.gameObject);
-//            return false;
-//        }
-//        else
-//        {
-//            DoLOSRaycast(other, direction, raycastRange);
-//            return true;
-//        }
         Vector3 otherPos = other.gameObject.transform.position;
+
+        if (ColliderHasTag(other, "Obstacle"))
+        {
+            float angle = Mathf.Asin((otherPos - _pos).y / (otherPos - _pos).magnitude);
+            float moveDist = other.gameObject.transform.parent.gameObject.GetComponent<BoxCollider>().size.x;
+
+            otherPos.x -= Mathf.Cos(angle) * moveDist;
+            otherPos.y -= Mathf.Sin(angle) * moveDist;
+        }
+        
         float distance = (otherPos - (_sphereCenter + _pos)).magnitude;
 
         if (distance > _visionRange)
@@ -161,10 +159,12 @@ public class Figurine_PlayerVision : MonoBehaviour
         if (_losCalc.PointIsInLos(otherPos))
         {
             TellInLOS(other.gameObject);
+            Debug.DrawLine(otherPos, otherPos + Vector3.up / 5, Color.green, _debugDrawLineDuration);
         }
         else
         {
             TellOutOfLOS(other.gameObject);
+            Debug.DrawLine(otherPos, otherPos + Vector3.up / 5, Color.red, _debugDrawLineDuration);
         }
 
         return true;

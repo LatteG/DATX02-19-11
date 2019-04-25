@@ -27,7 +27,7 @@ public class LineOfSightCalculator
 
     public bool PointIsInLos(Vector3 point)
     {
-        Vector2 p = new Vector2(point.x, point.y);
+        Vector2 p = new Vector2(point.x, point.z);
 
         foreach (Triangle t in triangles)
         {
@@ -403,7 +403,7 @@ public class LineOfSightCalculator
         private readonly float _area;
         private readonly float _angle;
 
-        private const float Sensitivity = 0.00000001f;
+        private readonly float _sensitivity;
 
         private static float Area(Vector2 a, Vector2 b, Vector2 c)
         {
@@ -419,7 +419,9 @@ public class LineOfSightCalculator
             _area = Area(A, B, C);
             _angle = Vector2.Angle(B - A, C - A);
 
-            IsValid = Vector2.Angle(B - A, C - A) > Sensitivity;
+            _sensitivity = Mathf.Pow(10, -7.5f);
+
+            IsValid = _angle > _sensitivity;
         }
 
         public bool PointIsInTriangle(Vector2 point)
@@ -431,7 +433,7 @@ public class LineOfSightCalculator
             // If you make triangles where one side is a side of the original triangle and one
             // point is the input point and the three new triangles have the same area as the original triangle,
             // then the input point is inside the triangle.
-            return Mathf.Abs(_area - (areaPab + areaPac + areaPbc)) <= Sensitivity;
+            return Mathf.Abs(_area - (areaPab + areaPac + areaPbc)) <= _sensitivity;
         }
 
         public bool PointIsInOrBehindTriangle(Vector2 point)
