@@ -5,6 +5,10 @@
 .vscode/
 *.package
 
+# Ignore plugins as this is only used for external C#-editors in our case
+[Aa]ssets/Plugings/
+[Aa]ssets/Plugings.meta
+
 ## https://github.com/github/gitignore/blob/master/Unity.gitignore
 
 [Ll]ibrary/

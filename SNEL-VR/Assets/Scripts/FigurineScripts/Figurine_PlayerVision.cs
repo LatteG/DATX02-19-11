@@ -4,118 +4,130 @@ using UnityEngine;
 
 public class Figurine_PlayerVision : MonoBehaviour
 {
-    private bool shouldUpdate = false;
-    private bool hasUpdated = false;
+    private bool _shouldUpdate = false;
+    private bool _hasUpdated = false;
 
-    private Vector3 pos;
-    private Vector3 scale;
-    private Vector3 sphereCenter;
+    private Vector3 _pos;
+    private Vector3 _scale;
+    private Vector3 _sphereCenter;
 
-    private int obstacleLayerMask;
-    private float visionRange;
+    private int _obstacleLayerMask;
+    private float _visionRange;
 
-    private Transform parentTransform;
-    private GameObject figurine;
+    private Transform _parentTransform;
+    private GameObject _figurine;
 
-    private HashSet<Collider> tempKnownObjectExitingRange;
+    private HashSet<Collider> _tempKnownObjectExitingRange;
 
-    private HashSet<GameObject> permKnownObjects;
-    private HashSet<GameObject> tempKnownObjects;
+    private HashSet<GameObject> _permKnownObjects;
+    private HashSet<GameObject> _tempKnownObjects;
 
-    private HashSet<GameObject> obstaclesInRange;
-    private HashSet<Collider> collidersToBeProcessed;
+    private HashSet<GameObject> _obstaclesInRange;
+    private HashSet<Collider> _collidersToBeProcessed;
 
-    private LineOfSightCalculator loscalc;
+    private LineOfSightCalculator _losCalc;
 
     // Called whenever the fog should be updated from the figurine's perspective.
     public void ShouldUpdate()
     {
-        shouldUpdate = true;
+        _shouldUpdate = true;
     }
 
     // Sets initial values and values that are never changed.
     private void OnEnable()
     {
-        parentTransform = GetComponent<Transform>().parent;
-        scale = GetComponent<Transform>().lossyScale;
+        _parentTransform = GetComponent<Transform>().parent;
+        _scale = GetComponent<Transform>().lossyScale;
 
         // Used for the first FixedUpdate-call.
-        pos = parentTransform.position;
+        _pos = _parentTransform.position;
 
         // Used for raycasts.
-        visionRange = GetComponent<SphereCollider>().radius * scale.x * 0.95f;
-        sphereCenter = GetComponent<SphereCollider>().center;
-        sphereCenter.x *= scale.x;
-        sphereCenter.y *= scale.y;
-        sphereCenter.z *= scale.z;
-        obstacleLayerMask = 1 << 9;
+        _visionRange = GetComponent<SphereCollider>().radius * _scale.x * 0.95f;
+        _sphereCenter = GetComponent<SphereCollider>().center;
+        _sphereCenter.x *= _scale.x;
+        _sphereCenter.y *= _scale.y;
+        _sphereCenter.z *= _scale.z;
+        _obstacleLayerMask = 1 << 9;
 
         // Used for LoS-updates in fog elements.
-        figurine = parentTransform.gameObject;
+        _figurine = _parentTransform.gameObject;
 
-        tempKnownObjectExitingRange = new HashSet<Collider>();
+        _tempKnownObjectExitingRange = new HashSet<Collider>();
 
-        permKnownObjects = new HashSet<GameObject>();
-        tempKnownObjects = new HashSet<GameObject>();
-        obstaclesInRange = new HashSet<GameObject>();
-        collidersToBeProcessed = new HashSet<Collider>();
+        _permKnownObjects = new HashSet<GameObject>();
+        _tempKnownObjects = new HashSet<GameObject>();
+        _obstaclesInRange = new HashSet<GameObject>();
+        _collidersToBeProcessed = new HashSet<Collider>();
 
-        loscalc = new LineOfSightCalculator();
+        _losCalc = new LineOfSightCalculator();
 
         // Adds the attached figurine to the set of permanently known objects.
-        foreach (Transform child in parentTransform)
+        foreach (Transform child in _parentTransform)
         {
-            if (child.gameObject.CompareTag("PlayerFigurine"))
+            if (!child.gameObject.CompareTag("PlayerFigurine"))
             {
-                permKnownObjects.Add(child.gameObject);
-                break;
+                continue;
             }
+
+            _permKnownObjects.Add(child.gameObject);
+            break;
         }
     }
 
     // Updates the position and checks if the script has updated the fog.
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        loscalc.CalculateLOS(pos, visionRange, obstaclesInRange);
-        loscalc.DebugDrawTriangles(pos.y);
-
-        obstaclesInRange.Clear();
-
-        pos = parentTransform.position;
-        return;
-        if (hasUpdated)
+        _pos = _parentTransform.position;
+        if (!_hasUpdated)
         {
-            foreach (Collider c in tempKnownObjectExitingRange)
-            {
-                OnTriggerStay(c);
-            }
-            tempKnownObjectExitingRange.Clear();
-
-            shouldUpdate = false;
-            hasUpdated = false;
+            return;
         }
+
+        _losCalc.CalculateLos(_pos, _obstaclesInRange, _visionRange);
+        _losCalc.DebugDrawTriangles(_pos.y, 1);
+
+        _obstaclesInRange.Clear();
+
+        foreach (Collider c in _tempKnownObjectExitingRange)
+        {
+            UpdateColliderStatus(c);
+        }
+
+        _tempKnownObjectExitingRange.Clear();
+
+        foreach (Collider c in _collidersToBeProcessed)
+        {
+            UpdateColliderStatus(c);
+        }
+
+        _collidersToBeProcessed.Clear();
+
+        _shouldUpdate = false;
+        _hasUpdated = false;
     }
 
     // Checks if a collider should have its visibility sttus updated.
     private void OnTriggerStay(Collider other)
     {
         // Does not update anything if the figurine has not moved.
-        /*if (!shouldUpdate)
+        if (!_shouldUpdate)
         {
             return;
         }
-        hasUpdated = true;*/
 
-        if (ColliderHasTag(other, "Fog") || ColliderHasTag(other, "NPCFigurine") || ColliderHasTag(other, "PlayerFigurine"))
+        _hasUpdated = true;
+
+        if (ColliderHasTag(other, "Fog") ||
+            ColliderHasTag(other, "NPCFigurine") ||
+            ColliderHasTag(other, "PlayerFigurine"))
         {
-            // UpdateColliderStatus(other);
-            collidersToBeProcessed.Add(other);
+            _collidersToBeProcessed.Add(other);
         }
         else if (ColliderHasTag(other, "Obstacle"))
         {
-            // UpdateObstacleColliderStatus(other);
-            collidersToBeProcessed.Add(other);
-            obstaclesInRange.Add(other.gameObject);
+            _collidersToBeProcessed.Add(other);
+            _obstaclesInRange.Add(other.gameObject);
         }
     }
 
@@ -123,20 +135,39 @@ public class Figurine_PlayerVision : MonoBehaviour
     // Returns true if the object is within the visibility range, and false if it is outside it.
     public bool UpdateColliderStatus(Collider other)
     {
-        Vector3 direction = other.gameObject.GetComponent<Transform>().position - (sphereCenter + pos);
-        float raycastRange = direction.magnitude;
+//        Vector3 direction = other.gameObject.transform.position - (_sphereCenter + _pos);
+//        float raycastRange = direction.magnitude;
+//
+//        // Checks if the other object is out of range.
+//        if (raycastRange > _visionRange)
+//        {
+//            TellOutOfLOS(other.gameObject);
+//            return false;
+//        }
+//        else
+//        {
+//            DoLOSRaycast(other, direction, raycastRange);
+//            return true;
+//        }
+        Vector3 otherPos = other.gameObject.transform.position;
+        float distance = (otherPos - (_sphereCenter + _pos)).magnitude;
 
-        // Checks if the other object is out of range.
-        if (raycastRange > visionRange)
+        if (distance > _visionRange)
         {
             TellOutOfLOS(other.gameObject);
             return false;
         }
+        
+        if (_losCalc.PointIsInLos(otherPos))
+        {
+            TellInLOS(other.gameObject);
+        }
         else
         {
-            DoLOSRaycast(other, direction, raycastRange);
-            return true;
+            TellOutOfLOS(other.gameObject);
         }
+
+        return true;
     }
 
     public bool UpdateObstacleColliderStatus(Collider other)
@@ -148,18 +179,18 @@ public class Figurine_PlayerVision : MonoBehaviour
         }
 
         // No need to do any more calls if the obstacle is already known.
-        if (permKnownObjects.Contains(other.gameObject))
+        if (_permKnownObjects.Contains(other.gameObject))
         {
             return true;
         }
 
         Transform obstacleTransform = other.gameObject.GetComponent<Transform>().parent;
         Vector3 obstaclePos = obstacleTransform.position;
-        Vector3 direction = obstaclePos - (sphereCenter + pos);
+        Vector3 direction = obstaclePos - (_sphereCenter + _pos);
         float raycastRange = direction.magnitude;
 
         // Makes sure the object is in range.
-        if (raycastRange > visionRange)
+        if (raycastRange > _visionRange)
         {
             return false;
         }
@@ -169,7 +200,7 @@ public class Figurine_PlayerVision : MonoBehaviour
             GameObject blocker = null;
             foreach (Transform child in obstacleTransform)
             {
-                if (child.gameObject.layer == (int) Mathf.Log(obstacleLayerMask, 2))
+                if (child.gameObject.layer == (int) Mathf.Log(_obstacleLayerMask, 2))
                 {
                     blocker = child.gameObject;
                     break;
@@ -184,11 +215,11 @@ public class Figurine_PlayerVision : MonoBehaviour
 
             // Disables the blocking part of the obstacle to prevent it from being "in the way" of itself.
             blocker.layer = 0;
-            
+
             DoLOSRaycast(other, direction, raycastRange);
 
             // Enables the blocking part of the obstacle to allow it to block LOS to other objects.
-            blocker.layer = (int)Mathf.Log(obstacleLayerMask, 2);
+            blocker.layer = (int) Mathf.Log(_obstacleLayerMask, 2);
 
             return true;
         }
@@ -198,16 +229,16 @@ public class Figurine_PlayerVision : MonoBehaviour
     private void DoLOSRaycast(Collider other, Vector3 direction, float raycastRange)
     {
         // Checks if there is an obstacle between the figurine and fog element.
-        if (Physics.Raycast(sphereCenter + pos, direction, raycastRange, obstacleLayerMask))
+        if (Physics.Raycast(_sphereCenter + _pos, direction, raycastRange, _obstacleLayerMask))
         {
             // Is an obstacle.
-            Debug.DrawLine(sphereCenter + pos, other.gameObject.GetComponent<Transform>().position, Color.red, 1);
+            Debug.DrawLine(_sphereCenter + _pos, other.gameObject.GetComponent<Transform>().position, Color.red, 1);
             TellOutOfLOS(other.gameObject);
         }
         else
         {
             // Is no obstacle.
-            Debug.DrawLine(sphereCenter + pos, other.gameObject.GetComponent<Transform>().position, Color.green, 1);
+            Debug.DrawLine(_sphereCenter + _pos, other.gameObject.GetComponent<Transform>().position, Color.green, 1);
             TellInLOS(other.gameObject);
         }
     }
@@ -215,9 +246,11 @@ public class Figurine_PlayerVision : MonoBehaviour
     // Sends a call to a fog element's script to tell it it is no longer visible when visited.
     private void OnTriggerExit(Collider other)
     {
-        if (ColliderHasTag(other, "Fog") || ColliderHasTag(other, "NPCFigurine") || ColliderHasTag(other, "PlayerFigurine"))
+        if (ColliderHasTag(other, "Fog") ||
+            ColliderHasTag(other, "NPCFigurine") ||
+            ColliderHasTag(other, "PlayerFigurine"))
         {
-            tempKnownObjectExitingRange.Add(other);
+            _tempKnownObjectExitingRange.Add(other);
         }
     }
 
@@ -226,7 +259,7 @@ public class Figurine_PlayerVision : MonoBehaviour
     {
         if (!other.CompareTag("Obstacle"))
         {
-            tempKnownObjects.Remove(other);
+            _tempKnownObjects.Remove(other);
         }
     }
 
@@ -235,16 +268,16 @@ public class Figurine_PlayerVision : MonoBehaviour
     {
         if (other.CompareTag("Fog"))
         {
-            permKnownObjects.Add(other);
-            tempKnownObjects.Add(other);
+            _permKnownObjects.Add(other);
+            _tempKnownObjects.Add(other);
         }
         else if (other.CompareTag("Obstacle"))
         {
-            permKnownObjects.Add(other);
+            _permKnownObjects.Add(other);
         }
         else
         {
-            tempKnownObjects.Add(other);
+            _tempKnownObjects.Add(other);
         }
     }
 
@@ -252,22 +285,26 @@ public class Figurine_PlayerVision : MonoBehaviour
     // If the collider is untagged it checks the tag of its gameObject.
     // If that gameObject is untagged it checks if that gameObjects parent-gameObject has the tag.
     // Returns false if any of the tags checked is neither "Untagged" nor tag, or if all are "Untagged", true otherwise.
-    private bool ColliderHasTag(Collider other, string tag)
+    private bool ColliderHasTag(Collider other, string wantedTag)
     {
-        if (other.CompareTag(tag))
+        if (other.CompareTag(wantedTag))
         {
             return true;
         }
-        else if (other.CompareTag("Untagged"))
+
+        if (!other.CompareTag("Untagged"))
         {
-            if (other.gameObject.CompareTag(tag))
-            {
-                return true;
-            }
-            else if (other.gameObject.CompareTag("Untagged"))
-            {
-                return other.gameObject.transform.parent.gameObject.CompareTag(tag);
-            }
+            return false;
+        }
+
+        if (other.gameObject.CompareTag(wantedTag))
+        {
+            return true;
+        }
+
+        if (other.gameObject.CompareTag("Untagged"))
+        {
+            return other.gameObject.transform.parent.gameObject.CompareTag(wantedTag);
         }
 
         return false;
@@ -275,11 +312,11 @@ public class Figurine_PlayerVision : MonoBehaviour
 
     public HashSet<GameObject> GetTempKnownObjects()
     {
-        return tempKnownObjects;
+        return _tempKnownObjects;
     }
 
     public HashSet<GameObject> GetPermKnownObjects()
     {
-        return permKnownObjects;
+        return _permKnownObjects;
     }
 }
