@@ -5,26 +5,21 @@ using UnityEngine;
 public class ModeColor : MonoBehaviour
 {
     Material m_Material;
-    public Renderer ModeObject;
-    public Material AttackMaterial;
-    public Material ActionMaterial;
+    private GameObject ModeObject;
+
+    public Material material;
     // ex. Color AttackColor = Color.yellow;
 
     private void Start()
     {
-        Material rend = ModeObject.GetComponent<Renderer>().material;
+        ModeObject = transform.parent.parent.transform.GetChild(0).gameObject;
     }
 
     public void ColorChange()
     {
         //Debug.Log("Nu trycktes knappen ner.");
-        ModeObject.sharedMaterial = AttackMaterial;
-    }
+        ModeObject.GetComponent<Renderer>().sharedMaterial = material;
 
-    public void ColorChange2()
-    {
-        //Debug.Log("Nu trycktes knappen ner.");
-        ModeObject.sharedMaterial = ActionMaterial;
     }
 
 }
