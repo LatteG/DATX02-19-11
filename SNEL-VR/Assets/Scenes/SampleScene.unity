@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -642,35 +642,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4713828056088279021, guid: 0919273d5666bf944ba903096ea2cc5a,
-        type: 3}
-      propertyPath: m_Camera
-      value: 
-      objectReference: {fileID: 1262790885}
-    - target: {fileID: 3658699833175161688, guid: 0919273d5666bf944ba903096ea2cc5a,
-        type: 3}
-      propertyPath: pointer
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7498927215648843312, guid: 0919273d5666bf944ba903096ea2cc5a,
-        type: 3}
-      propertyPath: target
-      value: 
-      objectReference: {fileID: 480402448}
     - target: {fileID: 2032676969, guid: 0919273d5666bf944ba903096ea2cc5a, type: 3}
       propertyPath: figurineMenu
       value: 
       objectReference: {fileID: 1705905699}
-    - target: {fileID: 2038448229258462636, guid: 0919273d5666bf944ba903096ea2cc5a,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 19.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 7065059833880592360, guid: 0919273d5666bf944ba903096ea2cc5a,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2598572007938065448, guid: 0919273d5666bf944ba903096ea2cc5a,
         type: 3}
       propertyPath: m_Camera
@@ -686,11 +661,6 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 480402448}
-    - target: {fileID: 534020299194125357, guid: 0919273d5666bf944ba903096ea2cc5a,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7945624550660886102, guid: 0919273d5666bf944ba903096ea2cc5a,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -721,6 +691,36 @@ PrefabInstance:
       propertyPath: ActionMaterial
       value: 
       objectReference: {fileID: 2100000, guid: a046ce9e5f939e648913c183f565f0d1, type: 2}
+    - target: {fileID: 4713828056088279021, guid: 0919273d5666bf944ba903096ea2cc5a,
+        type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1262790885}
+    - target: {fileID: 3658699833175161688, guid: 0919273d5666bf944ba903096ea2cc5a,
+        type: 3}
+      propertyPath: pointer
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7498927215648843312, guid: 0919273d5666bf944ba903096ea2cc5a,
+        type: 3}
+      propertyPath: target
+      value: 
+      objectReference: {fileID: 480402448}
+    - target: {fileID: 2038448229258462636, guid: 0919273d5666bf944ba903096ea2cc5a,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 19.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7065059833880592360, guid: 0919273d5666bf944ba903096ea2cc5a,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 534020299194125357, guid: 0919273d5666bf944ba903096ea2cc5a,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1987418790, guid: 0919273d5666bf944ba903096ea2cc5a, type: 3}
     - {fileID: 274949450, guid: 0919273d5666bf944ba903096ea2cc5a, type: 3}
@@ -3775,7 +3775,7 @@ PrefabInstance:
     - target: {fileID: 592458350434367236, guid: 66f8d895dabee83468dba0de87b8946b,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 592458350434367236, guid: 66f8d895dabee83468dba0de87b8946b,
         type: 3}
@@ -7082,11 +7082,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: VRPlayerOne
       objectReference: {fileID: 0}
-    - target: {fileID: 2523754760559495784, guid: d1b40ba5e9107a84fa5937bdb083d981,
-        type: 3}
-      propertyPath: m_TagString
-      value: Laser
-      objectReference: {fileID: 0}
     - target: {fileID: 1032175184030848600, guid: d1b40ba5e9107a84fa5937bdb083d981,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -7147,6 +7142,11 @@ PrefabInstance:
       propertyPath: inputFigurines.Array.data[0]
       value: 
       objectReference: {fileID: 2032676968}
+    - target: {fileID: 2523754760559495784, guid: d1b40ba5e9107a84fa5937bdb083d981,
+        type: 3}
+      propertyPath: m_TagString
+      value: Laser
+      objectReference: {fileID: 0}
     - target: {fileID: 1727432003390163866, guid: d1b40ba5e9107a84fa5937bdb083d981,
         type: 3}
       propertyPath: m_Cursor
@@ -7252,6 +7252,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7647315897191392819, guid: 967bf2c1d426be048a21af9760df9aab,
+        type: 3}
+      propertyPath: cellSizeVer
+      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 967bf2c1d426be048a21af9760df9aab, type: 3}
