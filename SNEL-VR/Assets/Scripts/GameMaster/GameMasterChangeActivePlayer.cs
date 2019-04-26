@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameMasterChangeActivePlayer : MonoBehaviour
 {
     private GameMasterManager gmm;
     //change later to make dependencies better
     private PlayerOwnedFigurines pof;
+    private Text text;
 
     private Player activePlayer;
     private Dictionary<int, Player> turnQueue;
@@ -14,6 +16,7 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
     private Transform tableTransform;
     private bool isGM;
     private Camera mainCamera;
+    
 
 
 
@@ -29,6 +32,9 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
         nextPlayer = 1;
         isGM = true;
         mainCamera = Camera.main;
+
+        // Very wonky way to do it...
+        text = Text.FindObjectOfType<Text>();
     }
 
     public void ChangePlayer()
@@ -50,6 +56,9 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
 
         mainCamera.cullingMask = ~(1<<15);
 
+        text.text = "Current player: "+activePlayer.playerColor.name;
+
+
     }
 
     public void ChangePlayerGM()
@@ -67,6 +76,11 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
         pof.ChangeOwnedFigurines(gmm.GetActivePlayers()[0].GetOwnedFigurines());
 
         mainCamera.cullingMask = ~(0);
+
+        if (activePlayer.playerColor != null)
+        {
+            text.text = "GM is active. " +"\nPrevious player: "+ activePlayer.playerColor.name;
+        }
     }
 
     public void SetActivePlayer(Player player)

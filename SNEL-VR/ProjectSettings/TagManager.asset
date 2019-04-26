@@ -17,6 +17,7 @@ TagManager:
   - Avatar
   - FigurineSpawner
   - Laser
+  - PlayerColorPanel
   layers:
   - Default
   - TransparentFX

@@ -11,6 +11,8 @@ public class Figurine_SpawnFigurines : MonoBehaviour
     private List<MeshCollider> availableSpawns;
     private Canvas figMenu;
 
+    
+
     public Transform targetTransform;
     public Camera eventCamera;
     public GameObject pointer;
@@ -20,11 +22,27 @@ public class Figurine_SpawnFigurines : MonoBehaviour
 
     public void OnEnable()
     {
+        //InitMaterials();
         gmm = GameObject.FindWithTag("GameMaster").GetComponent<GameMasterManager>();
         availableSpawns = new List<MeshCollider>();
         InitSpawns();
         SpawnFigurines();
 
+    }
+
+    private void InitMaterials()
+    {
+        //figMaterials = new List<Material>();
+        /*
+        figMaterials.Add(Resources.Load("Materials/Blue") as Material);
+        figMaterials.Add(Resources.Load("Materials/Black") as Material);
+        figMaterials.Add(Resources.Load("Materials/Yellow") as Material);
+        figMaterials.Add(Resources.Load("Materials/Red") as Material);
+        figMaterials.Add(Resources.Load("Materials/Green") as Material);
+        figMaterials.Add(Resources.Load("Materials/White") as Material);
+        figMaterials.Add(Resources.Load("Materials/Pink") as Material);
+        figMaterials.Add(Resources.Load("Materials/Orange") as Material);
+        */
     }
 
     private void InitSpawns()
@@ -48,10 +66,13 @@ public class Figurine_SpawnFigurines : MonoBehaviour
             figurine.GetComponentInChildren<OVRRaycaster>().pointer = pointer;
 
             GameObject figurine_tmp = Instantiate(figurine, pos, Quaternion.identity, transformFigurines) as GameObject;
+            
+            figurine_tmp.transform.GetChild(0).GetComponent<Renderer>().material = gmm.GetActivePlayers()[i].playerColor;
 
             gmm.GetActivePlayers()[i].AddFigurine(figurine_tmp);
             gmm.GetActivePlayers()[0].AddFigurine(figurine_tmp);
         }
     }
+
 
 }

@@ -32,10 +32,11 @@ public class GameMasterManager : MonoBehaviour
         //float z = physicalPlayer.transform.GetChild(0).position.z;
         //gameMasterPos = new Vector3(x, y, z);
 
-        gameMasterPos = new Vector3(12, 3, -1.5f);
+        //Make more dynamic
+        gameMasterPos = new Vector3(12, 3, -1.5f);                  
         gameMasterRotation = physicalPlayer.transform.GetChild(0).rotation;
 
-        gameMaster.InitPlayer(gameMasterPos, gameMasterRotation, 0, "GameMaster");
+        gameMaster.InitPlayer(gameMasterPos, gameMasterRotation, 0, "GameMaster", null);
 
         activePlayers.Add(gameMaster);
 

@@ -9,6 +9,7 @@ public class GameMasterCreateNewPlayer : MonoBehaviour //change name to GameMast
     private int count;
     private Transform tableTransform;
 
+    public List<Material> figMaterials;
     public GameObject player;
 
     public void OnEnable()
@@ -34,7 +35,8 @@ public class GameMasterCreateNewPlayer : MonoBehaviour //change name to GameMast
                 Quaternion rot = Quaternion.LookRotation(dir);
 
                 Player newPlayer = new Player();
-                newPlayer.InitPlayer(pos, rot, count, "Player " + count);
+                newPlayer.InitPlayer(pos, rot, count, "Player " + count, figMaterials[count-1]);
+                Debug.Log("Material:" + figMaterials[count - 1].name);
                 //Debug.Log("My name is: " + newPlayer.name);
 
                 gmm.UpdateSpawnBusy(mc.GetHashCode(), true);
@@ -43,7 +45,7 @@ public class GameMasterCreateNewPlayer : MonoBehaviour //change name to GameMast
                 count++;
             }
         }
-
-        //Debug.Log("Active players: " + gmm.GetActivePlayers().Count);
+        
+        Debug.Log("Active players: " + gmm.GetActivePlayers().Count);
     }
 }
