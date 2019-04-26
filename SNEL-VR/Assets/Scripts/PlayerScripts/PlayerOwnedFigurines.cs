@@ -10,10 +10,12 @@ public class PlayerOwnedFigurines : MonoBehaviour
 
     private void Start()
     {
+        
         foreach (GameObject fig in inputFigurines)
         {
             AddFigurine(fig);
         }
+        
     }
 
     public void AddFigurine(GameObject fig)
@@ -29,5 +31,10 @@ public class PlayerOwnedFigurines : MonoBehaviour
     public HashSet<GameObject> GetOwnedFigurines()
     {
         return ownedFigurines;
+    }
+
+    public void ChangeOwnedFigurines(HashSet<GameObject> newFigurines)
+    {
+        this.ownedFigurines = newFigurines;
     }
 }
