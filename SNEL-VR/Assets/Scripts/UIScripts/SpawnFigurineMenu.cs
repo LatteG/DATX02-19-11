@@ -4,20 +4,21 @@ using UnityEngine;
 
 public class SpawnFigurineMenu : MonoBehaviour
 {
-    public Canvas figurineMenu;
+    public GameObject figurineMenu;
     private bool menuEnabled = false;
     private Vector3 pos = new Vector3(15,2,4);
 
     private void Start()
     {
-        figurineMenu.enabled = false;
+        figurineMenu = gameObject.transform.GetChild(2).gameObject;
+        figurineMenu.SetActive(false);
     }
 
     public void spawnMenu()
     {
         if(!menuEnabled)
         {
-            figurineMenu.enabled = true;
+            figurineMenu.SetActive(true);
             //Camera MyCamera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
             //GameObject Mypointer = GameObject.FindWithTag("LaserPointer").GetComponent<GameObject>();
             //OVRRaycaster laser = figurineMenu.GetComponent<OVRRaycaster>().GetComponentInChildren<OVRRaycaster>();
@@ -27,7 +28,7 @@ public class SpawnFigurineMenu : MonoBehaviour
         }
         else
         {
-            figurineMenu.enabled = false;
+            figurineMenu.SetActive(false);
             menuEnabled = false;
         }
 

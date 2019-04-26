@@ -5,15 +5,16 @@ using UnityEngine;
 public class Figurine_SpawnFigurines : MonoBehaviour
 {
     //Setting references for the canvas in player figurine when instantiating by finding them in the scene by sript doesn't work. 
-    //They are set in the inspector instead. Then set before instantiation. <Disabled atm>
+    //They are set in the inspector instead. Then set before instantiation. 
 
     private GameMasterManager gmm;  
     private List<MeshCollider> availableSpawns;
+    private Canvas figMenu;
 
     public Transform targetTransform;
     public Camera eventCamera;
     public GameObject pointer;
-
+    
     public GameObject figurine;
     public Transform transformFigurines;
 
@@ -23,10 +24,6 @@ public class Figurine_SpawnFigurines : MonoBehaviour
         availableSpawns = new List<MeshCollider>();
         InitSpawns();
         SpawnFigurines();
-
-        //targetTransform = gmm.physicalPlayer.transform.GetChild(0).transform; //will not work if child 0 is swaped.
-        //eventCamera = Camera.main;
-        //pointer = GameObject.FindGameObjectWithTag("Laser");
 
     }
 
@@ -46,23 +43,15 @@ public class Figurine_SpawnFigurines : MonoBehaviour
         {
             Vector3 pos = availableSpawns[i-1].transform.position;
 
-            //figurine.GetComponentInChildren<RotateCanvas>().target = targetTransform;
-            //figurine.GetComponentInChildren<Canvas>().worldCamera = eventCamera;
-            //figurine.GetComponentInChildren<OVRRaycaster>().pointer = pointer;
+            figurine.GetComponentInChildren<RotateCanvas>().target = targetTransform;
+            figurine.GetComponentInChildren<Canvas>().worldCamera = eventCamera;
+            figurine.GetComponentInChildren<OVRRaycaster>().pointer = pointer;
 
             GameObject figurine_tmp = Instantiate(figurine, pos, Quaternion.identity, transformFigurines) as GameObject;
 
-            //SetReferences(figurine_tmp);
             gmm.GetActivePlayers()[i].AddFigurine(figurine_tmp);
             gmm.GetActivePlayers()[0].AddFigurine(figurine_tmp);
         }
     }
 
-    private void SetReferences(GameObject fig)
-    {
-
-        fig.GetComponentInChildren<RotateCanvas>().target = targetTransform;
-        fig.GetComponentInChildren<Canvas>().worldCamera = eventCamera;
-        fig.GetComponentInChildren<OVRRaycaster>().pointer = pointer;
-    }
 }
