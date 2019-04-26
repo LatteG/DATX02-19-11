@@ -106,7 +106,7 @@ public class GridHandler : MonoBehaviour
         float x = (pos.x - originPoint.x) / gridSize;
         float y = (pos.z - originPoint.z) / gridSize;
 
-        return new Vector2(Mathf.RoundToInt(x), Mathf.RoundToInt(y));
+        return new Vector2(Mathf.RoundToInt(x-0.1f), Mathf.RoundToInt(y-0.1f));
     }
 
     // Checks if a key is within the valid intervals.
@@ -174,7 +174,7 @@ public class GridHandler : MonoBehaviour
     {
         Transform figTransform = fig.GetComponent<Transform>();
         Vector3 pos = figTransform.position;
-        int steps = 3;
+        int steps = 2;
         HashSet<Vector2> inRange = FindInRange(steps, pos);
         if (inRange == null)
         {
@@ -192,7 +192,7 @@ public class GridHandler : MonoBehaviour
     private HashSet<Vector2> FindInRange(int steps, Vector3 pos)
     {
         Vector2 gridPos = PositionToKey(pos);
-        Debug.Log(gridPos);
+
         if(!IsValidKey(gridPos))
         {
             return null;
