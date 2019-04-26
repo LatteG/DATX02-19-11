@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class ShowMovment : MonoBehaviour
 {
+    public int steps;
+
     private bool highlighted;
     private HashSet<GameObject> movement;
 
@@ -22,7 +24,7 @@ public class ShowMovment : MonoBehaviour
         {
             GridHandler gridhandler = GameObject.FindWithTag("GridHandler").GetComponent<GridHandler>();
             GameObject figurine = GameObject.FindWithTag("PlayerFigurine");
-            movement = gridhandler.FindSquares(figurine);
+            movement = gridhandler.FindSquares(figurine, steps);
             foreach (GameObject square in movement)
             {
                 Renderer renderer = square.GetComponent<Renderer>();

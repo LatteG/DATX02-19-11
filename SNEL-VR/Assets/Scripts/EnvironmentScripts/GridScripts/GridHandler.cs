@@ -170,11 +170,10 @@ public class GridHandler : MonoBehaviour
     }
 
     // Returns all squares within a set amount of steps from the figurine
-    public HashSet<GameObject> FindSquares(GameObject fig)
+    public HashSet<GameObject> FindSquares(GameObject fig, int steps)
     {
         Transform figTransform = fig.GetComponent<Transform>();
         Vector3 pos = figTransform.position;
-        int steps = 2;
         HashSet<Vector2> inRange = FindInRange(steps, pos);
         if (inRange == null)
         {
