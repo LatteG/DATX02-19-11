@@ -36,7 +36,6 @@ public class GameMasterCreateNewPlayer : MonoBehaviour //change name to GameMast
 
                 Player newPlayer = new Player();
                 newPlayer.InitPlayer(pos, rot, count, "Player " + count, figMaterials[count-1]);
-                Debug.Log("Material:" + figMaterials[count - 1].name);
                 //Debug.Log("My name is: " + newPlayer.name);
 
                 gmm.UpdateSpawnBusy(mc.GetHashCode(), true);

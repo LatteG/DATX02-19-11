@@ -24,7 +24,7 @@ public class GameMasterSwitchGMMode : MonoBehaviour
         }
         else if((Input.GetButtonDown("Fire3") || Input.GetButtonDown("Oculus_GearVR_LThumbstickX")) && isGMMode)
         {
-            DeactivateGMMode();
+            if(gmm.GetActivePlayers().Count > 1) DeactivateGMMode();
         }
     }
     private void ActivateGMMode()
