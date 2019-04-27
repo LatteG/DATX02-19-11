@@ -68,6 +68,7 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
 
         //GM is placed at the same spot all the time.
         gmm.physicalPlayer.transform.GetChild(0).position = gmm.GetGameMasterPos();
+        Debug.Log("GM y-pos: " + gmm.physicalPlayer.transform.GetChild(0).position.y);
         gmm.physicalPlayer.transform.GetChild(0).rotation = gmm.GetGameMasterRotation();
         UpdatePlayerAvatar();
 

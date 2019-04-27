@@ -46,7 +46,7 @@ public class Player
 
     public int GetPlayerID()
     {
-        return ID;
+        return this.ID;
     }
 
     public void SetPlayerPos(Vector3 position)

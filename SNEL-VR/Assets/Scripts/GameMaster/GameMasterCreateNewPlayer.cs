@@ -28,7 +28,7 @@ public class GameMasterCreateNewPlayer : MonoBehaviour //change name to GameMast
             if (!gmm.IsBusy(mc.GetHashCode()))
             {
                 Vector3 pos = mc.transform.position;
-                pos.y  = 3.0f;
+                //pos.y  = 3.0f;
 
                 Vector3 dir = tableTransform.position - pos;
                 dir.y = 0; // keep the direction strictly horizontal
