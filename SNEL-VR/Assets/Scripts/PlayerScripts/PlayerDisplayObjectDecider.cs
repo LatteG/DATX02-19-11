@@ -6,72 +6,49 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
 {
     public Material unvisitedFogMaterial;
     public Material visitedFogMaterial;
+    public GameObject player;
 
-    private Camera cam;
     private PlayerOwnedFigurines figs;
 
-    private static int defaultLayer = 0;
-    private static int invisibleLayer = 10;
-    private static int obstacleLayer = 9;
+    private HashSet<GameObject> tempKnownObjects;
+    private HashSet<GameObject> permKnownObjects;
 
-    // Startby fetching the script tracking the figurines owned by the player.
-    private void Start()
-    {
-        figs = GetComponent<Transform>().parent.gameObject.GetComponent<PlayerOwnedFigurines>();
-    }
+    private static int defaultLayer = 0;
+    private static int invisibleLayer = 15;
+    private static int obstacleLayer = 9;
 
     // Makes any object that should not be visible by this camera invisible by changing their layer
     // right before the culling.
-    private void CullInvisible(Camera cam)
+    private void OnPreCull()
     {
-        // Put all NPC figurines visible by any owned figurines in the default layer and the rest
-        // in the invisible layer.
-        foreach (GameObject npc in GameObject.FindGameObjectsWithTag("NPCFigurine"))
+        // Get all temporarily and permanently known objects from each figurine owned by the player attached to this camera.
+        foreach (GameObject playerFig in figs.GetOwnedFigurines())
         {
-            if (OwnedIsIn(npc.GetComponent<Figurine_ObservedBy>().GetObservedBy()))
+            Figurine_PlayerVision playerVis = playerFig.GetComponentInChildren<Figurine_PlayerVision>();
+
+            tempKnownObjects.UnionWith(playerVis.GetTempKnownObjects());
+            permKnownObjects.UnionWith(playerVis.GetPermKnownObjects());
+        }
+
+        // Makes all permanently known non-fog objects visible.
+        foreach (GameObject go in permKnownObjects)
+        {
+            if (!go.CompareTag("Fog"))
             {
-                npc.layer = defaultLayer;
-            }
-            else
-            {
-                npc.layer = invisibleLayer;
+                go.layer = defaultLayer;
             }
         }
 
-        // Put all obstacles that are not visible to any owned figurines in the invisible layer.
-        foreach (GameObject obs in GameObject.FindGameObjectsWithTag("Obstacle"))
+        // Makes all temporarily known fog cells invisible and all other temporarily known objects visible.
+        foreach (GameObject go in tempKnownObjects)
         {
-            if (!OwnedIsIn(obs.GetComponent<Obstacle_RevealedTo>().GetObservedBy()))
+            if (go.CompareTag("Fog"))
             {
-                obs.layer = invisibleLayer;
-            }
-        }
-
-        // Put all fog elements visible by any owned figurines in the default layer and the rest
-        // in the invisible layer.
-        foreach (GameObject fog in GameObject.FindGameObjectsWithTag("Fog"))
-        {
-            if (OwnedIsIn(fog.GetComponent<FogHideOtherObject>().GetObservedBy()))
-            {
-                fog.layer = invisibleLayer;
+                go.layer = invisibleLayer;
             }
             else
             {
-                fog.layer = defaultLayer;
-            }
-        }
-
-        // Puts all player figurines owned by the player or visible to figurines owned by the
-        // player in the default layer and the rest in the invisible layer.
-        foreach (GameObject fig in GameObject.FindGameObjectsWithTag("PlayerFigurine"))
-        {
-            if (IsOwned(fig) || OwnedIsIn(fig.GetComponent<Figurine_ObservedBy>().GetObservedBy()))
-            {
-                fig.layer = defaultLayer;
-            }
-            else
-            {
-                fig.layer = invisibleLayer;
+                go.layer = defaultLayer;
             }
         }
     }
@@ -79,29 +56,53 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
     // Updates textures and resets obstacles' layer before rendering.
     private void OnPreRender()
     {
-        // Put all obstacles in the obstacle layer.
-        foreach (GameObject obs in GameObject.FindGameObjectsWithTag("Obstacle"))
+        // Update the material of all fog elements that have at some point been seen by any known figurine.
+        // Makes the obstacles invisible again to prevent inadvertent visibility for other cameras.
+        foreach (GameObject go in permKnownObjects)
         {
-            obs.layer = obstacleLayer;
-        }
-
-        // Update the material of all fog elements based on whether the owned figurines have
-        // at some points seen them or not.
-        foreach (GameObject fog in GameObject.FindGameObjectsWithTag("Fog"))
-        {
-            if (OwnedIsIn(fog.GetComponent<FogHideOtherObject>().getHasBeenObservedBy()))
+            if (go.CompareTag("Fog"))
             {
-                fog.GetComponent<Renderer>().material = visitedFogMaterial;
+                go.GetComponent<Renderer>().material = visitedFogMaterial;
             }
             else
             {
-                fog.GetComponent<Renderer>().material = unvisitedFogMaterial;
+                go.layer = invisibleLayer;
+            }
+        }
+        
+        // Makes the fog visible again, and everything else that is only seen when in range invisible again
+        // to prevent inadvertant (in)visibility to other cameras.
+        foreach (GameObject go in tempKnownObjects)
+        {
+            if (go.CompareTag("Fog"))
+            {
+                go.layer = defaultLayer;
+            }
+            else
+            {
+                go.layer = invisibleLayer;
             }
         }
     }
 
+    private void OnPostRender()
+    {
+        // Changes the material of the figurines back to default in case they aren't visited by the other players.
+        foreach (GameObject go in permKnownObjects)
+        {
+            if (go.CompareTag("Fog"))
+            {
+                go.GetComponent<Renderer>().material = unvisitedFogMaterial;
+            }
+        }
+
+        // Clears the sets of temporarily and permanently known objects in case some are no longer visible, an owned figurine is lost, etc.
+        tempKnownObjects.Clear();
+        permKnownObjects.Clear();
+    }
+
     // Checks if any object in the input array is owned by the player.
-    private bool OwnedIsIn(GameObject[] visTo)
+    private bool OwnedIsIn(HashSet<GameObject> visTo)
     {
         foreach (GameObject v in visTo)
         {
@@ -116,23 +117,16 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
     // Checks if the input object is owned by the player.
     private bool IsOwned(GameObject obj)
     {
-        foreach (GameObject own in figs.GetOwnedFigurines())
-        {
-            if (own.Equals(obj))
-            {
-                return true;
-            }
-        }
-        return false;
+        return figs.GetOwnedFigurines().Contains(obj);
     }
 
+    // Adds CullInvisible to OnPreCull and get the ownedFigurines-script when enabled.
     private void OnEnable()
     {
-        Camera.onPreCull += CullInvisible;
-    }
+        // figs = GetComponent<Transform>().parent.gameObject.GetComponent<PlayerOwnedFigurines>();
+        figs = player.GetComponent<PlayerOwnedFigurines>();
 
-    private void OnDisable()
-    {
-        Camera.onPreCull -= CullInvisible;
+        tempKnownObjects = new HashSet<GameObject>();
+        permKnownObjects = new HashSet<GameObject>();
     }
 }
