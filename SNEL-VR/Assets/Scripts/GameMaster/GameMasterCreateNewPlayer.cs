@@ -45,6 +45,6 @@ public class GameMasterCreateNewPlayer : MonoBehaviour //change name to GameMast
             }
         }
         
-        Debug.Log("Active players: " + gmm.GetActivePlayers().Count);
+        //Debug.Log("Active players: " + gmm.GetActivePlayers().Count);
     }
 }

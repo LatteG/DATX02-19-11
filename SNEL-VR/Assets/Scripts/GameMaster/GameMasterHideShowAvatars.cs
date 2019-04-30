@@ -34,7 +34,7 @@ public class GameMasterHideShowAvatars : MonoBehaviour
             player.ShowAvatar();
         }
 
-        gmcap.GetActivePlayer().HideAvatar();
+        if(!gmcap.GetIsGM()) gmcap.GetActivePlayer().HideAvatar();
         gmm.GetActivePlayers()[0].HideAvatar();
     }
 

@@ -116,6 +116,11 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
         return gmm.GetActivePlayers()[index];
     }
 
+    public bool GetIsGM()
+    {
+        return this.isGM;
+    }
+
     private void SavePosition()
     {
         int index = FindPlayer(activePlayer);
