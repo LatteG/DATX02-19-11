@@ -11,8 +11,6 @@ using UnityEngine;
 public class RotateCanvas : MonoBehaviour
 {
     public Transform target;
-    //private Vector3 fix = new Vector3(15, 2, 4);
-    //private Vector3 fix2 = Vector3 + target;
 
     void Update()
     {
