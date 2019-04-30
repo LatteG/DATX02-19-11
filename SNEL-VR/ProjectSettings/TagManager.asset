@@ -17,6 +17,7 @@ TagManager:
   - Avatar
   - FigurineSpawner
   - Laser
+  - GridHandler
   layers:
   - Default
   - TransparentFX
