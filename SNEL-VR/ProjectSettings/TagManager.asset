@@ -9,7 +9,14 @@ TagManager:
   - PlayerFigurineVision
   - Obstacle
   - Fog
-  - GridHandler
+  - PlayerSpawner
+  - GameMaster
+  - GMCanvas
+  - ChoosePlayerButtons
+  - Table
+  - Avatar
+  - FigurineSpawner
+  - Laser
   layers:
   - Default
   - TransparentFX
