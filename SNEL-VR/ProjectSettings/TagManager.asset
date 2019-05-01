@@ -19,6 +19,7 @@ TagManager:
   - Laser
   - PlayerColorPanel
   - ItemPlatform
+  - GridHandler
   layers:
   - Default
   - TransparentFX
