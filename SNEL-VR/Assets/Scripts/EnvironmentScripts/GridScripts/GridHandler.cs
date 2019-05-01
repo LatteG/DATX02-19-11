@@ -106,7 +106,7 @@ public class GridHandler : MonoBehaviour
         float x = (pos.x - originPoint.x) / gridSize;
         float y = (pos.z - originPoint.z) / gridSize;
 
-        return new Vector2(Mathf.RoundToInt(x-0.1f), Mathf.RoundToInt(y-0.1f));
+        return new Vector2(Mathf.RoundToInt(x-0.2f), Mathf.RoundToInt(y-0.1f));
     }
 
     // Checks if a key is within the valid intervals.
