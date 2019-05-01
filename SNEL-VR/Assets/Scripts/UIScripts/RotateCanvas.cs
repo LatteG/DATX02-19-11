@@ -12,6 +12,13 @@ public class RotateCanvas : MonoBehaviour
 {
     public Transform target;
 
+    private Transform _myTransform;
+
+    private void OnEnable()
+    {
+        _myTransform = gameObject.transform;
+    }
+
     void Update()
     {
         // Rotate the camera every frame so it keeps looking at the target
@@ -19,8 +26,8 @@ public class RotateCanvas : MonoBehaviour
         //transform.Rotate(0, 180, 0, Space.Self);
 
         //Vector3 targetPosition = new Vector3(target.position.x, target.position.y, target.position.z);
-        Vector3 targetPosition = new Vector3(target.position.x, 0f, target.position.z);
+        Vector3 targetPosition = new Vector3(target.position.x, _myTransform.position.y, target.position.z);
         transform.LookAt(targetPosition);
-        transform.Rotate(45, 180, 0, Space.Self);
+        transform.Rotate(0, 180, 0, Space.Self);
     }
 }
