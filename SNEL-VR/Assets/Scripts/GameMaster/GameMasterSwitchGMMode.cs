@@ -9,6 +9,7 @@ public class GameMasterSwitchGMMode : MonoBehaviour
     private bool isGMMode;
 
     public GameObject gmCanvas;
+    public GameObject gmnBuildManager;
 
     public void OnEnable()
     {
@@ -24,7 +25,7 @@ public class GameMasterSwitchGMMode : MonoBehaviour
         }
         else if((Input.GetButtonDown("Fire3") || Input.GetButtonDown("Oculus_GearVR_LThumbstickX")) && isGMMode)
         {
-            DeactivateGMMode();
+            if(gmm.GetActivePlayers().Count > 1) DeactivateGMMode();
         }
     }
     private void ActivateGMMode()
@@ -32,6 +33,9 @@ public class GameMasterSwitchGMMode : MonoBehaviour
         isGMMode = true;
         gmCanvas.SetActive(true);
         gmCanvas.transform.GetChild(2).gameObject.SetActive(false); //change
+
+        gmnBuildManager.SetActive(true);
+
         gmcap.ChangePlayerGM();
         
 
@@ -41,6 +45,7 @@ public class GameMasterSwitchGMMode : MonoBehaviour
     {
         isGMMode = false;
         gmCanvas.SetActive(false);
+        gmnBuildManager.SetActive(false);
         gmcap.ChangePlayer();
         
     }

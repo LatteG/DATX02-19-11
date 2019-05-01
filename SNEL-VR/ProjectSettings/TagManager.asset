@@ -17,6 +17,8 @@ TagManager:
   - Avatar
   - FigurineSpawner
   - Laser
+  - PlayerColorPanel
+  - ItemPlatform
   - GridHandler
   layers:
   - Default

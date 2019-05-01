@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Figurine_RemoveFromPlayerVision : MonoBehaviour
 {
-    private OculusSampleFramework.DistanceGrabbable distanceGrabbable;
+    private OVRGrabbable ovrGrabbable;
     private HashSet<Figurine_PlayerVision> observers;
     private Transform parentTransform;
     private GameObject figurine;
@@ -22,7 +22,7 @@ public class Figurine_RemoveFromPlayerVision : MonoBehaviour
         figurine = this.gameObject;
         parentTransform = figurine.GetComponent<Transform>().parent;
         thisCollider = figurine.GetComponent<Collider>();
-        distanceGrabbable = parentTransform.gameObject.GetComponent<OculusSampleFramework.DistanceGrabbable>();
+        ovrGrabbable = parentTransform.gameObject.GetComponent<OVRGrabbable>();
 
         oldPos = parentTransform.position;
     }
@@ -34,7 +34,7 @@ public class Figurine_RemoveFromPlayerVision : MonoBehaviour
         bool hasStopped = hasMoved && !justMoved;
 
         // Checks if th figurine has stopped moving and is not being held.
-        if (hasStopped && !distanceGrabbable.isGrabbed)
+        if (hasStopped && !ovrGrabbable.isGrabbed)
         {
             HashSet<Figurine_PlayerVision> toBeRemoved = new HashSet<Figurine_PlayerVision>();
 
