@@ -419,7 +419,7 @@ public class LineOfSightCalculator
             _area = Area(A, B, C);
             _angle = Vector2.Angle(B - A, C - A);
 
-            _sensitivity = Mathf.Pow(10, -7f);
+            _sensitivity = Mathf.Pow(10, -3f);
 
             IsValid = _angle > _sensitivity;
         }
