@@ -52,7 +52,7 @@ public class GridHandler : MonoBehaviour
         // Snaps figurines to the grid unless they are being held.
         foreach (GameObject fig in figurinesToBeSnapped)
         {
-            if (!fig.GetComponent<OculusSampleFramework.DistanceGrabbable>().isGrabbed)
+            if (!fig.GetComponent<OVRGrabbable>().isGrabbed)
             {
                 SnapToGrid(fig);
                 snappedFigurines.Add(fig);

@@ -469,6 +469,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 1026362572473445612, guid: 47da111644f60754aa994c84b55b725c,
+        type: 3}
+      propertyPath: target
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2829725546401922353, guid: 47da111644f60754aa994c84b55b725c,
         type: 3}
       propertyPath: m_Camera
@@ -477,11 +482,6 @@ PrefabInstance:
     - target: {fileID: 6118568753302385028, guid: 47da111644f60754aa994c84b55b725c,
         type: 3}
       propertyPath: pointer
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1026362572473445612, guid: 47da111644f60754aa994c84b55b725c,
-        type: 3}
-      propertyPath: target
       value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []

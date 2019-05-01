@@ -118,7 +118,7 @@ GameObject:
   - component: {fileID: 2118803281066312270}
   - component: {fileID: 7146580516587749970}
   - component: {fileID: 198130520925876260}
-  - component: {fileID: 3494812813297914812}
+  - component: {fileID: 925346294943131668}
   m_Layer: 10
   m_Name: Figurine_Enemy
   m_TagString: Untagged
@@ -215,7 +215,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 3
---- !u!114 &3494812813297914812
+--- !u!114 &925346294943131668
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -224,7 +224,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3054508066924389319}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d1a7708e76601b4ea829921c33bc624, type: 3}
+  m_Script: {fileID: 11500000, guid: 02d61468f8b77ae4b92c344bc9a600fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_allowOffhandGrab: 1
@@ -232,4 +232,3 @@ MonoBehaviour:
   m_snapOrientation: 0
   m_snapOffset: {fileID: 0}
   m_grabPoints: []
-  m_materialColorField: 

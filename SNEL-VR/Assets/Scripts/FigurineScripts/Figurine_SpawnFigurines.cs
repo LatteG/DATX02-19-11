@@ -60,6 +60,7 @@ public class Figurine_SpawnFigurines : MonoBehaviour
         for(int i = 1; i < gmm.GetActivePlayers().Count; i++)
         {
             Vector3 pos = availableSpawns[i-1].transform.position;
+            pos.y += 1;
 
             figurine.GetComponentInChildren<RotateCanvas>().target = targetTransform;
             figurine.GetComponentInChildren<Canvas>().worldCamera = eventCamera;
