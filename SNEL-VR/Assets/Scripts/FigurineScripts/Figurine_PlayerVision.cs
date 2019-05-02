@@ -9,6 +9,7 @@ public class Figurine_PlayerVision : MonoBehaviour
 
     private Vector3 _pos;
     private Vector3 _scale;
+    private Vector3 _worldScale;
     private Vector3 _sphereCenter;
 
     private int _obstacleLayerMask;
@@ -38,8 +39,11 @@ public class Figurine_PlayerVision : MonoBehaviour
     // Sets initial values and values that are never changed.
     private void OnEnable()
     {
-        _parentTransform = GetComponent<Transform>().parent;
-        _scale = GetComponent<Transform>().lossyScale;
+        _parentTransform = transform.parent;
+        _scale = transform.lossyScale;
+
+        // Used for LOS calculations
+        _worldScale = transform.parent.parent.lossyScale;
 
         // Used for the first FixedUpdate-call.
         _pos = _parentTransform.position;
@@ -62,7 +66,7 @@ public class Figurine_PlayerVision : MonoBehaviour
         _obstaclesInRange = new HashSet<GameObject>();
         _collidersToBeProcessed = new HashSet<Collider>();
 
-        _losCalc = new LineOfSightCalculator();
+        _losCalc = new LineOfSightCalculator(_worldScale);
 
         // Adds the attached figurine to the set of permanently known objects.
         foreach (Transform child in _parentTransform)

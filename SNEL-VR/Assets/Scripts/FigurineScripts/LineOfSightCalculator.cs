@@ -11,9 +11,12 @@ using UnityEngine.EventSystems;
 public class LineOfSightCalculator
 {
     private HashSet<Triangle> triangles;
+    private readonly Vector2 _worldScale;
 
-    public LineOfSightCalculator()
+    public LineOfSightCalculator(Vector3 worldScale)
     {
+        _worldScale = new Vector2(worldScale.x, worldScale.z);
+
         triangles = new HashSet<Triangle>();
     }
 
@@ -57,8 +60,14 @@ public class LineOfSightCalculator
 
         foreach (GameObject obs in obstacles)
         {
-            Vector3 lossyScale = obs.transform.lossyScale;
-            Vector2 scale2D = new Vector2(lossyScale.x, lossyScale.z);
+            Vector3 segmentScale = obs.transform.parent.localScale;
+            Vector3 wallScale = obs.transform.parent.parent.localScale;
+            float angle = -obs.transform.rotation.eulerAngles.y;
+
+            Vector3 obsScale = new Vector3(segmentScale.x * wallScale.x, 0, segmentScale.z * wallScale.z);
+            obsScale = Quaternion.AngleAxis(angle, Vector3.up) * obsScale;
+            
+            Vector2 scale2D = new Vector2(_worldScale.x * obsScale.x, _worldScale.y * obsScale.z);
 
             triangles.UnionWith(GetTrianglesBetweenPointAndObstacle(pos, obs, scale2D));
         }
@@ -89,10 +98,10 @@ public class LineOfSightCalculator
 
         Vector2[] corners = new Vector2[4];
 
-        corners[0] = new Vector2(box.center.x - box.size.x / 2, box.center.z - box.size.z / 2);
-        corners[1] = new Vector2(box.center.x + box.size.x / 2, box.center.z - box.size.z / 2);
-        corners[2] = new Vector2(box.center.x - box.size.x / 2, box.center.z + box.size.z / 2);
-        corners[3] = new Vector2(box.center.x + box.size.x / 2, box.center.z + box.size.z / 2);
+        corners[0] = new Vector2(box.center.x - box.size.x / 2, box.center.z - box.size.y / 2);
+        corners[1] = new Vector2(box.center.x + box.size.x / 2, box.center.z - box.size.y / 2);
+        corners[2] = new Vector2(box.center.x + box.size.x / 2, box.center.z + box.size.y / 2);
+        corners[3] = new Vector2(box.center.x - box.size.x / 2, box.center.z + box.size.y / 2);
 
         // Scale and offset corners properly.
         for (int i = 0; i < 4; i++)
@@ -101,6 +110,14 @@ public class LineOfSightCalculator
             corners[i].y *= scale.y;
             corners[i] += offset;
             // Debug.Log("Corner " + i + ": (" + corners[i].x + ", " + corners[i].y + ")");
+        }
+        for (int i = 0; i < 4; i++)
+        {
+            Vector2 p1 = corners[i];
+            Vector2 p2 = corners[(i + 1) % 4];
+            Vector3 p13 = new Vector3(p1.x, 2, p1.y);
+            Vector3 p23 = new Vector3(p2.x, 2, p2.y);
+            Debug.DrawLine(p13, p23, Color.cyan, 1);
         }
 
         Vector2Int inds = new Vector2Int(-1, -1);
