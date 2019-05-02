@@ -141,18 +141,59 @@ public class Figurine_PlayerVision : MonoBehaviour
     // Returns true if the object is within the visibility range, and false if it is outside it.
     public bool UpdateColliderStatus(Collider other)
     {
-        Vector3 otherPos = other.gameObject.transform.position;
+        Vector3 otherPos = other.transform.position;
 
         if (ColliderHasTag(other, "Obstacle"))
         {
             Vector3 tmp = otherPos;
             tmp.y += 2;
 
-            float angle = Mathf.Asin((otherPos - _pos).z / (otherPos - _pos).magnitude);
-            float moveDist = other.gameObject.transform.parent.gameObject.GetComponent<BoxCollider>().size.x * _scale.x;
+            // Get the proper scale for the obstacle.
+            Vector3 segmentScale = other.transform.parent.localScale;
+            Vector3 parentScale = other.transform.parent.parent.localScale;
+            Vector3 otherScale = new Vector3(segmentScale.x * parentScale.x, 0, segmentScale.z * parentScale.z);
+            otherScale = Quaternion.AngleAxis(-other.transform.rotation.eulerAngles.y, Vector3.up) * otherScale;
+            otherScale.x *= _scale.x;
+            otherScale.z *= _scale.z;
+            
+            // Get the box size in the correct scale.
+            Vector3 boxSize = other.gameObject.transform.parent.gameObject.GetComponent<BoxCollider>().size;
+            boxSize = Quaternion.AngleAxis(-other.transform.rotation.eulerAngles.y, Vector3.up) * boxSize;
+            boxSize.x *= otherScale.x;
+            boxSize.z *= otherScale.z;
 
-            otherPos.x -= Mathf.Cos(angle) * moveDist;
-            otherPos.z -= Mathf.Sin(angle) * moveDist;
+            // Calculate angle between middle of obstacle and figurine.
+            Vector3 delta = otherPos - _pos;
+            float angle = Mathf.Asin(delta.z / delta.magnitude);
+
+            // Calculate radius of circle that can contain the obstacle.
+            float radius = Mathf.Sqrt(Mathf.Pow(boxSize.x / 2, 2) + Mathf.Pow(boxSize.z / 2, 2));
+
+            // Calculate offset needed in the x-axis to be able to detect the obstacle assuming no other obstacle is obscuring it.
+            float offsetX = radius * Mathf.Cos(angle);
+            if (offsetX < 0)
+            {
+                offsetX = Mathf.Max(offsetX, -boxSize.x / 2);
+            }
+            else
+            {
+                offsetX = Mathf.Min(offsetX, boxSize.x / 2);
+            }
+
+            // Calculate offset needed in the z-axis to be able to detect the obstacle assuming no other obstacle is obscuring it.
+            float offsetZ = radius * Mathf.Sin(angle);
+            if (offsetZ < 0)
+            {
+                offsetZ = Mathf.Max(offsetZ, -boxSize.z / 2);
+            }
+            else
+            {
+                offsetZ = Mathf.Min(offsetZ, boxSize.z / 2);
+            }
+
+            // Apply offsets with an extra bit to make sure it is not stuck "inside the wall".
+            otherPos.x -= offsetX * 1.01f;
+            otherPos.z -= offsetZ * 1.01f;
 
             Debug.DrawLine(tmp, new Vector3(otherPos.x, otherPos.y + 2, otherPos.z), Color.black, _debugDrawLineDuration);
         }
