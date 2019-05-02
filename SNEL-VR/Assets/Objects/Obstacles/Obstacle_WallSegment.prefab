@@ -15,7 +15,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &8852844773278788685
 Transform:
@@ -54,7 +54,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2950841269136768742}
   - component: {fileID: 2950841269136768740}
-  m_Layer: 15
+  m_Layer: 0
   m_Name: WallSegment
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -101,12 +101,12 @@ GameObject:
   - component: {fileID: 555536628909874264}
   - component: {fileID: 6828059313546127963}
   - component: {fileID: 3431339143245180492}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Obstacle_WallSegment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &2950841269433147973
 Transform:

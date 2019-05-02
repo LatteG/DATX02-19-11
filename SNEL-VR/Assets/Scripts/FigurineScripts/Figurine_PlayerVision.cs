@@ -91,12 +91,12 @@ public class Figurine_PlayerVision : MonoBehaviour
 
         _obstaclesInRange.Clear();
 
-        foreach (Collider c in _tempKnownObjectExitingRange)
+        /*foreach (Collider c in _tempKnownObjectExitingRange)
         {
             UpdateColliderStatus(c);
         }
 
-        _tempKnownObjectExitingRange.Clear();
+        _tempKnownObjectExitingRange.Clear();*/
 
         foreach (Collider c in _collidersToBeProcessed)
         {
@@ -141,11 +141,16 @@ public class Figurine_PlayerVision : MonoBehaviour
 
         if (ColliderHasTag(other, "Obstacle"))
         {
-            float angle = Mathf.Asin((otherPos - _pos).y / (otherPos - _pos).magnitude);
-            float moveDist = other.gameObject.transform.parent.gameObject.GetComponent<BoxCollider>().size.x;
+            Vector3 tmp = otherPos;
+            tmp.y += 2;
+
+            float angle = Mathf.Asin((otherPos - _pos).z / (otherPos - _pos).magnitude);
+            float moveDist = other.gameObject.transform.parent.gameObject.GetComponent<BoxCollider>().size.x * _scale.x;
 
             otherPos.x -= Mathf.Cos(angle) * moveDist;
-            otherPos.y -= Mathf.Sin(angle) * moveDist;
+            otherPos.z -= Mathf.Sin(angle) * moveDist;
+
+            Debug.DrawLine(tmp, new Vector3(otherPos.x, otherPos.y + 2, otherPos.z), Color.black, _debugDrawLineDuration);
         }
         
         float distance = (otherPos - (_sphereCenter + _pos)).magnitude;
@@ -250,7 +255,8 @@ public class Figurine_PlayerVision : MonoBehaviour
             ColliderHasTag(other, "NPCFigurine") ||
             ColliderHasTag(other, "PlayerFigurine"))
         {
-            _tempKnownObjectExitingRange.Add(other);
+            // _tempKnownObjectExitingRange.Add(other);
+            _collidersToBeProcessed.Add(other);
         }
     }
 
