@@ -93,6 +93,7 @@ public class EnvironmentSetup : MonoBehaviour
 
         Transform gridSquareContainerTransform = gridSquareContainer.GetComponent<Transform>();
         SetupContainerTransform(gridSquareContainerTransform);
+        gridSquareContainer.tag = "GridHandler";
 
 
         // Spawn the vertical lines.

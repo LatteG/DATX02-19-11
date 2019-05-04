@@ -13,8 +13,9 @@ public class Player
 
     public string name;
     public bool avatarShowing;
+    public Material playerColor;
 
-    public void InitPlayer(Vector3 pos, Quaternion rotation, int ID, string name)
+    public void InitPlayer(Vector3 pos, Quaternion rotation, int ID, string name, Material color)
     {
         this.pos = pos;
         this.rotation = rotation;
@@ -22,6 +23,7 @@ public class Player
         this.name = name;
         this.ownedFigurines = new HashSet<GameObject>();
         this.avatarShowing = false;
+        this.playerColor = color;
 
         SetAvatar();
     }
@@ -30,6 +32,11 @@ public class Player
     {
         Vector3 pos_avatar = new Vector3(this.pos.x, 1f, this.pos.z);
         avatar = GameObject.Instantiate(GameObject.FindGameObjectWithTag("Avatar"), pos_avatar, this.rotation) as GameObject;
+
+        //Better way to access children? Tag
+        avatar.transform.GetChild(0).GetComponent<Renderer>().material = playerColor;
+        avatar.transform.GetChild(1).GetComponent<Renderer>().material = playerColor;
+        avatar.transform.GetChild(2).GetComponent<Renderer>().material = playerColor;
     }
 
     public Vector3 GetPlayerPos()
@@ -39,7 +46,7 @@ public class Player
 
     public int GetPlayerID()
     {
-        return ID;
+        return this.ID;
     }
 
     public void SetPlayerPos(Vector3 position)
