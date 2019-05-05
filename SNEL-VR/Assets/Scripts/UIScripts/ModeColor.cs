@@ -8,7 +8,9 @@ public class ModeColor : MonoBehaviour
     private GameObject ModeObject;
 
     public Material material;
-    // ex. Color AttackColor = Color.yellow;
+        // ex. Color AttackColor = Color.yellow;
+
+    private bool enabledMenu = false;
 
     private void Start()
     {
@@ -20,6 +22,7 @@ public class ModeColor : MonoBehaviour
         //Debug.Log("Nu trycktes knappen ner.");
         ModeObject.GetComponent<Renderer>().sharedMaterial = material;
 
+        
     }
 
 }
