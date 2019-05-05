@@ -2270,7 +2270,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &900251615
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4161,7 +4161,7 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 120980199}
   m_PrefabAsset: {fileID: 0}
---- !u!122 &1807565052
+--- !u!122 &1807565056
 Halo:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
