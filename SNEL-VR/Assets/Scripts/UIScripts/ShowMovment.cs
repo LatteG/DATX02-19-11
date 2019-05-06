@@ -6,6 +6,7 @@ using UnityEngine;
 public class ShowMovment : MonoBehaviour
 {
     public int steps;
+    public Material tableCloth;
 
     private bool highlighted;
     private HashSet<GameObject> movement;
@@ -39,7 +40,7 @@ public class ShowMovment : MonoBehaviour
             foreach (GameObject square in movement)
             {
                 Renderer renderer = square.GetComponent<Renderer>();
-                renderer.material.SetColor("_Color", Color.white);
+                renderer.material.SetColor("_Color", tableCloth.color);
             }
             highlighted = false;
         }
