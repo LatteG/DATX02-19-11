@@ -4,28 +4,32 @@ using UnityEngine;
 
 public class SpawnDice : MonoBehaviour
 {
-
     public GameObject dice;
     public Transform Spawn;
 
-    HashSet<GameObject> diceToKill = new HashSet<GameObject>();
+    private List<GameObject> diceList;
 
-    public void killDie()
+    private void OnEnable()
     {
-        foreach (GameObject u in diceToKill)
-        {
-            Debug.Log("Enter loop");
-            Destroy(u.gameObject);
-            Debug.Log("Destroyed!");
-        }
+        diceList = new List<GameObject>();
+    }
 
-        Debug.Log("Exit loop");
+    public void killDice()
+    {
+        Debug.Log("diceList contains " + diceList.Count + " dice");
+
+        for (int i = diceList.Count - 1; i >= 0; i--)
+        {
+            Destroy(diceList[i]);
+            diceList.RemoveAt(i);
+            Debug.Log("Destroyed a dice");
+        }
     }
      
     public void spawnDie()
     {
         GameObject die = Instantiate(dice, Spawn.position, Quaternion.Euler(Random.Range(0,360), Random.Range(0, 360), Random.Range(0, 360)) );
-        diceToKill.Add(die);
+        diceList.Add(die);
         //diceToKill.Add((GameObject)Instantiate(dice, Spawn.position, Quaternion.identity));
         //diceToKill.Add(die);
     }

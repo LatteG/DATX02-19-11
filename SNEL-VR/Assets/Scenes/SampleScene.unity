@@ -459,7 +459,6 @@ GameObject:
   - component: {fileID: 112759674}
   - component: {fileID: 112759673}
   - component: {fileID: 112759672}
-  - component: {fileID: 112759671}
   m_Layer: 5
   m_Name: KillDice
   m_TagString: Untagged
@@ -487,20 +486,6 @@ RectTransform:
   m_AnchoredPosition: {x: -26, y: 19.7}
   m_SizeDelta: {x: 70, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &112759671
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 112759669}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 241515efe3bbf2c4eadfd87f2e6b74db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dice: {fileID: 142517791}
-  Spawn: {fileID: 127932907}
 --- !u!114 &112759672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -541,8 +526,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 112759671}
-        m_MethodName: killDie
+      - m_Target: {fileID: 900251619}
+        m_MethodName: killDice
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2264,6 +2249,7 @@ GameObject:
   - component: {fileID: 900251617}
   - component: {fileID: 900251616}
   - component: {fileID: 900251615}
+  - component: {fileID: 900251619}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -2355,6 +2341,20 @@ RectTransform:
   m_AnchoredPosition: {x: -0.01, y: -0.21}
   m_SizeDelta: {x: 1016, y: 341}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &900251619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 900251614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 241515efe3bbf2c4eadfd87f2e6b74db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dice: {fileID: 142517791}
+  Spawn: {fileID: 127932907}
 --- !u!1 &1051087043
 GameObject:
   m_ObjectHideFlags: 0
@@ -4881,7 +4881,6 @@ GameObject:
   - component: {fileID: 2004131491}
   - component: {fileID: 2004131490}
   - component: {fileID: 2004131489}
-  - component: {fileID: 2004131492}
   m_Layer: 5
   m_Name: D6Spawn
   m_TagString: Untagged
@@ -4949,7 +4948,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2004131492}
+      - m_Target: {fileID: 900251619}
         m_MethodName: spawnDie
         m_Mode: 1
         m_Arguments:
@@ -4999,20 +4998,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2004131487}
   m_CullTransparentMesh: 0
---- !u!114 &2004131492
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2004131487}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 241515efe3bbf2c4eadfd87f2e6b74db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dice: {fileID: 142517791}
-  Spawn: {fileID: 127932907}
 --- !u!1 &2006786383
 GameObject:
   m_ObjectHideFlags: 0
