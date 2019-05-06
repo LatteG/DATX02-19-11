@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Figurine_PlayerVision : MonoBehaviour
 {
-    private bool _shouldUpdate = false;
-    private bool _hasUpdated = false;
+    private bool _shouldUpdate;
+    private bool _hasUpdated;
 
     private Vector3 _pos;
     private Vector3 _scale;
@@ -16,9 +16,6 @@ public class Figurine_PlayerVision : MonoBehaviour
     private float _visionRange;
 
     private Transform _parentTransform;
-    private GameObject _figurine;
-
-    private HashSet<Collider> _tempKnownObjectExitingRange;
 
     private HashSet<GameObject> _permKnownObjects;
     private HashSet<GameObject> _tempKnownObjects;
@@ -43,7 +40,7 @@ public class Figurine_PlayerVision : MonoBehaviour
         _scale = transform.lossyScale;
 
         // Used for LOS calculations
-        _worldScale = transform.parent.parent.lossyScale;
+        _worldScale = _parentTransform.parent.lossyScale;
 
         // Used for the first FixedUpdate-call.
         _pos = _parentTransform.position;
@@ -55,11 +52,6 @@ public class Figurine_PlayerVision : MonoBehaviour
         _sphereCenter.y *= _scale.y;
         _sphereCenter.z *= _scale.z;
         _obstacleLayerMask = 1 << 9;
-
-        // Used for LoS-updates in fog elements.
-        _figurine = _parentTransform.gameObject;
-
-        _tempKnownObjectExitingRange = new HashSet<Collider>();
 
         _permKnownObjects = new HashSet<GameObject>();
         _tempKnownObjects = new HashSet<GameObject>();
@@ -94,13 +86,6 @@ public class Figurine_PlayerVision : MonoBehaviour
         _losCalc.DebugDrawTriangles(_pos.y + _scale.x * 0.5f, _debugDrawLineDuration);
 
         _obstaclesInRange.Clear();
-
-        /*foreach (Collider c in _tempKnownObjectExitingRange)
-        {
-            UpdateColliderStatus(c);
-        }
-
-        _tempKnownObjectExitingRange.Clear();*/
 
         foreach (Collider c in _collidersToBeProcessed)
         {
@@ -145,6 +130,12 @@ public class Figurine_PlayerVision : MonoBehaviour
 
         if (ColliderHasTag(other, "Obstacle"))
         {
+            // No need to do the massive check if the obstacle is already permanently known.
+            if (_permKnownObjects.Contains(other.gameObject.transform.parent.gameObject))
+            {
+                return true;
+            }
+            
             Vector3 tmp = otherPos;
             
             Transform otherTransform = other.transform;
