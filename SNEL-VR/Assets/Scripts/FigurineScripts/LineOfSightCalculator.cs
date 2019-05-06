@@ -60,8 +60,10 @@ public class LineOfSightCalculator
 
         foreach (GameObject obs in obstacles)
         {
-            Vector3 segmentScale = obs.transform.parent.localScale;
-            Vector3 wallScale = obs.transform.parent.parent.localScale;
+            Transform obsParentTransform = obs.transform.parent;
+            
+            Vector3 segmentScale = obsParentTransform.localScale;
+            Vector3 wallScale = obsParentTransform.parent.localScale;
             float angle = -obs.transform.rotation.eulerAngles.y;
 
             Vector3 obsScale = new Vector3(segmentScale.x * wallScale.x, 0, segmentScale.z * wallScale.z);
@@ -115,8 +117,8 @@ public class LineOfSightCalculator
         {
             Vector2 p1 = corners[i];
             Vector2 p2 = corners[(i + 1) % 4];
-            Vector3 p13 = new Vector3(p1.x, 2, p1.y);
-            Vector3 p23 = new Vector3(p2.x, 2, p2.y);
+            Vector3 p13 = new Vector3(p1.x, 1.15f, p1.y);
+            Vector3 p23 = new Vector3(p2.x, 1.15f, p2.y);
             Debug.DrawLine(p13, p23, Color.cyan, 1);
         }
 
