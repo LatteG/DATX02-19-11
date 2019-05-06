@@ -14,6 +14,7 @@ public class Figurine_PlayerVision : MonoBehaviour
 
     private int _obstacleLayerMask;
     private float _visionRange;
+    private float _obstacleOffsetMultiplier = 1.1f;
 
     private Transform _parentTransform;
 
@@ -173,8 +174,8 @@ public class Figurine_PlayerVision : MonoBehaviour
             offsetZ = offsetZ < 0 ? Mathf.Max(offsetZ, -boxSize.z / 2) : Mathf.Min(offsetZ, boxSize.z / 2);
 
             // Apply offsets with an extra bit to make sure it is not stuck "inside the wall".
-            otherPos.x -= offsetX * 1.01f;
-            otherPos.z -= offsetZ * 1.01f;
+            otherPos.x -= offsetX * _obstacleOffsetMultiplier;
+            otherPos.z -= offsetZ * _obstacleOffsetMultiplier;
 
             tmp.y += 0.125f;
             Debug.DrawLine(tmp, new Vector3(otherPos.x, otherPos.y + 0.125f, otherPos.z), Color.black, _debugDrawLineDuration);
