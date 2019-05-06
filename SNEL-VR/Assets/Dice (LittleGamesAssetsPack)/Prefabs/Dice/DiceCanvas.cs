@@ -15,16 +15,10 @@ public class DiceCanvas : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (OVRInput.GetDown(OVRInput.Button.Two) && !enabledMenu)
+        if (OVRInput.GetDown(OVRInput.Button.Two))
         {
-            diceMenu.SetActive(true);
-            enabledMenu = true;
-            //Instantiate(dice, Spawn.position, Quaternion.identity);
-        }
-        else if (OVRInput.GetDown(OVRInput.Button.Two) && enabledMenu)
-        {
-            diceMenu.SetActive(false);
-            enabledMenu = false;
+            enabledMenu = !enabledMenu;
+            diceMenu.SetActive(enabledMenu);
         }
     }
 }
