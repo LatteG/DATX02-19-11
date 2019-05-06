@@ -5,35 +5,34 @@ using UnityEngine;
 public class Dragging : MonoBehaviour
 {
     public GameObject anchor;
+    public Vector3 start;
 
     Vector3 playerPos;
-    Vector3 myPos;
     Vector3 unitPosOffest;
 
     bool enabledDragging;
 
     private void Start()
     {
-        myPos = transform.parent.position;
-        unitPosOffest = Vector3.forward;
+        unitPosOffest = start;
         enabledDragging = false;
+        transform.parent.gameObject.SetActive(false);
     }
 
     private void Update()
     {
-
         if (enabledDragging)
         {
             unitPosOffest = anchor.transform.forward;
 
             playerPos = GameObject.FindObjectOfType<OVRPlayerController>().transform.position;
-            transform.parent.position = new Vector3(playerPos.x, playerPos.y + 0.5f, playerPos.z) + unitPosOffest * 0.5f;
+            transform.parent.position = new Vector3(playerPos.x, playerPos.y + 0.5f, playerPos.z) + unitPosOffest * 0.75f;
         }
         else
         {
             playerPos = GameObject.FindObjectOfType<OVRPlayerController>().transform.position;
-            transform.parent.position = new Vector3(playerPos.x, playerPos.y + 0.5f, playerPos.z) + unitPosOffest * 0.5f;
-        }
+            transform.parent.position = new Vector3(playerPos.x, playerPos.y + 0.5f, playerPos.z) + unitPosOffest * 0.75f;
+        }      
     }
 
     public void Drag()
@@ -41,5 +40,6 @@ public class Dragging : MonoBehaviour
         enabledDragging = !enabledDragging;
         Debug.Log("pointer down");
     }
+
 }
 
