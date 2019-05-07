@@ -19,9 +19,9 @@ public class EnablePlayerMenu : MonoBehaviour
     void Start()
     {
         menuActive = false;
-        charactersheet = GameObject.Find("CharacterSheet");
-        inventory = GameObject.Find("Inventory");
-        attacks = GameObject.Find("Attacks");
+        charactersheet = menu;
+        inventory = menu;
+        attacks = menu;
     }
 
     void Update()
