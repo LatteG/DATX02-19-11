@@ -10,6 +10,7 @@ public class GameMasterSwitchGMMode : MonoBehaviour
 
     public GameObject gmCanvas;
     public GameObject gmnBuildManager;
+    public GameMasterBuildManager gmbm;
 
     public void OnEnable()
     {
@@ -32,7 +33,7 @@ public class GameMasterSwitchGMMode : MonoBehaviour
     {
         isGMMode = true;
         gmCanvas.SetActive(true);
-        gmCanvas.transform.GetChild(2).gameObject.SetActive(false); //change
+        //gmCanvas.transform.GetChild(2).gameObject.SetActive(false); //change
 
         gmnBuildManager.SetActive(true);
 
@@ -46,6 +47,7 @@ public class GameMasterSwitchGMMode : MonoBehaviour
         isGMMode = false;
         gmCanvas.SetActive(false);
         gmnBuildManager.SetActive(false);
+        gmbm.ResetAll();
         gmcap.ChangePlayer();
         
     }

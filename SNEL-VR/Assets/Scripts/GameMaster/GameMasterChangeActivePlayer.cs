@@ -52,7 +52,7 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
 
         //change later to make dependencies better
         pof.ChangeOwnedFigurines(gmm.GetActivePlayers()[FindPlayer(activePlayer)].GetOwnedFigurines());
-
+        
         mainCamera.cullingMask = ~(1<<15);
 
         text.text = "Current player: "+activePlayer.playerColor.name;
@@ -74,6 +74,7 @@ public class GameMasterChangeActivePlayer : MonoBehaviour
 
         //change later to make dependencies better
         pof.ChangeOwnedFigurines(gmm.GetActivePlayers()[0].GetOwnedFigurines());
+        Debug.Log("OwnedFigurines: " + pof.GetOwnedFigurines());
 
         mainCamera.cullingMask = ~(0);
 
