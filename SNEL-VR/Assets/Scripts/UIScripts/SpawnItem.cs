@@ -10,7 +10,7 @@ public class SpawnItem : MonoBehaviour
     //temp to test at home
     public void Update()
     {
-        if (Input.GetButtonDown("Fire2")) Spawn_Item(); //left alt
+        //if (Input.GetButtonDown("Fire2")) Spawn_Item(); //left alt
     }
 
     public void Spawn_Item()
