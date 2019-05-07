@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 913346847307270955}
   - component: {fileID: 8829548002214755704}
   - component: {fileID: 7980673145683227510}
+  - component: {fileID: 1013739499863452849}
   m_Layer: 15
   m_Name: Figurine
   m_TagString: PlayerFigurine
@@ -105,6 +106,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ba7b3357ef64284599db9a5b00e3582, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!122 &1013739499863452849
+Halo:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8829548002214755707}
+  m_Enabled: 0
+  m_Color:
+    serializedVersion: 2
+    rgba: 4280756192
+  m_Size: 0.1
 --- !u!1 &8829548002790330799
 GameObject:
   m_ObjectHideFlags: 0
