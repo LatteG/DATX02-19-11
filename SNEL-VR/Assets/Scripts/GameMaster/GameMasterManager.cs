@@ -54,17 +54,18 @@ public class GameMasterManager : MonoBehaviour
 
         foreach (Transform child in playerSpawner)
         {
-            if (child.gameObject.active) //this if-statement is maybe obsolete
+            if (playerAmount >= count)
             {
-                if (playerAmount >= count)
-                {
-                    spawnBusy.Add(child.GetComponent<MeshCollider>().GetHashCode(), false);
-                    availableSpawns.Add(child.GetComponent<MeshCollider>());
+                spawnBusy.Add(child.GetComponent<MeshCollider>().GetHashCode(), false);
+                availableSpawns.Add(child.GetComponent<MeshCollider>());
 
-                }else child.gameObject.SetActive(false);
-
-                count++;
             }
+            else
+            {
+                child.gameObject.SetActive(false);
+            }
+
+            count++;
         }
 
         //Debug.Log("Spawn busy: " + spawnBusy.Count);

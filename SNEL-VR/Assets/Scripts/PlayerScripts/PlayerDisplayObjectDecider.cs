@@ -29,13 +29,20 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
             tempKnownObjects.UnionWith(playerVis.GetTempKnownObjects());
             permKnownObjects.UnionWith(playerVis.GetPermKnownObjects());
         }
-
+        
         // Makes all permanently known non-fog objects visible.
         foreach (GameObject go in permKnownObjects)
         {
             if (!go.CompareTag("Fog"))
             {
-                go.layer = defaultLayer;
+                if (go.CompareTag("Obstacle"))
+                {
+                    go.transform.parent.gameObject.layer = defaultLayer;
+                }
+                else
+                {
+                    go.layer = defaultLayer;
+                }
             }
         }
 
@@ -63,6 +70,10 @@ public class PlayerDisplayObjectDecider : MonoBehaviour
             if (go.CompareTag("Fog"))
             {
                 go.GetComponent<Renderer>().material = visitedFogMaterial;
+            }
+            else if (go.CompareTag("Obstacle"))
+            {
+                go.transform.parent.gameObject.layer = invisibleLayer;
             }
             else
             {

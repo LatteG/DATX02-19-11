@@ -4,20 +4,19 @@ using UnityEngine;
 
 public class Figurine_PlayerVision : MonoBehaviour
 {
-    private bool _shouldUpdate = false;
-    private bool _hasUpdated = false;
+    private bool _shouldUpdate;
+    private bool _hasUpdated;
 
     private Vector3 _pos;
     private Vector3 _scale;
+    private Vector3 _worldScale;
     private Vector3 _sphereCenter;
 
     private int _obstacleLayerMask;
     private float _visionRange;
+    private float _obstacleOffsetMultiplier = 1.1f;
 
     private Transform _parentTransform;
-    private GameObject _figurine;
-
-    private HashSet<Collider> _tempKnownObjectExitingRange;
 
     private HashSet<GameObject> _permKnownObjects;
     private HashSet<GameObject> _tempKnownObjects;
@@ -38,8 +37,11 @@ public class Figurine_PlayerVision : MonoBehaviour
     // Sets initial values and values that are never changed.
     private void OnEnable()
     {
-        _parentTransform = GetComponent<Transform>().parent;
-        _scale = GetComponent<Transform>().lossyScale;
+        _parentTransform = transform.parent;
+        _scale = transform.lossyScale;
+
+        // Used for LOS calculations
+        _worldScale = _parentTransform.parent.lossyScale;
 
         // Used for the first FixedUpdate-call.
         _pos = _parentTransform.position;
@@ -52,17 +54,12 @@ public class Figurine_PlayerVision : MonoBehaviour
         _sphereCenter.z *= _scale.z;
         _obstacleLayerMask = 1 << 9;
 
-        // Used for LoS-updates in fog elements.
-        _figurine = _parentTransform.gameObject;
-
-        _tempKnownObjectExitingRange = new HashSet<Collider>();
-
         _permKnownObjects = new HashSet<GameObject>();
         _tempKnownObjects = new HashSet<GameObject>();
         _obstaclesInRange = new HashSet<GameObject>();
         _collidersToBeProcessed = new HashSet<Collider>();
 
-        _losCalc = new LineOfSightCalculator();
+        _losCalc = new LineOfSightCalculator(_worldScale);
 
         // Adds the attached figurine to the set of permanently known objects.
         foreach (Transform child in _parentTransform)
@@ -90,13 +87,6 @@ public class Figurine_PlayerVision : MonoBehaviour
         _losCalc.DebugDrawTriangles(_pos.y + _scale.x * 0.5f, _debugDrawLineDuration);
 
         _obstaclesInRange.Clear();
-
-        foreach (Collider c in _tempKnownObjectExitingRange)
-        {
-            UpdateColliderStatus(c);
-        }
-
-        _tempKnownObjectExitingRange.Clear();
 
         foreach (Collider c in _collidersToBeProcessed)
         {
@@ -137,15 +127,58 @@ public class Figurine_PlayerVision : MonoBehaviour
     // Returns true if the object is within the visibility range, and false if it is outside it.
     public bool UpdateColliderStatus(Collider other)
     {
-        Vector3 otherPos = other.gameObject.transform.position;
+        Vector3 otherPos = other.transform.position;
 
         if (ColliderHasTag(other, "Obstacle"))
         {
-            float angle = Mathf.Asin((otherPos - _pos).y / (otherPos - _pos).magnitude);
-            float moveDist = other.gameObject.transform.parent.gameObject.GetComponent<BoxCollider>().size.x;
+            // No need to do the massive check if the obstacle is already permanently known.
+            if (_permKnownObjects.Contains(other.gameObject.transform.parent.gameObject))
+            {
+                return true;
+            }
+            
+            Vector3 tmp = otherPos;
+            
+            Transform otherTransform = other.transform;
+            Transform parentTransform = otherTransform.parent;
+            Quaternion otherQuaternion = otherTransform.rotation;
 
-            otherPos.x -= Mathf.Cos(angle) * moveDist;
-            otherPos.y -= Mathf.Sin(angle) * moveDist;
+            // Get the proper scale for the obstacle.
+            Vector3 segmentScale = parentTransform.localScale;
+            Vector3 parentScale = parentTransform.parent.localScale;
+            Vector3 otherScale = new Vector3(segmentScale.x * parentScale.x, 0, segmentScale.z * parentScale.z);
+            otherScale = Quaternion.AngleAxis(-otherQuaternion.eulerAngles.y, Vector3.up) * otherScale;
+            otherScale.x *= _scale.x;
+            otherScale.z *= _scale.z;
+            
+            // Get the box size in the correct scale.
+            Vector3 boxSize = other.gameObject.transform.parent.gameObject.GetComponent<BoxCollider>().size;
+            boxSize = Quaternion.AngleAxis(-otherQuaternion.eulerAngles.y, Vector3.up) * boxSize;
+            boxSize.x *= otherScale.x;
+            boxSize.z *= otherScale.z;
+
+            // Calculate angle between middle of obstacle and figurine.
+            Vector3 delta = otherPos - _pos;
+            float angleZ = Mathf.Asin(delta.z / delta.magnitude);
+            float angleX = Mathf.Acos(delta.x / delta.magnitude);
+
+            // Calculate radius of circle that can contain the obstacle.
+            float radius = Mathf.Sqrt(Mathf.Pow(boxSize.x / 2, 2) + Mathf.Pow(boxSize.z / 2, 2));
+
+            // Calculate offset needed in the x-axis to be able to detect the obstacle assuming no other obstacle is obscuring it.
+            float offsetX = radius * Mathf.Cos(angleX);
+            offsetX = offsetX < 0 ? Mathf.Max(offsetX, -boxSize.x / 2) : Mathf.Min(offsetX, boxSize.x / 2);
+
+            // Calculate offset needed in the z-axis to be able to detect the obstacle assuming no other obstacle is obscuring it.
+            float offsetZ = radius * Mathf.Sin(angleZ);
+            offsetZ = offsetZ < 0 ? Mathf.Max(offsetZ, -boxSize.z / 2) : Mathf.Min(offsetZ, boxSize.z / 2);
+
+            // Apply offsets with an extra bit to make sure it is not stuck "inside the wall".
+            otherPos.x -= offsetX * _obstacleOffsetMultiplier;
+            otherPos.z -= offsetZ * _obstacleOffsetMultiplier;
+
+            tmp.y += 0.125f;
+            Debug.DrawLine(tmp, new Vector3(otherPos.x, otherPos.y + 0.125f, otherPos.z), Color.black, _debugDrawLineDuration);
         }
         
         float distance = (otherPos - (_sphereCenter + _pos)).magnitude;
@@ -250,7 +283,8 @@ public class Figurine_PlayerVision : MonoBehaviour
             ColliderHasTag(other, "NPCFigurine") ||
             ColliderHasTag(other, "PlayerFigurine"))
         {
-            _tempKnownObjectExitingRange.Add(other);
+            // _tempKnownObjectExitingRange.Add(other);
+            _collidersToBeProcessed.Add(other);
         }
     }
 
