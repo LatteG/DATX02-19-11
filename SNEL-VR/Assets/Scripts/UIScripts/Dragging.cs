@@ -13,10 +13,14 @@ public class Dragging : MonoBehaviour
     bool enabledDragging;
 
     private void Start()
+    {      
+        transform.parent.gameObject.SetActive(false);
+    }
+
+    private void OnEnable()
     {
         unitPosOffest = start;
         enabledDragging = false;
-        transform.parent.gameObject.SetActive(false);
     }
 
     private void Update()

@@ -11,9 +11,9 @@ public class EnablePlayerMenu : MonoBehaviour
     GameObject attacks;
 
     bool menuActive;
-    bool sheetActive;
-    bool inventoryActive;
-    bool attacksActive;
+    bool sheetActive = true;
+    bool inventoryActive = true;
+    bool attacksActive = true;
 
 
     void Start()
