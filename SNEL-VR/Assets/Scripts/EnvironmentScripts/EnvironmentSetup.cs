@@ -14,18 +14,14 @@ public class EnvironmentSetup : MonoBehaviour
     public GameObject fogElement;
     public GameObject gridLine;
     public GameObject gridSquare;
-
-    private Transform setupTransform;
     
     private void OnEnable()
     {
-        setupTransform = this.gameObject.GetComponent<Transform>();
-
         // Get size of the mesh called Boundary in the child.
         Vector3 meshSize = GetComponentInChildren<MeshCollider>().bounds.size;
 
         //To correct size/pos contra scale
-        Vector3 scale = setupTransform.lossyScale;
+        Vector3 scale = transform.lossyScale;
 
         meshSize.x /= scale.x;
         meshSize.z /= scale.z;
@@ -43,7 +39,7 @@ public class EnvironmentSetup : MonoBehaviour
 
         // Offset the meshMin to align the grid with the fog
         Vector3 boundsScale = this.GetComponentInChildren<MeshCollider>().gameObject.GetComponent<Transform>().localScale;
-        meshMin -= setupTransform.position;
+        meshMin -= transform.position;
         meshMin.x -= (1 - scale.x) * boundsScale.x / 2;
         meshMin.z -= (1 - scale.z) * boundsScale.y / 2;
 
@@ -185,7 +181,7 @@ public class EnvironmentSetup : MonoBehaviour
     // Sets the transform for containers that are put in EnvironmentSetup.
     private void SetupContainerTransform(Transform t)
     {
-        t.SetParent(setupTransform);
+        t.SetParent(transform);
         t.localPosition = new Vector3(0, 0, 0);
         t.localRotation = Quaternion.identity;
         t.localScale = new Vector3(1, 1, 1);
